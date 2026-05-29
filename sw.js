@@ -1,9 +1,12 @@
-const CACHE_NAME = 'poker-trainer-v1';
+const CACHE_NAME = 'poker-trainer-v6';
 const ASSETS_TO_CACHE = [
     './index.html',
     './style.css',
+    './ad-config.js',
     './script.js',
-    './i18n.js'
+    './i18n.js',
+    './manifest.json',
+    './logo.png'
 ];
 
 self.addEventListener('install', event => {
@@ -37,7 +40,12 @@ self.addEventListener('fetch', event => {
 
                         return response;
                     }
-                );
+                ).catch(function () {
+                    if (event.request.mode === 'navigate') {
+                        return caches.match('./index.html');
+                    }
+                    throw new Error('Network unavailable and no cached response.');
+                });
             })
     );
 });
