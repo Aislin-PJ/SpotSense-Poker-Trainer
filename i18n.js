@@ -50,7 +50,6 @@ const I18N = {
         // Coach
         coachTitle: "Strategy Coach",
         coachSelect: "Select a mode to begin.",
-        strategyPackTrainingReference: "Training reference, not a universal rule.",
 
         // Modals
         chartUtgRfiTitle: "UTG RFI Open Range",
@@ -566,7 +565,6 @@ const I18N = {
         supportRoadmapPolish: "更好的手機 PWA 體驗",
         supportOptionsTitle: "支持方式",
         supportOptionsBody: "分享回饋、推薦此訓練器，或贊助開發。訓練功能會保持免費。",
-        strategyPackTrainingReference: "訓練參考範圍，不是所有局面的唯一答案。",
         donateSlotTitle: "支持 Preflop",
         donateSlotBody: "Donate 會幫助維持免費、離線優先、不需帳號的訓練工具。",
         donateCta: "Ko-fi Donate",
@@ -757,7 +755,6 @@ I18N.ja = makeI18nPack({
     personalizedNextDrill: "次のドリル",
     coachTitle: "戦略コーチ",
     coachSelect: "モードを選択して開始してください。",
-    strategyPackTrainingReference: "トレーニング用リファレンスであり、普遍的なルールではありません。",
     chartUtgRfiTitle: "UTG RFI オープンレンジ",
     chartUtgPushTitle: "UTG プッシュレンジ",
     chartDefendTitle: "ディフェンス戦略",
@@ -1041,7 +1038,6 @@ I18N.ko = makeI18nPack({
     personalizedNextDrill: "다음 드릴",
     coachTitle: "전략 코치",
     coachSelect: "모드를 선택해 시작하세요.",
-    strategyPackTrainingReference: "훈련 참고 자료이며, 보편적인 규칙은 아닙니다.",
     legendRaise: "플레이 (레이즈/셔브)",
     legendFold: "폴드",
     legend3Bet: "3-Bet (리레이즈)",
@@ -1466,7 +1462,6 @@ Object.assign(I18N.ko, {
 
 Object.assign(I18N.es, {
     quickStartCta: "Iniciar diagnóstico rápido",
-    strategyPackTrainingReference: "Referencia de entrenamiento, no una regla universal.",
     statsReset: "Restablecer estadísticas",
     statsResetConfirm: "¿Restablecer todas las estadísticas de por vida? Esto borra progreso, historial de manos y pesos adaptativos.",
     confirmTitle: "Confirmar acción",
@@ -2173,7 +2168,7 @@ Object.assign(I18N.en, {
     rangeCodeCopied: "Range copied.",
     rangeCodeCopyFallback: "Copy this range code:",
     supportFeedbackTitle: "Send Feedback",
-    supportFeedbackBody: "Feedback goes to the developer by email so fixes and new drills can be prioritized.",
+    supportFeedbackBody: "Feedback is sent by email so fixes and new drills can be prioritized.",
     supportFeedbackEmailLabel: "Email (optional)",
     supportFeedbackEmailPlaceholder: "you@example.com",
     supportFeedbackCategoryLabel: "Feedback type",
@@ -2230,7 +2225,7 @@ Object.assign(I18N["zh-TW"], {
     rangeCodeCopied: "已複製範圍。",
     rangeCodeCopyFallback: "複製這段範圍代碼：",
     supportFeedbackTitle: "提供意見",
-    supportFeedbackBody: "意見會透過 email 寄給開發者，用來優先修正問題與規劃新的訓練題型。",
+    supportFeedbackBody: "意見會透過 email 送出，用來優先修正問題與規劃新的訓練題型。",
     supportFeedbackEmailLabel: "Email（選填）",
     supportFeedbackEmailPlaceholder: "你的 Email",
     supportFeedbackCategoryLabel: "回饋類型",
@@ -2287,7 +2282,7 @@ Object.assign(I18N.ja, {
     rangeCodeCopied: "レンジをコピーしました。",
     rangeCodeCopyFallback: "このレンジコードをコピー:",
     supportFeedbackTitle: "フィードバックを送る",
-    supportFeedbackBody: "フィードバックはメールで開発者に送られ、修正や新しいドリルの優先順位付けに使われます。",
+    supportFeedbackBody: "フィードバックはメールで送信され、修正や新しいドリルの優先順位付けに使われます。",
     supportFeedbackEmailLabel: "Email（任意）",
     supportFeedbackEmailPlaceholder: "あなたの Email",
     supportFeedbackCategoryLabel: "フィードバック種別",
@@ -2344,7 +2339,7 @@ Object.assign(I18N.ko, {
     rangeCodeCopied: "레인지를 복사했습니다.",
     rangeCodeCopyFallback: "이 레인지 코드를 복사하세요:",
     supportFeedbackTitle: "의견 보내기",
-    supportFeedbackBody: "의견은 이메일로 개발자에게 전달되어 수정과 새 drill 우선순위를 정하는 데 사용됩니다.",
+    supportFeedbackBody: "의견은 이메일로 전송되며 수정과 새 drill 우선순위를 정하는 데 사용됩니다.",
     supportFeedbackEmailLabel: "Email (선택)",
     supportFeedbackEmailPlaceholder: "이메일 주소",
     supportFeedbackCategoryLabel: "의견 유형",
@@ -2401,7 +2396,7 @@ Object.assign(I18N.es, {
     rangeCodeCopied: "Rango copiado.",
     rangeCodeCopyFallback: "Copia este codigo de rango:",
     supportFeedbackTitle: "Enviar feedback",
-    supportFeedbackBody: "El feedback se envia al desarrollador por email para priorizar arreglos y nuevos drills.",
+    supportFeedbackBody: "El feedback se envia por email para priorizar arreglos y nuevos drills.",
     supportFeedbackEmailLabel: "Email opcional",
     supportFeedbackEmailPlaceholder: "tu@email.com",
     supportFeedbackCategoryLabel: "Tipo de feedback",
@@ -2539,8 +2534,6 @@ Object.values(I18N).forEach(pack => Object.assign(pack, {
     drillFoldLabelText: pack.drillFoldLabelText || "Fold button label",
     drillCallLabelText: pack.drillCallLabelText || "Call button label",
     drillRaiseLabelText: pack.drillRaiseLabelText || "Raise button label",
-    drillNoteLabel: pack.drillNoteLabel || "Feedback note",
-    drillNotePlaceholder: pack.drillNotePlaceholder || "Optional source or coaching note",
     assessmentLeakPostflop: pack.assessmentLeakPostflop || "Postflop sizing and texture",
     scenarioAllStreet: pack.scenarioAllStreet || "You are dealt {combo}. {street} {template}: Board {board}. {hero} vs {villain}. Pot {pot}bb, stack {stack}bb, SPR {spr}. Line: {line}. Sizes: {sizes}.",
     coachAllStreet: pack.coachAllStreet || "<div class=\"coach-framework\"><h3>Postflop Starter Pack</h3><p class=\"coach-summary\">Train one flop, turn, and river decision using board texture, pot, SPR, and sizing context.</p><div class=\"coach-section\"><p class=\"coach-section-title\">Decision process</p><ol class=\"coach-process\"><li>Read the board texture and action line before looking at the hand.</li><li>Use range advantage, nut advantage, blockers, and equity realization to choose the action.</li></ol></div><p class=\"coach-micro-goal\"><strong>Practice target:</strong> Name the board texture and sizing reason before clicking.</p></div>",
@@ -2548,14 +2541,11 @@ Object.values(I18N).forEach(pack => Object.assign(pack, {
 }));
 
 Object.assign(I18N.en, {
-    postflopSourceLabel: "Source",
     postflopPotLabel: "Pot",
     postflopStackLabel: "Effective stack",
     postflopBoardLabel: "Board cards",
     postflopLineLabel: "Line",
     postflopSizesLabel: "Sizes",
-    postflopPackLabel: "Source-reviewed cash 100bb postflop pack",
-    postflopSourceNotes: "Source-reviewed solver-derived training reference with simplified hand-class ranges; not a universal rule or complete solver database.",
     coachAllStreetGlossary: "<div class=\"coach-section\"><p class=\"coach-section-title\">Beginner terms</p><ul class=\"coach-checklist\"><li><strong>Hero / Opponent:</strong> Hero is your seat. Position tells who acts with more information after the flop; BTN usually acts last.</li><li><strong>SPR:</strong> Effective stack divided by pot. High SPR leaves room for multi-street play; low SPR reaches stack-commitment decisions faster.</li><li><strong>Dry board:</strong> Few straight or flush draws, such as A-7-2 rainbow. These boards often support smaller, frequent continuation bets.</li></ul></div>",
     postflopActionCheck: "Check",
     postflopActionFold: "Fold",
@@ -2628,19 +2618,14 @@ Object.assign(I18N["zh-TW"], {
     drillFoldLabelText: "棄牌按鈕標籤",
     drillCallLabelText: "跟注按鈕標籤",
     drillRaiseLabelText: "加注/下注按鈕標籤",
-    drillNoteLabel: "回饋備註",
-    drillNotePlaceholder: "可選填來源或教練提示",
     assessmentLeakPostflop: "翻後下注尺度與牌面結構",
     scenarioAllStreet: "你拿到 {combo}。{street} {template}：公共牌 {board}。{hero} 對 {villain}。底池 {pot}bb，籌碼 {stack}bb，SPR {spr}。路線：{line}。尺度：{sizes}。",
     coachAllStreet: "<div class=\"coach-framework\"><h3>翻後入門包</h3><p class=\"coach-summary\">用牌面結構、底池、SPR 與下注尺度訓練翻牌、轉牌、河牌決策。</p><div class=\"coach-section\"><p class=\"coach-section-title\">決策流程</p><ol class=\"coach-process\"><li>先讀牌面結構與行動路線，再看手牌。</li><li>看範圍優勢、最強牌優勢、手上的阻斷牌，以及這手牌的勝率實現。</li></ol></div><p class=\"coach-micro-goal\"><strong>練習目標：</strong>點擊前先說出牌面結構與下注尺度理由。</p></div>",
-    postflopSourceLabel: "來源",
     postflopPotLabel: "底池",
     postflopStackLabel: "籌碼",
     postflopBoardLabel: "公共牌",
     postflopLineLabel: "路線",
     postflopSizesLabel: "尺度",
-    postflopPackLabel: "已審核來源的 100bb 現金局翻後包",
-    postflopSourceNotes: "以公開 solver 概念審核過的訓練參考，使用簡化手牌類別範圍；不是通用規則，也不是完整 solver 資料庫。",
     coachAllStreetGlossary: "<div class=\"coach-section\"><p class=\"coach-section-title\">新手術語速查</p><ul class=\"coach-checklist\"><li><strong>我方 / 對手：</strong>我方就是你正在決策的位置。位置會影響翻後誰比較晚行動；BTN 通常最有資訊優勢。</li><li><strong>SPR：</strong>有效籌碼除以底池。SPR 高代表還有多條街可操作；SPR 低代表更快進入是否願意打光籌碼的決策。</li><li><strong>乾燥牌面：</strong>順子或同花聽牌很少的公共牌，例如 A-7-2 彩虹。這類牌面常適合較小、較高頻率的持續下注。</li></ul></div>",
     postflopActionCheck: "過牌",
     postflopActionFold: "棄牌",
@@ -2713,19 +2698,14 @@ Object.assign(I18N.ja, {
     drillFoldLabelText: "フォールドボタンのラベル",
     drillCallLabelText: "コールボタンのラベル",
     drillRaiseLabelText: "レイズ/ベットボタンのラベル",
-    drillNoteLabel: "フィードバックメモ",
-    drillNotePlaceholder: "任意のソースまたはコーチングメモ",
     assessmentLeakPostflop: "ポストフロップのサイズとテクスチャ",
     scenarioAllStreet: "{combo} が配られました。{street} {template}: ボード {board}。{hero} 対 {villain}。ポット {pot}bb、スタック {stack}bb、SPR {spr}。ライン: {line}。サイズ: {sizes}。",
     coachAllStreet: "<div class=\"coach-framework\"><h3>ポストフロップ スターターパック</h3><p class=\"coach-summary\">ボードテクスチャ、ポット、SPR、サイズ文脈を使ってフロップ、ターン、リバーの判断を練習します。</p><div class=\"coach-section\"><p class=\"coach-section-title\">判断プロセス</p><ol class=\"coach-process\"><li>ハンドを見る前にボードテクスチャとアクションラインを読む。</li><li>レンジ優位、ナッツ優位、ブロッカー、エクイティ実現を使ってアクションを選ぶ。</li></ol></div><p class=\"coach-micro-goal\"><strong>練習目標:</strong> クリック前にボードテクスチャとサイズ理由を声に出す。</p></div>",
-    postflopSourceLabel: "ソース",
     postflopPotLabel: "ポット",
     postflopStackLabel: "スタック",
     postflopBoardLabel: "ボード",
     postflopLineLabel: "ライン",
     postflopSizesLabel: "サイズ",
-    postflopPackLabel: "ソースレビュー済み 100bb キャッシュ ポストフロップパック",
-    postflopSourceNotes: "公開 solver 概念に基づくソースレビュー済みトレーニング参考です。ハンドクラス範囲は簡略化されており、万能ルールでも完全な solver データベースでもありません。",
     coachAllStreetGlossary: "<div class=\"coach-section\"><p class=\"coach-section-title\">初心者用語</p><ul class=\"coach-checklist\"><li><strong>Hero / 相手:</strong> Hero は自分の席です。ポジションはフロップ後に誰が後から行動できるかを示し、BTN は多くの場合いちばん情報を持てます。</li><li><strong>SPR:</strong> 有効スタックをポットで割った値です。SPR が高いほど複数ストリートで余地があり、低いほどスタックを入れる判断に近づきます。</li><li><strong>ドライボード:</strong> ストレートやフラッシュのドローが少ないボードです。例は A-7-2 レインボーで、小さめの高頻度 Cベットに向きやすいです。</li></ul></div>",
     postflopActionCheck: "チェック",
     postflopActionFold: "フォールド",
@@ -2798,19 +2778,14 @@ Object.assign(I18N.ko, {
     drillFoldLabelText: "폴드 버튼 라벨",
     drillCallLabelText: "콜 버튼 라벨",
     drillRaiseLabelText: "레이즈/벳 버튼 라벨",
-    drillNoteLabel: "피드백 노트",
-    drillNotePlaceholder: "선택 사항: 소스 또는 코칭 노트",
     assessmentLeakPostflop: "포스트플랍 사이징과 보드 텍스처",
     scenarioAllStreet: "{combo}를 받았습니다. {street} {template}: 보드 {board}. {hero} vs {villain}. 팟 {pot}bb, 스택 {stack}bb, SPR {spr}. 라인: {line}. 사이즈: {sizes}.",
     coachAllStreet: "<div class=\"coach-framework\"><h3>포스트플랍 스타터 팩</h3><p class=\"coach-summary\">보드 텍스처, 팟, SPR, 사이징 맥락으로 플랍, 턴, 리버 결정을 훈련합니다.</p><div class=\"coach-section\"><p class=\"coach-section-title\">의사결정 과정</p><ol class=\"coach-process\"><li>핸드를 보기 전에 보드 텍스처와 액션 라인을 읽습니다.</li><li>레인지 어드밴티지, 넛 어드밴티지, 블로커, equity realization으로 액션을 고릅니다.</li></ol></div><p class=\"coach-micro-goal\"><strong>연습 목표:</strong> 클릭하기 전에 보드 텍스처와 사이징 이유를 말합니다.</p></div>",
-    postflopSourceLabel: "소스",
     postflopPotLabel: "팟",
     postflopStackLabel: "스택",
     postflopBoardLabel: "보드",
     postflopLineLabel: "라인",
     postflopSizesLabel: "사이즈",
-    postflopPackLabel: "소스 리뷰 완료 100bb 캐시 포스트플랍 팩",
-    postflopSourceNotes: "공개 solver 개념을 기준으로 리뷰한 훈련 참고 자료입니다. 핸드 클래스 레인지는 단순화되어 있으며, 보편 규칙이나 완전한 solver 데이터베이스가 아닙니다.",
     coachAllStreetGlossary: "<div class=\"coach-section\"><p class=\"coach-section-title\">초보 용어</p><ul class=\"coach-checklist\"><li><strong>Hero / 상대:</strong> Hero는 내가 결정을 내리는 자리입니다. 포지션은 플랍 이후 누가 더 많은 정보를 보고 행동하는지를 뜻하며 BTN은 보통 가장 늦게 행동합니다.</li><li><strong>SPR:</strong> 유효 스택을 팟으로 나눈 값입니다. SPR이 높으면 여러 스트리트에서 플레이할 여지가 있고, 낮으면 스택 커밋 결정에 더 빨리 가까워집니다.</li><li><strong>드라이 보드:</strong> 스트레이트나 플러시 드로우가 적은 보드입니다. A-7-2 레인보우 같은 보드는 작은 사이즈의 잦은 C-bet에 적합한 경우가 많습니다.</li></ul></div>",
     postflopActionCheck: "체크",
     postflopActionFold: "폴드",
@@ -2885,8 +2860,6 @@ Object.assign(I18N.es, {
     drillFoldLabelText: "Etiqueta del botón de fold",
     drillCallLabelText: "Etiqueta del botón de call",
     drillRaiseLabelText: "Etiqueta del botón de raise/bet",
-    drillNoteLabel: "Nota de feedback",
-    drillNotePlaceholder: "Fuente o nota de coaching opcional",
     drillBuilderKicker: "Constructor de ejercicios",
     drillBuilderTitle: "Crear un spot de entrenamiento",
     drillAllRandomOption: "Todo / aleatorio",
@@ -2894,14 +2867,11 @@ Object.assign(I18N.es, {
     assessmentLeakPostflop: "Sizing y textura postflop",
     scenarioAllStreet: "Recibes {combo}. {street} {template}: board {board}. {hero} vs {villain}. Bote {pot}bb, stack {stack}bb, SPR {spr}. Línea: {line}. Sizings: {sizes}.",
     coachAllStreet: "<div class=\"coach-framework\"><h3>Pack inicial postflop</h3><p class=\"coach-summary\">Entrena decisiones de flop, turn y river usando textura del board, bote, SPR y contexto de sizing.</p><div class=\"coach-section\"><p class=\"coach-section-title\">Proceso de decisión</p><ol class=\"coach-process\"><li>Lee la textura del board y la línea antes de mirar la mano.</li><li>Usa ventaja de rango, ventaja de nuts, blockers y realización de equity para elegir acción.</li></ol></div><p class=\"coach-micro-goal\"><strong>Objetivo:</strong> nombra la textura del board y la razón del sizing antes de hacer clic.</p></div>",
-    postflopSourceLabel: "Fuente",
     postflopPotLabel: "Bote",
     postflopStackLabel: "Stack",
     postflopBoardLabel: "Board",
     postflopLineLabel: "Línea",
     postflopSizesLabel: "Sizings",
-    postflopPackLabel: "Pack postflop cash 100bb revisado con fuentes",
-    postflopSourceNotes: "Referencia de entrenamiento derivada de conceptos solver revisados con fuentes y rangos simplificados por clase de mano; no es una regla universal ni una base de datos solver completa.",
     coachAllStreetGlossary: "<div class=\"coach-section\"><p class=\"coach-section-title\">Terminos para empezar</p><ul class=\"coach-checklist\"><li><strong>Hero / Rival:</strong> Hero es tu asiento. La posicion indica quien actua con mas informacion postflop; BTN normalmente actua ultimo.</li><li><strong>SPR:</strong> Stack efectivo dividido por el bote. SPR alto deja mas juego en varias calles; SPR bajo acerca antes las decisiones de jugar por todo el stack.</li><li><strong>Board seco:</strong> Board con pocos proyectos de escalera o color, como A-7-2 rainbow. Suele permitir c-bets pequenas y frecuentes.</li></ul></div>",
     postflopActionCheck: "Pasar",
     postflopActionFold: "Foldear",
@@ -3133,37 +3103,32 @@ Object.assign(I18N.es, {
 });
 
 Object.assign(I18N.en, {
-    pokerGlossaryTitle: "Texas Hold'em Terms",
-    pokerGlossaryIntro: "A consistent glossary used across this trainer. English terms are shown directly; other languages also keep the English poker term visible.",
+    pokerGlossaryTitle: "Poker Terms",
     rulesPageRules: "Rules & Strategy",
     rulesPageGlossary: "Glossary"
 });
 
 Object.assign(I18N["zh-TW"], {
-    pokerGlossaryTitle: "德州撲克專用術語",
-    pokerGlossaryIntro: "這份術語表會作為整個訓練器的統一翻譯標準。英文介面只顯示英文名；其他語言會同時保留英文術語。",
+    pokerGlossaryTitle: "用語解釋",
     rulesPageRules: "規則與策略",
     rulesPageGlossary: "術語表"
 });
 
 Object.assign(I18N.ja, {
-    pokerGlossaryTitle: "テキサスホールデム用語",
-    pokerGlossaryIntro: "この用語集はトレーナー全体の表記基準です。英語画面では英語名のみ、他の言語では英語のポーカー用語も併記します。",
+    pokerGlossaryTitle: "用語解説",
     rulesPageRules: "ルールと戦略",
     rulesPageGlossary: "用語集",
     drillVillainPositionLabel: "3ベッター"
 });
 
 Object.assign(I18N.ko, {
-    pokerGlossaryTitle: "텍사스 홀덤 용어",
-    pokerGlossaryIntro: "이 용어집은 트레이너 전체에서 쓰는 표기 기준입니다. 영어 화면은 영어명만 보이고, 다른 언어에서는 영어 포커 용어도 함께 표시합니다.",
+    pokerGlossaryTitle: "용어 설명",
     rulesPageRules: "규칙과 전략",
     rulesPageGlossary: "용어집"
 });
 
 Object.assign(I18N.es, {
-    pokerGlossaryTitle: "Terminos de Texas Hold'em",
-    pokerGlossaryIntro: "Este glosario unifica los terminos usados en todo el entrenador. En ingles solo se muestra el nombre ingles; en otros idiomas tambien se conserva el termino de poker en ingles.",
+    pokerGlossaryTitle: "Terminos de poker",
     rulesPageRules: "Reglas y estrategia",
     rulesPageGlossary: "Glosario"
 });

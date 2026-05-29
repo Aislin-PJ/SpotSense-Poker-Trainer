@@ -720,7 +720,8 @@ body.is-first-run #progress-panel {
 }
 
 .first-run-window {
-    width: min(720px, calc(100vw - 28px));
+    width: 100%;
+    max-width: 720px;
     max-height: calc(100dvh - 36px);
     overflow: auto;
     display: flex;
@@ -766,7 +767,7 @@ body.is-first-run #progress-panel {
 .first-run-flow p {
     color: var(--text-secondary);
     line-height: 1.5;
-    max-width: 560px;
+    max-width: min(560px, 100%);
     margin: 0 auto;
     overflow-wrap: anywhere;
 }
@@ -3500,13 +3501,13 @@ body.is-first-run #progress-panel {
     }
 
     .first-run-flow {
-        padding: 10px;
+        padding: 16px;
     }
 
     .first-run-window {
-        width: min(100%, calc(100vw - 20px));
-        max-width: calc(100vw - 20px);
-        max-height: calc(100dvh - 20px);
+        width: 100%;
+        max-width: 100%;
+        max-height: calc(100dvh - 32px);
         padding: 14px;
     }
 

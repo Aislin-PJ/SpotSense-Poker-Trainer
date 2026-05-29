@@ -17,7 +17,6 @@ const AD_DAILY_LIMIT = 3;
 const DONATE_URL = 'https://ko-fi.com/preflop777';
 const SUPPORT_FEEDBACK_ENDPOINT = 'https://formspree.io/f/xlgvazpe';
 // Google Publisher Tag web interstitial is the only built-in third-party ad path.
-// Source: https://developers.google.com/publisher-tag/samples/display-web-interstitial-ad
 const GOOGLE_PUBLISHER_TAG_URL = 'https://securepubads.g.doubleclick.net/tag/js/gpt.js';
 const AD_SERVICE_DEFAULTS = Object.freeze({
     provider: 'google-publisher-tag',
@@ -333,49 +332,12 @@ const LANGUAGE_OPTIONS = Object.freeze([
     { code: 'es', label: 'Español', shortLabel: 'ES' }
 ]);
 const SUPPORTED_LANGS = LANGUAGE_OPTIONS.map(option => option.code);
-const POSTFLOP_SOURCE_REFS = Object.freeze([
-    {
-        title: 'The Mechanics of C-Bet Sizing',
-        url: 'https://blog.gtowizard.com/the-mechanics-of-c-bet-sizing/',
-        concepts: ['range advantage', 'nut advantage', 'fold equity', 'SPR', 'flop sizing']
-    },
-    {
-        title: 'The Turn Probe Bet',
-        url: 'https://blog.gtowizard.com/the-turn-probe-bet/',
-        concepts: ['probe turn', 'draw-completer turns', 'overcard turns', 'brick turns']
-    },
-    {
-        title: 'Understanding Blockers in Poker',
-        url: 'https://blog.gtowizard.com/understanding-blockers-in-poker/',
-        concepts: ['river bluff-catching', 'pot odds', 'blockers', 'polarized ranges']
-    },
-    {
-        title: 'All you need to know about our solutions',
-        url: 'https://blog.gtowizard.com/all-you-need-to-know-about-our-solutions/',
-        concepts: ['solver tree sizing', 'turn barrels', 'overbets', 'river sizes']
-    },
-    {
-        title: 'Defending vs BB Check-Raise on Paired Flops',
-        url: 'https://blog.gtowizard.com/defending-vs-bb-check-raise-on-paired-flops/',
-        concepts: ['flop check-raise', 'paired boards', 'defense vs raise']
-    },
-    {
-        title: 'Are You Leaving Value on the River?',
-        url: 'https://blog.gtowizard.com/are_you_leaving_value_on_the_river/',
-        concepts: ['river value bet', 'thin value', 'smaller river sizing']
-    }
-]);
-
 const ALL_STREET_PACKS = Object.freeze({
-    sourceReviewedCash100: {
-        id: 'source-reviewed-cash100-postflop-v1',
+    cash100: {
+        id: 'cash100-postflop-v1',
         version: 1,
-        label: 'Source-Reviewed Cash 100bb Postflop Pack',
+        label: 'Cash 100bb Postflop Pack',
         gameType: GAME_TYPES.CASH,
-        assumptions: '6-max cash, mostly BTN vs BB single-raised pots, 100bb effective, simplified hand-class ranges',
-        sourceReviewStatus: 'source-reviewed',
-        sourceNotes: 'Source-reviewed solver-derived training reference with simplified hand-class ranges; not a universal rule or complete solver database.',
-        sourceRefs: POSTFLOP_SOURCE_REFS,
         supportedTemplates: ALL_STREET_TEMPLATE_OPTIONS,
         streetCoverage: ['FLOP', 'TURN', 'RIVER'],
         boardTextureCoverage: ['paired', 'monotone', 'two-tone', 'rainbow', 'connected', 'disconnected', 'broadway-heavy', 'ace-high', 'low-card', 'wet', 'dry', 'missed-draw-relevant']
@@ -386,26 +348,20 @@ const STRATEGY_PACKS = {
     RFI: {
         id: 'starter-rfi-v1',
         version: 1,
-        label: 'Starter RFI Reference',
-        assumptions: '6-max baseline, no ante',
-        sourceNotes: 'Training reference, not a universal rule.'
+        label: 'Starter RFI Reference'
     },
     DEFEND: {
         id: 'starter-defense-v1',
         version: 1,
-        label: 'Starter Defense Reference',
-        assumptions: 'Common late-position open spots',
-        sourceNotes: 'Training reference, not a universal rule.'
+        label: 'Starter Defense Reference'
     },
     PUSH_FOLD: {
         id: 'starter-pushfold-v1',
         version: 1,
-        label: 'Tournament Push/Fold Reference',
-        assumptions: '6bb to 15bb short-stack spots',
-        sourceNotes: 'Training reference, not a universal rule.'
+        label: 'Tournament Push/Fold Reference'
     },
     ALL_STREET: {
-        ...ALL_STREET_PACKS.sourceReviewedCash100
+        ...ALL_STREET_PACKS.cash100
     }
 };
 
@@ -413,7 +369,7 @@ const ALL_STREET_SCENARIOS = Object.freeze([
     {
         id: 'starter_flop_cbet_a72r',
         version: 1,
-        packId: ALL_STREET_PACKS.sourceReviewedCash100.id,
+        packId: ALL_STREET_PACKS.cash100.id,
         name: 'Flop C-Bet: A-high dry board',
         template: 'CBET_FLOP',
         street: 'FLOP',
@@ -438,7 +394,7 @@ const ALL_STREET_SCENARIOS = Object.freeze([
     {
         id: 'starter_flop_checkraise_884tt',
         version: 1,
-        packId: ALL_STREET_PACKS.sourceReviewedCash100.id,
+        packId: ALL_STREET_PACKS.cash100.id,
         name: 'Flop Check-Raise: paired low board',
         template: 'CHECK_RAISE_FLOP',
         street: 'FLOP',
@@ -463,7 +419,7 @@ const ALL_STREET_SCENARIOS = Object.freeze([
     {
         id: 'starter_turn_barrel_ksqs5d2c',
         version: 1,
-        packId: ALL_STREET_PACKS.sourceReviewedCash100.id,
+        packId: ALL_STREET_PACKS.cash100.id,
         name: 'Turn Barrel: broadway-heavy two-tone board',
         template: 'BARREL_TURN',
         street: 'TURN',
@@ -488,7 +444,7 @@ const ALL_STREET_SCENARIOS = Object.freeze([
     {
         id: 'starter_turn_probe_9h6h2c8h',
         version: 1,
-        packId: ALL_STREET_PACKS.sourceReviewedCash100.id,
+        packId: ALL_STREET_PACKS.cash100.id,
         name: 'Turn Probe: draw-completing card',
         template: 'PROBE_TURN',
         street: 'TURN',
@@ -513,7 +469,7 @@ const ALL_STREET_SCENARIOS = Object.freeze([
     {
         id: 'starter_river_bluffcatch_jt722',
         version: 1,
-        packId: ALL_STREET_PACKS.sourceReviewedCash100.id,
+        packId: ALL_STREET_PACKS.cash100.id,
         name: 'River Bluff-Catch: paired missed-draw board',
         template: 'BLUFF_CATCH_RIVER',
         street: 'RIVER',
@@ -538,7 +494,7 @@ const ALL_STREET_SCENARIOS = Object.freeze([
     {
         id: 'starter_river_value_akq62',
         version: 1,
-        packId: ALL_STREET_PACKS.sourceReviewedCash100.id,
+        packId: ALL_STREET_PACKS.cash100.id,
         name: 'River Value Bet: thin value on broadway runout',
         template: 'VALUE_BET_RIVER',
         street: 'RIVER',
@@ -563,7 +519,7 @@ const ALL_STREET_SCENARIOS = Object.freeze([
     {
         id: 'starter_river_facing_overbet_ak6jt',
         version: 1,
-        packId: ALL_STREET_PACKS.sourceReviewedCash100.id,
+        packId: ALL_STREET_PACKS.cash100.id,
         name: 'Facing Overbet: polarized river pressure',
         template: 'FACING_OVERBET',
         street: 'RIVER',
@@ -1333,7 +1289,7 @@ function getAllStreetActionLabel(action, scenario = getCurrentAllStreetScenario(
     const t = I18N[state.lang] || I18N.en;
     if (scenario && scenario.actionLabels && scenario.actionLabels[action]) {
         const label = scenario.actionLabels[action];
-        if (scenario.packId === ALL_STREET_PACKS.sourceReviewedCash100.id) {
+        if (scenario.packId === ALL_STREET_PACKS.cash100.id) {
             const key = POSTFLOP_SIZE_I18N_KEYS[label];
             return key && t[key] ? t[key] : label;
         }
