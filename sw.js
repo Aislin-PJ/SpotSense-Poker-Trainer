@@ -1,4 +1,4 @@
-const CACHE_NAME = 'poker-trainer-v6';
+const CACHE_NAME = 'spotsense-v1';
 const ASSETS_TO_CACHE = [
     './index.html',
     './style.css',
@@ -6,7 +6,8 @@ const ASSETS_TO_CACHE = [
     './script.js',
     './i18n.js',
     './manifest.json',
-    './logo.png'
+    './logo.png',
+    './logo-transparent.png'
 ];
 
 self.addEventListener('install', event => {

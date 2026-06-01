@@ -4,27 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0b1121">
+    <meta name="theme-color" content="#151817">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Preflop">
+    <meta name="apple-mobile-web-app-title" content="SpotSense">
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" href="logo.png">
     <link rel="manifest" href="manifest.json">
-    <title>Preflop — Poker Preflop Strategy Trainer</title>
+    <title>SpotSense - Free Forever, Full-Featured Poker Trainer</title>
     <meta name="description"
-        content="Preflop: a free, premium poker preflop trainer with RFI, Push/Fold, and Defense modes. Adaptive difficulty, range editor, and offline-first PWA support.">
+        content="SpotSense is a free-forever, full-featured poker trainer with preflop and postflop drills, RFI, Defense, Push/Fold, custom ranges, adaptive review, and offline-first PWA support.">
     <meta name="keywords"
-        content="preflop, poker trainer, RFI, push fold, GTO, range chart, preflop strategy, poker study app">
+        content="spotsense, poker trainer, preflop, RFI, push fold, GTO, range chart, preflop strategy, poker study app">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Preflop — Poker Preflop Trainer">
+    <meta property="og:title" content="SpotSense - Free Forever, Full-Featured Poker Trainer">
     <meta property="og:description"
-        content="Master poker preflop strategy with adaptive difficulty and range editor. Free, offline-first PWA.">
+        content="A free-forever, full-featured SpotSense poker trainer for preflop and postflop study, custom ranges, adaptive review, and offline-first practice.">
     <meta property="og:image" content="logo.png">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Preflop — Poker Preflop Trainer">
+    <meta name="twitter:title" content="SpotSense - Free Forever, Full-Featured Poker Trainer">
     <meta name="twitter:description"
-        content="Master poker preflop strategy with adaptive difficulty and range editor. Free, offline-first PWA.">
+        content="A free-forever, full-featured SpotSense poker trainer for preflop and postflop study, custom ranges, adaptive review, and offline-first practice.">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -32,36 +33,8 @@
 
     <!-- ===================== SPLASH SCREEN ===================== -->
     <div id="splash-screen" class="splash-screen">
-        <div class="splash-logo">
-            <!-- Inline SVG chip — truly transparent, no PNG background issues -->
-            <svg class="splash-chip-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <!-- Shadow -->
-                <ellipse cx="50" cy="96" rx="28" ry="4" fill="rgba(0,0,0,0.35)" />
-                <!-- Outer ring -->
-                <circle cx="50" cy="50" r="46" fill="#c8cdd6" />
-                <!-- Notch slots (12 evenly spaced) -->
-                <g fill="#1e2d45">
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(0   50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(30  50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(60  50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(90  50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(120 50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(150 50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(180 50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(210 50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(240 50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(270 50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(300 50 50)" />
-                    <rect x="46" y="4" width="8" height="14" rx="2" transform="rotate(330 50 50)" />
-                </g>
-                <!-- Inner ring & center -->
-                <circle cx="50" cy="50" r="32" fill="#8a9ab5" />
-                <circle cx="50" cy="50" r="24" fill="#4a5e7a" />
-                <circle cx="50" cy="50" r="18" fill="#3b4f68" />
-                <!-- Specular highlight -->
-                <ellipse cx="44" cy="38" rx="8" ry="5" fill="rgba(255,255,255,0.15)" transform="rotate(-30 44 38)" />
-            </svg>
-            <div class="splash-wordmark">Pre<span>flop</span></div>
+        <div class="splash-logo" aria-label="SpotSense">
+            <img class="brand-logo-img splash-brand-logo" src="logo-transparent.png" alt="SpotSense logo">
         </div>
     </div>
 
@@ -70,18 +43,23 @@
         <header id="app-header" class="header glassmorphism">
             <div class="header-row-top">
                 <div class="header-top-left">
-                    <div class="header-logo-mark" title="Poker Preflop Trainer">♠</div>
+                    <div class="header-logo-mark" title="SpotSense Poker Trainer" role="img"
+                        aria-label="SpotSense Poker Trainer">
+                        <img class="brand-logo-img header-brand-logo" src="logo-transparent.png" alt="">
+                    </div>
                 </div>
                 <div class="header-top-center">
                     <nav id="top-level-tabs" class="top-level-tabs" aria-label="Training sections">
+                        <button id="tab-plan" class="top-level-tab" type="button" onclick="setActiveTab('plan')"
+                            data-app-tab="plan" data-i18n="appTabPlan">Home</button>
                         <button id="tab-practice" class="top-level-tab active" type="button"
                             onclick="setActiveTab('practice')" data-app-tab="practice"
-                            data-i18n="appTabPractice">Practice</button>
-                        <button id="tab-plan" class="top-level-tab" type="button" onclick="setActiveTab('plan')"
-                            data-app-tab="plan" data-i18n="appTabPlan">Training</button>
+                            data-i18n="appTabPractice">Drills</button>
+                        <button id="tab-review" class="top-level-tab" type="button" onclick="setActiveTab('review')"
+                            data-app-tab="review" data-i18n="appTabReview">Review</button>
                         <button id="tab-progress" class="top-level-tab" type="button"
                             onclick="setActiveTab('progress')" data-app-tab="progress"
-                            data-i18n="appTabProgress">Review</button>
+                            data-i18n="appTabProgress">Stats</button>
                     </nav>
                 </div>
                 <div class="header-top-right">
@@ -98,10 +76,10 @@
                         <select id="language-select" class="language-select" onchange="setLanguage(this.value)"
                             aria-label="Language">
                             <option value="en">EN</option>
-                            <option value="zh-TW">繁</option>
-                            <option value="zh-CN">简</option>
-                            <option value="ja">日</option>
-                            <option value="ko">한</option>
+                            <option value="zh-TW">TW</option>
+                            <option value="zh-CN">CN</option>
+                            <option value="ja">JA</option>
+                            <option value="ko">KO</option>
                             <option value="es">ES</option>
                         </select>
                     </div>
@@ -162,31 +140,31 @@
                 </div>
                 <div class="stats hud-stats">
                     <div class="stat-box pill">
-                        <span class="stat-icon pulse-teal">★</span>
+                        <span class="stat-icon pulse-teal">S</span>
                         <div class="stat-info">
                             <span class="label" data-i18n="score">Score</span>
                             <span class="value" id="score">0</span>
                         </div>
                     </div>
                     <div class="stat-box pill">
-                        <span class="stat-icon pulse-orange">🔥</span>
+                        <span class="stat-icon pulse-orange">ST</span>
                         <div class="stat-info">
                             <span class="label" data-i18n="streak">Streak</span>
                             <span class="value" id="streak">0</span>
                         </div>
                     </div>
                     <div class="stat-box pill">
-                        <span class="stat-icon pulse-green">🃏</span>
+                        <span class="stat-icon pulse-green">H</span>
                         <div class="stat-info">
                             <span class="label" data-i18n="lifetimeHands">Hands</span>
                             <span class="value" id="lifetime-hands">0</span>
                         </div>
                     </div>
                     <div class="stat-box pill">
-                        <span class="stat-icon pulse-teal">📊</span>
+                        <span class="stat-icon pulse-teal">%</span>
                         <div class="stat-info">
                             <span class="label" data-i18n="statsAccuracy">Accuracy</span>
-                            <span class="value" id="accuracy-hud">—</span>
+                            <span class="value" id="accuracy-hud">--</span>
                         </div>
                     </div>
                 </div>
@@ -222,7 +200,7 @@
             </section>
         </section>
 
-        <section id="practice-panel" class="tab-panel practice-panel" data-tab-panel="practice">
+        <section id="practice-panel" class="tab-panel practice-panel hidden" data-tab-panel="practice">
         <!-- Stack Size Selector (Push/Fold only) -->
         <div id="stack-selector" class="stack-selector glassmorphism hidden">
             <span class="stack-label" data-i18n="stackLabel">Stack:</span>
@@ -330,6 +308,54 @@
             </section>
         </section>
 
+        <nav id="app-bottom-nav" class="app-bottom-nav" aria-label="Primary sections">
+            <button class="app-nav-item active" type="button" onclick="setActiveTab('plan')" data-app-tab="plan">
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 11l9-8 9 8" />
+                    <path d="M5 10v10h14V10" />
+                    <path d="M9 20v-6h6v6" />
+                </svg>
+                <span data-i18n="appTabPlan">Home</span>
+            </button>
+            <button class="app-nav-item" type="button" onclick="setActiveTab('practice')"
+                data-app-tab="practice">
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="3" width="10" height="14" rx="2" transform="rotate(-8 10 10)" />
+                    <rect x="9" y="7" width="10" height="14" rx="2" transform="rotate(8 14 14)" />
+                    <path d="M12 11h4" />
+                    <path d="M12 15h4" />
+                </svg>
+                <span data-i18n="appTabPractice">Drills</span>
+            </button>
+            <button class="app-nav-item" type="button" onclick="setActiveTab('review')" data-app-tab="review">
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h2" />
+                    <path d="M4 12h2" />
+                    <path d="M4 18h2" />
+                    <path d="m9 6 2 2 4-4" />
+                    <path d="m9 12 2 2 4-4" />
+                    <path d="m9 18 2 2 4-4" />
+                    <path d="M17 6h3" />
+                    <path d="M17 12h3" />
+                    <path d="M17 18h3" />
+                </svg>
+                <span data-i18n="appTabReview">Review</span>
+            </button>
+            <button class="app-nav-item" type="button" onclick="setActiveTab('progress')" data-app-tab="progress">
+                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19h16" />
+                    <path d="M7 16V9" />
+                    <path d="M12 16V5" />
+                    <path d="M17 16v-4" />
+                </svg>
+                <span data-i18n="appTabProgress">Stats</span>
+            </button>
+        </nav>
+
         <!-- ===================== CHART MODAL ===================== -->
         <div id="chart-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Range chart">
             <div class="modal-content glassmorphism">
@@ -345,16 +371,7 @@
                     <button class="btn-close" onclick="toggleInfoModal()" aria-label="Close rules modal">&times;</button>
                 </div>
                 <div class="modal-body rules-modal-body">
-                    <div class="info-modal-tabs" role="tablist" aria-label="Poker help sections">
-                        <button id="info-tab-rules" class="info-modal-tab active" type="button" role="tab"
-                            aria-controls="info-rules-page" aria-selected="true" onclick="setInfoModalPage('rules')"
-                            data-i18n="rulesPageRules">Rules & Strategy</button>
-                        <button id="info-tab-glossary" class="info-modal-tab" type="button" role="tab"
-                            aria-controls="info-glossary-page" aria-selected="false" onclick="setInfoModalPage('glossary')"
-                            data-i18n="rulesPageGlossary">Glossary</button>
-                    </div>
-
-                    <section id="info-rules-page" class="info-modal-page" role="tabpanel" aria-labelledby="info-tab-rules">
+                    <section id="info-rules-page" class="info-modal-page" aria-labelledby="info-modal-title">
                     <h3 data-i18n="positionTitle">Position (Who acts when)</h3>
                     <p data-i18n="positionDesc">In poker, the order of action rotates clockwise every hand. The later
                         you act, the more information you have about what your opponents will do.</p>
@@ -437,9 +454,9 @@
                     </ul>
                     </section>
 
-                    <section id="info-glossary-page" class="info-modal-page poker-glossary hidden" role="tabpanel"
-                        aria-labelledby="info-tab-glossary">
-                        <h3 id="poker-glossary-title" data-i18n="pokerGlossaryTitle">Texas Hold'em Terms</h3>
+                    <section id="info-glossary-page" class="info-modal-page poker-glossary hidden"
+                        aria-labelledby="info-modal-title">
+                        <div id="poker-glossary-nav" class="glossary-category-nav" aria-label="Glossary categories"></div>
                         <div id="poker-glossary-list" class="poker-glossary-list"></div>
                     </section>
                 </div>
@@ -585,10 +602,6 @@
                                     <input id="drill-threebet-size-input" class="range-name-input" type="number" min="0.1"
                                         step="0.1" value="9">
                                 </label>
-                                <label id="drill-ante-field" class="drill-checkbox-label">
-                                    <input id="drill-ante-input" type="checkbox">
-                                    <span data-i18n="drillAnteLabel">Ante</span>
-                                </label>
                                 <div id="drill-allstreet-fields" class="drill-allstreet-fields hidden">
                                     <label id="drill-street-field">
                                         <span data-i18n="drillStreetLabel">Street</span>
@@ -653,15 +666,13 @@
                                 </div>
                                 <label id="drill-raise-range-field" class="drill-range-code-field">
                                     <span data-i18n="drillRaiseRangeLabel">Raise / shove range code</span>
-                                    <textarea id="drill-raise-range-input" class="range-code-input" rows="2"
-                                        data-i18n-placeholder="drillRangeCodePlaceholder"
-                                        placeholder="Optional PT1.<payload>"></textarea>
+                                    <select id="drill-raise-range-select" class="mode-select drill-range-select"></select>
+                                    <small data-i18n="drillRangeSelectHelp">Optional. Leave default to use the built-in range.</small>
                                 </label>
                                 <label id="drill-call-range-field" class="drill-range-code-field">
                                     <span data-i18n="drillCallRangeLabel">Call range code</span>
-                                    <textarea id="drill-call-range-input" class="range-code-input" rows="2"
-                                        data-i18n-placeholder="drillRangeCodePlaceholder"
-                                        placeholder="Optional PT1.<payload>"></textarea>
+                                    <select id="drill-call-range-select" class="mode-select drill-range-select"></select>
+                                    <small data-i18n="drillRangeSelectHelp">Optional. Leave default to use the built-in range.</small>
                                 </label>
                             </div>
                         </div>
@@ -691,7 +702,7 @@
                             <label>
                                 <span data-i18n="assessmentExperienceLabel">Experience</span>
                                 <select id="assessment-experience-select" class="mode-select">
-                                    <option value="beginner" data-i18n="assessmentExperienceBeginner">New to structured preflop study</option>
+                                    <option value="beginner" data-i18n="assessmentExperienceBeginner">New to Texas Hold'em</option>
                                     <option value="intermediate" data-i18n="assessmentExperienceIntermediate">Comfortable with core ranges</option>
                                     <option value="advanced" data-i18n="assessmentExperienceAdvanced">Advanced and leak-focused</option>
                                 </select>
@@ -775,25 +786,89 @@
             </div>
         </div>
 
-        <!-- ===================== SUPPORT MODAL ===================== -->
-        <div id="support-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="support-title">
+        <!-- ===================== SUPPORT / DONATE MODAL ===================== -->
+        <div id="support-donate-modal" class="modal support-modal hidden" role="dialog" aria-modal="true" aria-labelledby="support-donate-title">
             <div class="modal-content glassmorphism modal-large">
                 <div class="modal-header">
-                    <h2 id="support-title" data-i18n="supportTitle">Support Preflop</h2>
-                    <button class="btn-close" onclick="closeSupportModal()" aria-label="Close support modal">&times;</button>
+                    <h2 id="support-donate-title" data-i18n="supportTabDonate">Support / Donate</h2>
+                    <button class="btn-close" onclick="closeDonateModal()" aria-label="Close support modal">&times;</button>
                 </div>
                 <div class="modal-body support-body">
-                    <section>
-                        <h3 data-i18n="supportMissionTitle">Mission</h3>
-                        <p data-i18n="supportMissionBody">Keep a fast, free, offline-first poker study tool available without accounts or paywalls.</p>
+                    <section class="support-page">
+                        <h3 data-i18n="supportDonatePageTitle">Support SpotSense</h3>
+                        <p data-i18n="supportOptionsBody">Share feedback, recommend the trainer, or sponsor development. Training features remain free.</p>
+                        <div class="support-slot" role="note">
+                            <div>
+                                <strong data-i18n="donateSlotTitle">Support SpotSense</strong>
+                                <p data-i18n="donateSlotBody">Donations help keep the trainer free, offline-first, and account-free.</p>
+                            </div>
+                            <button class="btn-range-action" type="button" onclick="recordDonateIntent()"
+                                data-i18n="donateCta">Donate</button>
+                        </div>
                     </section>
-                    <section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== ABOUT & SETTINGS MODAL ===================== -->
+        <div id="support-about-modal" class="modal support-modal hidden" role="dialog" aria-modal="true" aria-labelledby="support-about-title">
+            <div class="modal-content glassmorphism modal-large">
+                <div class="modal-header">
+                    <h2 id="support-about-title" data-i18n="supportTabAbout">About & Settings</h2>
+                    <button class="btn-close" onclick="closeAboutModal()" aria-label="Close about and settings modal">&times;</button>
+                </div>
+                <div class="modal-body support-body">
+                    <section class="support-page">
+                        <h3 data-i18n="supportAboutPageTitle">About & Settings</h3>
+                        <label class="support-language-control">
+                            <span data-i18n="languageLabel">Language</span>
+                            <select id="support-language-select" class="support-feedback-control" onchange="setLanguage(this.value)"></select>
+                        </label>
+                        <div class="support-copy-block support-feedback-settings">
+                            <h4 data-i18n="trainingFeedbackTitle">Training feedback</h4>
+                            <label class="support-toggle-control" for="sound-effects-toggle">
+                                <span data-i18n="soundEffectsLabel">Sound effects</span>
+                                <input id="sound-effects-toggle" type="checkbox"
+                                    onchange="setFeedbackPreference('soundEffectsEnabled', this.checked)">
+                            </label>
+                            <label class="support-toggle-control" for="wrong-answer-feedback-toggle">
+                                <span data-i18n="wrongAnswerFeedbackLabel">Wrong-answer shake + vibration</span>
+                                <input id="wrong-answer-feedback-toggle" type="checkbox"
+                                    onchange="setFeedbackPreference('wrongAnswerFeedbackEnabled', this.checked)">
+                            </label>
+                        </div>
+                        <div class="support-copy-block">
+                            <h4 data-i18n="supportAboutTitle">About SpotSense</h4>
+                            <p data-i18n="supportAboutBody">SpotSense is a compact Texas Hold'em study tool for preflop and postflop decisions, review, and range discipline.</p>
+                        </div>
+                        <div class="support-copy-block">
+                            <h4 data-i18n="supportMissionTitle">Mission</h4>
+                            <p data-i18n="supportMissionBody">Keep a fast, free, offline-first poker study tool available without accounts or paywalls.</p>
+                        </div>
+                        <div class="support-copy-block">
+                            <h4 data-i18n="supportPrivacyPolicyTitle">Privacy Policy</h4>
+                            <p data-i18n="supportPrivacyBody">Progress, drills, ranges, and assessment data are stored locally in this browser.</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== FEEDBACK MODAL ===================== -->
+        <div id="support-feedback-modal" class="modal support-modal hidden" role="dialog" aria-modal="true" aria-labelledby="support-feedback-title">
+            <div class="modal-content glassmorphism modal-large">
+                <div class="modal-header">
+                    <h2 id="support-feedback-title" data-i18n="supportTabFeedback">Feedback</h2>
+                    <button class="btn-close" onclick="closeFeedbackModal()" aria-label="Close feedback modal">&times;</button>
+                </div>
+                <div class="modal-body support-body">
+                    <section class="support-page">
                         <h3 data-i18n="supportFeedbackTitle">Send Feedback</h3>
                         <p data-i18n="supportFeedbackBody">Feedback is sent by email so fixes and new drills can be prioritized.</p>
                         <form class="support-feedback-form" action="https://formspree.io/f/xlgvazpe" method="POST"
                             onsubmit="submitSupportFeedback(event)">
-                            <input type="hidden" name="_subject" value="Poker Preflop Trainer Feedback">
-                            <input type="hidden" name="_next" value="https://aislin-pj.github.io/Poker-Preflop-Trainer/">
+                            <input type="hidden" name="_subject" value="SpotSense Poker Trainer Feedback">
+                            <input type="hidden" name="_next" value="https://aislin-pj.github.io/SpotSense/">
                             <div class="support-feedback-grid">
                                 <div class="support-feedback-field">
                                     <label class="support-feedback-label" for="support-feedback-email"
@@ -829,18 +904,6 @@
                             </div>
                         </form>
                     </section>
-                    <section>
-                        <h3 data-i18n="supportOptionsTitle">Support Options</h3>
-                        <p data-i18n="supportOptionsBody">Share feedback, recommend the trainer, or sponsor development. Training features remain free.</p>
-                        <div class="support-actions">
-                            <button class="btn-range-action" type="button" onclick="recordDonateIntent()"
-                                data-i18n="donateCta">Donate</button>
-                        </div>
-                    </section>
-                    <section>
-                        <h3 data-i18n="supportPrivacyTitle">Privacy</h3>
-                        <p data-i18n="supportPrivacyBody">Progress, drills, ranges, and assessment data are stored locally in this browser.</p>
-                    </section>
                 </div>
             </div>
         </div>
@@ -851,7 +914,6 @@
             <div class="modal-content glassmorphism confirm-modal-content">
                 <div class="modal-header">
                     <h2 id="confirm-title" data-i18n="confirmTitle">Confirm action</h2>
-                    <button id="confirm-close" class="btn-close" type="button" aria-label="Close confirmation">&times;</button>
                 </div>
                 <div class="modal-body confirm-body">
                     <p id="confirm-message">Are you sure?</p>
@@ -872,65 +934,67 @@
                     <h2 id="range-editor-title" data-i18n="rangeEditorTitle">Range Editor</h2>
                     <button class="btn-close" onclick="closeRangeEditor()" aria-label="Close range editor">&times;</button>
                 </div>
-                <p class="range-editor-help" data-i18n="rangeEditorHelp">Click cells to toggle: Fold → Raise → Call →
-                    Fold</p>
-                <div class="range-editor-purpose-wrap">
-                    <p class="range-editor-purpose" data-i18n="rangeEditorPurpose">Use this tool to visualize and save
-                        your custom preflop ranges for study.</p>
-                </div>
-                <div class="range-editor-legend">
-                    <span class="re-legend-item re-raise" data-i18n="legendRaise">Raise</span>
-                    <span class="re-legend-item re-call" data-i18n="legendCall">Call</span>
-                    <span class="re-legend-item re-fold" data-i18n="legendFold">Fold</span>
-                </div>
-                <div id="range-editor-grid" class="chart-grid range-editor-grid"></div>
-                <section class="range-code-panel" aria-labelledby="range-code-title">
-                    <div class="range-code-header">
-                        <h3 id="range-code-title" data-i18n="rangeCodeTitle">Range Code</h3>
-                        <span id="range-code-counts" class="range-code-counts">Raise 0 · Call 0 · Fold 169</span>
+                <div class="modal-body range-editor-body">
+                    <p class="range-editor-help" data-i18n="rangeEditorHelp">Click cells to toggle: Fold → Raise → Call →
+                        Fold</p>
+                    <div class="range-editor-purpose-wrap">
+                        <p class="range-editor-purpose" data-i18n="rangeEditorPurpose">Use this tool to visualize and save
+                            your custom preflop ranges for study.</p>
                     </div>
-                    <div class="range-code-output-row">
-                        <label for="range-code-output" data-i18n="rangeCodeCurrentLabel">Current code</label>
-                        <textarea id="range-code-output" class="range-code-output" rows="2" readonly></textarea>
+                    <div class="range-editor-legend">
+                        <span class="re-legend-item re-raise" data-i18n="legendRaise">Raise</span>
+                        <span class="re-legend-item re-call" data-i18n="legendCall">Call</span>
+                        <span class="re-legend-item re-fold" data-i18n="legendFold">Fold</span>
                     </div>
-                    <div class="range-code-actions">
-                        <button class="btn-range-action" type="button" onclick="copyRangeCode()"
-                            data-i18n="rangeCodeCopyRange">Copy Range</button>
-                    </div>
-                    <div class="range-code-import-row">
-                        <label for="range-code-input" data-i18n="rangeCodePasteLabel">Paste/import code</label>
-                        <textarea id="range-code-input" class="range-code-input" rows="2"
-                            data-i18n-placeholder="rangeCodeInputPlaceholder"
-                            placeholder="PT1.<payload> or 48-character payload"
-                            oninput="previewRangeCodeInput()"></textarea>
-                        <div id="range-code-preview" class="range-code-preview" role="status"
-                            data-i18n="rangeCodePreviewEmpty">Paste a Range Code to preview it.</div>
-                        <button id="range-code-apply" class="btn-range-action" onclick="applyRangeCodePreview()"
-                            disabled data-i18n="rangeCodeApply">Apply to Grid</button>
-                    </div>
-                </section>
-                <div class="range-editor-controls">
-                    <div class="range-save-row">
-                        <span data-i18n="rangeNameLabel">Name:</span>
-                        <input id="range-name-input" class="range-name-input" type="text" placeholder="Range name..."
-                            data-i18n-placeholder="rangeEditorNamePlaceholder">
-                        <button class="btn-range-action" onclick="saveCustomRange()"
-                            data-i18n="rangeEditorSave">Save</button>
-                        <button class="btn-range-action btn-range-clear" onclick="clearEditorGrid()"
-                            data-i18n="rangeEditorClear">Clear</button>
-                    </div>
-                    <div class="range-load-row">
-                        <select id="range-load-select" class="mode-select">
-                            <option value="">-- No saved ranges --</option>
-                        </select>
-                        <button class="btn-range-action" onclick="loadCustomRange()"
-                            data-i18n="rangeEditorLoad">Load</button>
-                        <button class="btn-range-action btn-range-delete" onclick="deleteCustomRange()"
-                            data-i18n="rangeEditorDelete">Delete</button>
-                        <button class="btn-range-action" onclick="exportRange()" title="Export to Clipboard"
-                            aria-label="Export to Clipboard">📤</button>
-                        <button class="btn-range-action" onclick="importRange()" title="Import from JSON"
-                            aria-label="Import from JSON">📥</button>
+                    <div id="range-editor-grid" class="chart-grid range-editor-grid"></div>
+                    <section class="range-code-panel" aria-labelledby="range-code-title">
+                        <div class="range-code-header">
+                            <h3 id="range-code-title" data-i18n="rangeCodeTitle">Range Code</h3>
+                            <span id="range-code-counts" class="range-code-counts">Raise 0 · Call 0 · Fold 169</span>
+                        </div>
+                        <div class="range-code-output-row">
+                            <label for="range-code-output" data-i18n="rangeCodeCurrentLabel">Current code</label>
+                            <textarea id="range-code-output" class="range-code-output" rows="2" readonly></textarea>
+                        </div>
+                        <div class="range-code-actions">
+                            <button class="btn-range-action" type="button" onclick="copyRangeCode()"
+                                data-i18n="rangeCodeCopyRange">Copy Range</button>
+                        </div>
+                        <div class="range-code-import-row">
+                            <label for="range-code-input" data-i18n="rangeCodePasteLabel">Paste/import code</label>
+                            <textarea id="range-code-input" class="range-code-input" rows="2"
+                                data-i18n-placeholder="rangeCodeInputPlaceholder"
+                                placeholder="PT1.<payload> or 48-character payload"
+                                oninput="previewRangeCodeInput()"></textarea>
+                            <div id="range-code-preview" class="range-code-preview" role="status"
+                                data-i18n="rangeCodePreviewEmpty">Paste a Range Code to preview it.</div>
+                            <button id="range-code-apply" class="btn-range-action" onclick="applyRangeCodePreview()"
+                                disabled data-i18n="rangeCodeApply">Apply to Grid</button>
+                        </div>
+                    </section>
+                    <div class="range-editor-controls">
+                        <div class="range-save-row">
+                            <span data-i18n="rangeNameLabel">Name:</span>
+                            <input id="range-name-input" class="range-name-input" type="text" placeholder="Range name..."
+                                data-i18n-placeholder="rangeEditorNamePlaceholder">
+                            <button class="btn-range-action" onclick="saveCustomRange()"
+                                data-i18n="rangeEditorSave">Save</button>
+                            <button class="btn-range-action btn-range-clear" onclick="clearEditorGrid()"
+                                data-i18n="rangeEditorClear">Clear</button>
+                        </div>
+                        <div class="range-load-row">
+                            <select id="range-load-select" class="mode-select">
+                                <option value="">-- No saved ranges --</option>
+                            </select>
+                            <button class="btn-range-action" onclick="loadCustomRange()"
+                                data-i18n="rangeEditorLoad">Load</button>
+                            <button class="btn-range-action btn-range-delete" onclick="deleteCustomRange()"
+                                data-i18n="rangeEditorDelete">Delete</button>
+                            <button class="btn-range-action" onclick="exportRange()" title="Export to Clipboard"
+                                aria-label="Export to Clipboard">📤</button>
+                            <button class="btn-range-action" onclick="importRange()" title="Import from JSON"
+                                aria-label="Import from JSON">📥</button>
+                        </div>
                     </div>
                 </div>
             </div>

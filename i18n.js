@@ -1,7 +1,7 @@
 const I18N = {
     en: {
         // App title & UI
-        appTitle: "Poker Preflop Trainer",
+        appTitle: "SpotSense Poker Trainer",
         score: "Score",
         streak: "Streak",
         lifetimeHands: "Hands",
@@ -55,7 +55,7 @@ const I18N = {
         chartUtgRfiTitle: "UTG RFI Open Range",
         chartUtgPushTitle: "UTG Push Range",
         chartDefendTitle: "Defense Strategy",
-        legendRaise: "Play (Raise/Shove)",
+        legendRaise: "Raise",
         legendFold: "Fold",
         legend3Bet: "3-Bet (Re-raise)",
         legendCall: "Call",
@@ -159,7 +159,7 @@ const I18N = {
         drillRangeCodePlaceholder: "Optional PT1.<payload>",
         assessmentTitle: "Ability Assessment",
         assessmentExperienceLabel: "Experience",
-        assessmentExperienceBeginner: "New to structured preflop study",
+        assessmentExperienceBeginner: "New to Texas Hold'em",
         assessmentExperienceIntermediate: "Comfortable with core ranges",
         assessmentExperienceAdvanced: "Advanced and leak-focused",
         assessmentGameTypeLabel: "Main game",
@@ -214,7 +214,7 @@ const I18N = {
         noMastery: "No mastery data yet.",
         achievementsTitle: "Achievements",
         noAchievements: "No achievements yet.",
-        supportTitle: "Support Preflop",
+        supportTitle: "Support SpotSense",
         supportMissionTitle: "Mission",
         supportMissionBody: "Keep a fast, free, offline-first poker study tool available without accounts or paywalls.",
         supportRoadmapTitle: "Roadmap",
@@ -223,10 +223,10 @@ const I18N = {
         supportRoadmapPolish: "Better mobile PWA polish",
         supportOptionsTitle: "Support Options",
         supportOptionsBody: "Share feedback, recommend the trainer, or sponsor development. Training features remain free.",
-        donateSlotTitle: "Support Preflop",
+        donateSlotTitle: "Support SpotSense",
         donateSlotBody: "Donations help keep the trainer free, offline-first, and account-free.",
         donateCta: "Donate on Ko-fi",
-        donateThanks: "Thanks for supporting Preflop.",
+        donateThanks: "Thanks for supporting SpotSense.",
         adSlotTitle: "Sponsor note",
         adSlotBody: "A low-frequency sponsor placement can appear here after a completed training session.",
         adFrequencyNote: "Ads never appear during a hand decision and are capped at three per day.",
@@ -352,7 +352,7 @@ const I18N = {
 
     'zh-TW': {
         // App title & UI
-        appTitle: "德州撲克翻牌前訓練器",
+        appTitle: "SpotSense 牌局感",
         score: "分數",
         streak: "連勝",
         lifetimeHands: "手數",
@@ -398,7 +398,7 @@ const I18N = {
         chartUtgRfiTitle: "UTG 率先加注範圍",
         chartUtgPushTitle: "UTG 全下範圍",
         chartDefendTitle: "防守策略",
-        legendRaise: "遊戲 (全下/加注)",
+        legendRaise: "加注",
         legendFold: "棄牌",
         legend3Bet: "3-Bet (再加注)",
         legendCall: "跟注",
@@ -502,7 +502,7 @@ const I18N = {
         drillRangeCodePlaceholder: "選填 PT1.<payload>",
         assessmentTitle: "能力評估",
         assessmentExperienceLabel: "經驗",
-        assessmentExperienceBeginner: "剛開始系統化學習翻牌前",
+        assessmentExperienceBeginner: "剛開始學習德州撲克",
         assessmentExperienceIntermediate: "已熟悉核心範圍",
         assessmentExperienceAdvanced: "進階，想針對漏洞訓練",
         assessmentGameTypeLabel: "主要遊戲",
@@ -556,7 +556,7 @@ const I18N = {
         noMastery: "尚無熟練度資料。",
         achievementsTitle: "成就",
         noAchievements: "尚無成就。",
-        supportTitle: "支持 Preflop",
+        supportTitle: "支持 SpotSense",
         supportMissionTitle: "使命",
         supportMissionBody: "維持一個快速、免費、離線優先、不需要帳號且不設付費牆的撲克學習工具。",
         supportRoadmapTitle: "路線圖",
@@ -565,10 +565,10 @@ const I18N = {
         supportRoadmapPolish: "更好的手機 PWA 體驗",
         supportOptionsTitle: "支持方式",
         supportOptionsBody: "分享回饋、推薦此訓練器，或贊助開發。訓練功能會保持免費。",
-        donateSlotTitle: "支持 Preflop",
+        donateSlotTitle: "支持 SpotSense",
         donateSlotBody: "Donate 會幫助維持免費、離線優先、不需帳號的訓練工具。",
         donateCta: "Ko-fi Donate",
-        donateThanks: "感謝你支持 Preflop。",
+        donateThanks: "感謝你支持 SpotSense。",
         adSlotTitle: "贊助訊息",
         adSlotBody: "極低頻贊助訊息只會在完成訓練後出現。",
         adFrequencyNote: "廣告絕不會出現在手牌決策中，且每日最多三次。",
@@ -712,7 +712,7 @@ function makeI18nPack(overrides) {
 }
 
 I18N.ja = makeI18nPack({
-    appTitle: "ポーカー Preflop トレーナー",
+    appTitle: "SpotSense ポーカートレーナー",
     score: "スコア",
     streak: "連続正解",
     lifetimeHands: "ハンド数",
@@ -758,7 +758,7 @@ I18N.ja = makeI18nPack({
     chartUtgRfiTitle: "UTG RFI オープンレンジ",
     chartUtgPushTitle: "UTG プッシュレンジ",
     chartDefendTitle: "ディフェンス戦略",
-    legendRaise: "プレイ (レイズ/ショーブ)",
+    legendRaise: "レイズ",
     legendFold: "フォールド",
     legend3Bet: "3-Bet (リレイズ)",
     legendCall: "コール",
@@ -858,7 +858,7 @@ I18N.ja = makeI18nPack({
     drillRangeCodePlaceholder: "任意 PT1.<payload>",
     assessmentTitle: "実力診断",
     assessmentExperienceLabel: "経験",
-    assessmentExperienceBeginner: "体系的なプリフロップ学習は初めて",
+    assessmentExperienceBeginner: "テキサスホールデムを学び始めたばかり",
     assessmentExperienceIntermediate: "基本レンジには慣れている",
     assessmentExperienceAdvanced: "上級者、リーク改善重視",
     assessmentGameTypeLabel: "主なゲーム",
@@ -913,7 +913,7 @@ I18N.ja = makeI18nPack({
     noMastery: "マスタリーデータはまだありません。",
     achievementsTitle: "実績",
     noAchievements: "実績はまだありません。",
-    supportTitle: "Preflop を支援",
+    supportTitle: "SpotSense を支援",
     supportMissionTitle: "ミッション",
     supportMissionBody: "アカウントやペイウォールなしで使える、高速で無料のオフライン優先ポーカー学習ツールを維持します。",
     supportRoadmapTitle: "ロードマップ",
@@ -922,10 +922,10 @@ I18N.ja = makeI18nPack({
     supportRoadmapPolish: "モバイルPWAの改善",
     supportOptionsTitle: "支援方法",
     supportOptionsBody: "フィードバック、紹介、開発支援ができます。トレーニング機能は無料のままです。",
-    donateSlotTitle: "Preflop を支援",
+    donateSlotTitle: "SpotSense を支援",
     donateSlotBody: "寄付は、無料・オフライン優先・アカウント不要のトレーナー維持に役立ちます。",
     donateCta: "Ko-fi で寄付",
-    donateThanks: "Preflop の支援ありがとうございます。",
+    donateThanks: "SpotSense の支援ありがとうございます。",
     adSlotTitle: "スポンサー通知",
     adSlotBody: "トレーニングセッション完了後に、低頻度のスポンサー枠が表示される場合があります。",
     adFrequencyNote: "ハンド判断中に広告は表示されず、1日3回までに制限されます。",
@@ -996,7 +996,7 @@ I18N.ja = makeI18nPack({
 });
 
 I18N.ko = makeI18nPack({
-    appTitle: "포커 Preflop 트레이너",
+    appTitle: "SpotSense 포커 트레이너",
     score: "점수",
     streak: "연속 정답",
     lifetimeHands: "핸드",
@@ -1038,7 +1038,7 @@ I18N.ko = makeI18nPack({
     personalizedNextDrill: "다음 드릴",
     coachTitle: "전략 코치",
     coachSelect: "모드를 선택해 시작하세요.",
-    legendRaise: "플레이 (레이즈/셔브)",
+    legendRaise: "레이즈",
     legendFold: "폴드",
     legend3Bet: "3-Bet (리레이즈)",
     legendCall: "콜",
@@ -1102,7 +1102,7 @@ I18N.ko = makeI18nPack({
     drillRangeCodePlaceholder: "선택 PT1.<payload>",
     assessmentTitle: "실력 평가",
     assessmentExperienceLabel: "경험",
-    assessmentExperienceBeginner: "구조적인 프리플랍 학습은 처음",
+    assessmentExperienceBeginner: "텍사스 홀덤을 막 배우기 시작함",
     assessmentExperienceIntermediate: "기본 레인지에 익숙함",
     assessmentExperienceAdvanced: "고급, 리크 개선 중심",
     assessmentGameTypeLabel: "주 게임",
@@ -1147,7 +1147,7 @@ I18N.ko = makeI18nPack({
     noMastery: "숙련도 데이터가 아직 없습니다.",
     achievementsTitle: "업적",
     noAchievements: "업적이 아직 없습니다.",
-    supportTitle: "Preflop 지원",
+    supportTitle: "SpotSense 지원",
     supportMissionTitle: "미션",
     supportMissionBody: "계정과 페이월 없이 빠르고 무료인 오프라인 우선 포커 학습 도구를 유지합니다.",
     supportRoadmapTitle: "로드맵",
@@ -1221,7 +1221,7 @@ I18N.ko = makeI18nPack({
 });
 
 I18N.es = makeI18nPack({
-    appTitle: "Entrenador de poker Preflop",
+    appTitle: "SpotSense entrenador de poker",
     score: "Puntos",
     streak: "Racha",
     lifetimeHands: "Manos",
@@ -1262,7 +1262,7 @@ I18N.es = makeI18nPack({
     personalizedNextDrill: "Siguiente drill",
     coachTitle: "Coach de estrategia",
     coachSelect: "Selecciona un modo para empezar.",
-    legendRaise: "Jugar (Raise/Shove)",
+    legendRaise: "Subir",
     legendFold: "Fold",
     legend3Bet: "3-Bet (resubida)",
     legendCall: "Call",
@@ -1321,7 +1321,7 @@ I18N.es = makeI18nPack({
     drillCallRangeLabel: "Codigo de rango call",
     assessmentTitle: "Evaluacion de habilidad",
     assessmentExperienceLabel: "Experiencia",
-    assessmentExperienceBeginner: "Nuevo en estudio preflop estructurado",
+    assessmentExperienceBeginner: "Empezando a aprender Texas Hold'em",
     assessmentExperienceIntermediate: "Comodo con rangos basicos",
     assessmentExperienceAdvanced: "Avanzado y enfocado en leaks",
     assessmentGameTypeLabel: "Juego principal",
@@ -1355,7 +1355,7 @@ I18N.es = makeI18nPack({
     sessionClose: "Cerrar",
     gamificationTitle: "XP y dominio",
     mastery: "Dominio",
-    supportTitle: "Apoyar Preflop",
+    supportTitle: "Apoyar SpotSense",
     supportMissionTitle: "Mision",
     supportMissionBody: "Mantener una herramienta de estudio de poker rapida, gratis, offline-first y sin cuentas ni paywalls.",
     supportRoadmapTitle: "Roadmap",
@@ -1457,7 +1457,7 @@ Object.assign(I18N.ko, {
     assessmentResetDone: "평가가 초기화되었습니다.",
     diagnosticEmpty: "아직 진단을 실행하지 않았습니다.",
     assessmentThreeBetFallback: "3-Bet 대응은 커스텀 드릴이 필요합니다. 대신 디펜스를 시작합니다.",
-    donateSlotTitle: "Preflop 후원"
+    donateSlotTitle: "SpotSense 후원"
 });
 
 Object.assign(I18N.es, {
@@ -1500,7 +1500,7 @@ Object.assign(I18N.es, {
     weeklySummary: "Esta semana: {hands} manos · {accuracy}% · tendencia {trend} · próximo {nextDrill}",
     noMastery: "Aún no hay datos de dominio.",
     noAchievements: "Aún no hay logros.",
-    donateSlotTitle: "Apoyar Preflop",
+    donateSlotTitle: "Apoyar SpotSense",
     supportRoadmapTitle: "Hoja de ruta",
     supportPrivacyBody: "Progreso, ejercicios, rangos y evaluaciones se guardan localmente en este navegador.",
     diagnosticSummary: "{hands} manos · {accuracy}% · prom. {seconds}s"
@@ -2181,7 +2181,7 @@ Object.assign(I18N.en, {
     supportFeedbackPlaceholder: "Describe the issue, spot (mode, position, hand), or suggestion.",
     supportFeedbackCta: "Send Feedback",
     supportFeedbackEmpty: "Write feedback before sending.",
-    supportFeedbackThanks: "Feedback sent. Thanks for helping improve Preflop.",
+    supportFeedbackThanks: "Feedback sent. Thanks for helping improve SpotSense.",
     supportFeedbackError: "Could not send feedback. Please try again when you are online.",
     supportOptionsTitle: "Support Options",
     supportOptionsBody: "Recommend the trainer or sponsor development. Training features remain free.",
@@ -2238,7 +2238,7 @@ Object.assign(I18N["zh-TW"], {
     supportFeedbackPlaceholder: "請描述你遇到的情況、位置（例如：模式、位置、牌型），或你的建議。",
     supportFeedbackCta: "送出意見",
     supportFeedbackEmpty: "請先輸入意見再送出。",
-    supportFeedbackThanks: "意見已送出，謝謝你幫忙改善 Preflop。",
+    supportFeedbackThanks: "意見已送出，謝謝你幫忙改善 SpotSense。",
     supportFeedbackError: "意見無法送出，請確認網路後再試一次。",
     supportOptionsTitle: "支持方式",
     supportOptionsBody: "推薦這個訓練器，或贊助開發。訓練功能會保持免費。",
@@ -2295,7 +2295,7 @@ Object.assign(I18N.ja, {
     supportFeedbackPlaceholder: "壊れている点、分かりにくい点、次に必要なドリルを書いてください。",
     supportFeedbackCta: "送信",
     supportFeedbackEmpty: "送信前にフィードバックを入力してください。",
-    supportFeedbackThanks: "フィードバックを送信しました。Preflop の改善に協力いただきありがとうございます。",
+    supportFeedbackThanks: "フィードバックを送信しました。SpotSense の改善に協力いただきありがとうございます。",
     supportFeedbackError: "フィードバックを送信できませんでした。オンライン時にもう一度お試しください。",
     supportOptionsTitle: "支援方法",
     supportOptionsBody: "トレーナーの紹介や開発支援ができます。トレーニング機能は無料のままです。",
@@ -2352,7 +2352,7 @@ Object.assign(I18N.ko, {
     supportFeedbackPlaceholder: "무엇이 깨졌는지, 헷갈린 부분, 다음에 필요한 drill을 적어 주세요.",
     supportFeedbackCta: "의견 보내기",
     supportFeedbackEmpty: "보내기 전에 의견을 입력해 주세요.",
-    supportFeedbackThanks: "의견을 보냈습니다. Preflop 개선에 도움을 주셔서 감사합니다.",
+    supportFeedbackThanks: "의견을 보냈습니다. SpotSense 개선에 도움을 주셔서 감사합니다.",
     supportFeedbackError: "의견을 보낼 수 없습니다. 온라인 상태에서 다시 시도해 주세요.",
     supportOptionsTitle: "지원 옵션",
     supportOptionsBody: "트레이너를 추천하거나 개발을 후원할 수 있습니다. 훈련 기능은 계속 무료입니다.",
@@ -2409,7 +2409,7 @@ Object.assign(I18N.es, {
     supportFeedbackPlaceholder: "Cuéntame qué falló, qué fue confuso o qué drill necesitas después.",
     supportFeedbackCta: "Enviar feedback",
     supportFeedbackEmpty: "Escribe feedback antes de enviarlo.",
-    supportFeedbackThanks: "Feedback enviado. Gracias por ayudar a mejorar Preflop.",
+    supportFeedbackThanks: "Feedback enviado. Gracias por ayudar a mejorar SpotSense.",
     supportFeedbackError: "No se pudo enviar el feedback. Intentalo de nuevo cuando estes online.",
     supportOptionsTitle: "Opciones de apoyo",
     supportOptionsBody: "Recomienda el trainer o apoya el desarrollo. El entrenamiento sigue gratis.",
@@ -3463,6 +3463,7 @@ const SIMPLIFIED_CHINESE_CHAR_MAP = Object.freeze({
     '彎': '弯',
     '彈': '弹',
     '強': '强',
+    '彙': '汇',
     '歸': '归',
     '彿': '佛',
     '徑': '径',
@@ -3853,6 +3854,7 @@ const SIMPLIFIED_CHINESE_CHAR_MAP = Object.freeze({
     '礬': '矾',
     '礦': '矿',
     '碼': '码',
+    '確': '确',
     '磚': '砖',
     '磣': '碜',
     '磧': '碛',
@@ -4536,6 +4538,7 @@ const SIMPLIFIED_CHINESE_CHAR_MAP = Object.freeze({
     '還': '还',
     '這': '这',
     '進': '进',
+    '週': '周',
     '遠': '远',
     '違': '违',
     '連': '连',
@@ -5249,4 +5252,1140 @@ function createSimplifiedChinesePack(source) {
     return cloneValue(source);
 }
 
+Object.assign(I18N.en, {
+    trainingFeedbackTitle: "Training feedback",
+    soundEffectsLabel: "Sound effects",
+    wrongAnswerFeedbackLabel: "Wrong-answer shake + vibration"
+});
+
+Object.assign(I18N["zh-TW"], {
+    trainingFeedbackTitle: "\u8a13\u7df4\u56de\u994b",
+    soundEffectsLabel: "\u767c\u724c\u97f3\u6548",
+    wrongAnswerFeedbackLabel: "\u932f\u8aa4\u9707\u52d5\u8207\u756b\u9762\u6643\u52d5"
+});
+
+Object.assign(I18N.ja, {
+    trainingFeedbackTitle: "Training feedback",
+    soundEffectsLabel: "Sound effects",
+    wrongAnswerFeedbackLabel: "Wrong-answer shake + vibration"
+});
+
+Object.assign(I18N.ko, {
+    trainingFeedbackTitle: "Training feedback",
+    soundEffectsLabel: "Sound effects",
+    wrongAnswerFeedbackLabel: "Wrong-answer shake + vibration"
+});
+
+Object.assign(I18N.es, {
+    trainingFeedbackTitle: "Respuesta de entrenamiento",
+    soundEffectsLabel: "Sonidos",
+    wrongAnswerFeedbackLabel: "Error: sacudida + vibracion"
+});
+
 I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+Object.assign(I18N.en, {
+    statsLifetimeFilter: "All",
+    statsSevenDayTrend: "Seven day accuracy trend",
+    statsAllTrainingLabel: "All training hands",
+    statsCorrectHands: "Correct",
+    statsTotalHandsLabel: "Total hands",
+    statsThisWeekHands: "{hands} hands this week",
+    statsWeeklyTrendLabel: "Vs previous week",
+    statsLastSevenDays: "Last 7 days",
+    statsDailyAccuracyHint: "Daily accuracy",
+    statsToday: "Today",
+    statsNoPreviousWeek: "No previous week",
+    positionAccuracyTitle: "Accuracy by Position",
+    handAccuracyTitle: "Accuracy by Hand",
+    handAccuracySubtitle: "{trained}/{total} hand types trained",
+    handAccuracyMastered: "80%+",
+    handAccuracyReview: "60-79%",
+    handAccuracyLeak: "<60%",
+    handAccuracyNoData: "No data",
+    handAccuracyEmpty: "Train more hands to build this heatmap.",
+    handAccuracyCellLabel: "{combo}: {accuracy}% over {hands} hands",
+    handAccuracyCellNoData: "{combo}: no data"
+});
+
+Object.assign(I18N["zh-TW"], {
+    statsLifetimeFilter: "\u5168\u90e8",
+    statsSevenDayTrend: "\u6700\u8fd1\u4e03\u5929\u6e96\u78ba\u7387\u8da8\u52e2",
+    statsAllTrainingLabel: "\u6240\u6709\u5df2\u8a13\u7df4\u624b\u724c",
+    statsCorrectHands: "\u6b63\u78ba",
+    statsTotalHandsLabel: "\u7e3d\u624b\u6578",
+    statsThisWeekHands: "\u672c\u9031 {hands} \u624b",
+    statsWeeklyTrendLabel: "\u8f03\u4e0a\u9031",
+    statsLastSevenDays: "\u6700\u8fd1 7 \u5929",
+    statsDailyAccuracyHint: "\u6bcf\u65e5\u6e96\u78ba\u7387",
+    statsToday: "\u4eca\u5929",
+    statsNoPreviousWeek: "\u5c1a\u7121\u4e0a\u9031\u8cc7\u6599",
+    positionAccuracyTitle: "\u4f9d\u4f4d\u7f6e\u6e96\u78ba\u7387",
+    handAccuracyTitle: "\u4f9d\u724c\u5f62\u6e96\u78ba\u7387",
+    handAccuracySubtitle: "{trained}/{total} \u7a2e\u724c\u5f62\u5df2\u6709\u8cc7\u6599",
+    handAccuracyMastered: "80% \u4ee5\u4e0a",
+    handAccuracyReview: "60-79%",
+    handAccuracyLeak: "\u4f4e\u65bc 60%",
+    handAccuracyNoData: "\u7121\u8cc7\u6599",
+    handAccuracyEmpty: "\u5b8c\u6210\u66f4\u591a\u624b\u724c\u5f8c\u6703\u5efa\u7acb\u9019\u5f35\u71b1\u5716\u3002",
+    handAccuracyCellLabel: "{combo}: {accuracy}% / {hands} \u624b",
+    handAccuracyCellNoData: "{combo}: \u7121\u8cc7\u6599"
+});
+
+Object.assign(I18N["zh-CN"], {
+    statsLifetimeFilter: "\u5168\u90e8",
+    statsSevenDayTrend: "\u6700\u8fd1\u4e03\u5929\u51c6\u786e\u7387\u8d8b\u52bf",
+    statsAllTrainingLabel: "\u6240\u6709\u5df2\u8bad\u7ec3\u624b\u724c",
+    statsCorrectHands: "\u6b63\u786e",
+    statsTotalHandsLabel: "\u603b\u624b\u6570",
+    statsThisWeekHands: "\u672c\u5468 {hands} \u624b",
+    statsWeeklyTrendLabel: "\u8f83\u4e0a\u5468",
+    statsLastSevenDays: "\u6700\u8fd1 7 \u5929",
+    statsDailyAccuracyHint: "\u6bcf\u65e5\u51c6\u786e\u7387",
+    statsToday: "\u4eca\u5929",
+    statsNoPreviousWeek: "\u5c1a\u65e0\u4e0a\u5468\u6570\u636e",
+    positionAccuracyTitle: "\u6309\u4f4d\u7f6e\u51c6\u786e\u7387",
+    handAccuracyTitle: "\u6309\u724c\u578b\u51c6\u786e\u7387",
+    handAccuracySubtitle: "{trained}/{total} \u79cd\u724c\u578b\u5df2\u6709\u6570\u636e",
+    handAccuracyMastered: "80% \u4ee5\u4e0a",
+    handAccuracyReview: "60-79%",
+    handAccuracyLeak: "\u4f4e\u4e8e 60%",
+    handAccuracyNoData: "\u65e0\u6570\u636e",
+    handAccuracyEmpty: "\u5b8c\u6210\u66f4\u591a\u624b\u724c\u540e\u4f1a\u751f\u6210\u8fd9\u5f20\u70ed\u529b\u56fe\u3002",
+    handAccuracyCellLabel: "{combo}: {accuracy}% / {hands} \u624b",
+    handAccuracyCellNoData: "{combo}: \u65e0\u6570\u636e"
+});
+
+Object.assign(I18N.ja, {
+    statsLifetimeFilter: "All",
+    statsSevenDayTrend: "Seven day accuracy trend",
+    positionAccuracyTitle: "Accuracy by Position",
+    handAccuracyTitle: "Accuracy by Hand",
+    handAccuracySubtitle: "{trained}/{total} hand types trained",
+    handAccuracyMastered: "80%+",
+    handAccuracyReview: "60-79%",
+    handAccuracyLeak: "<60%",
+    handAccuracyNoData: "No data",
+    handAccuracyEmpty: "Train more hands to build this heatmap.",
+    handAccuracyCellLabel: "{combo}: {accuracy}% over {hands} hands",
+    handAccuracyCellNoData: "{combo}: no data"
+});
+
+Object.assign(I18N.ko, {
+    statsLifetimeFilter: "All",
+    statsSevenDayTrend: "Seven day accuracy trend",
+    positionAccuracyTitle: "Accuracy by Position",
+    handAccuracyTitle: "Accuracy by Hand",
+    handAccuracySubtitle: "{trained}/{total} hand types trained",
+    handAccuracyMastered: "80%+",
+    handAccuracyReview: "60-79%",
+    handAccuracyLeak: "<60%",
+    handAccuracyNoData: "No data",
+    handAccuracyEmpty: "Train more hands to build this heatmap.",
+    handAccuracyCellLabel: "{combo}: {accuracy}% over {hands} hands",
+    handAccuracyCellNoData: "{combo}: no data"
+});
+
+Object.assign(I18N.es, {
+    statsLifetimeFilter: "Todo",
+    statsSevenDayTrend: "Tendencia de precision de siete dias",
+    positionAccuracyTitle: "Precision por posicion",
+    handAccuracyTitle: "Precision por mano",
+    handAccuracySubtitle: "{trained}/{total} tipos de mano entrenados",
+    handAccuracyMastered: "80%+",
+    handAccuracyReview: "60-79%",
+    handAccuracyLeak: "<60%",
+    handAccuracyNoData: "Sin datos",
+    handAccuracyEmpty: "Entrena mas manos para crear este mapa.",
+    handAccuracyCellLabel: "{combo}: {accuracy}% en {hands} manos",
+    handAccuracyCellNoData: "{combo}: sin datos"
+});
+
+
+Object.assign(I18N.en, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    homeHubKicker: "App Hub",
+    homeHubTitle: "Settings & learning",
+    homeLanguage: "Language",
+    homeRules: "Texas Holdem Rules",
+    homeRulesSub: "Position, hand ranks, core strategy",
+    homeGlossary: "Glossary",
+    homeGlossarySub: "Poker terms in one place",
+    homeSupport: "Support / Donate",
+    homeSupportSub: "Feedback and support options",
+    homeAssessment: "Ability Assessment",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Range Coverage",
+    reviewGoodLabel: "Good",
+    reviewLeakLabel: "Leak",
+    supportTabDonate: "Support / Donate",
+    supportTabAbout: "About & Settings",
+    supportTabFeedback: "Feedback",
+    supportDonatePageTitle: "Support SpotSense",
+    supportAboutPageTitle: "About & Settings",
+    supportAboutTitle: "About SpotSense",
+    supportAboutBody: "SpotSense is a compact Texas Hold'em study tool for preflop and postflop decisions, review, and range discipline.",
+    supportPrivacyPolicyTitle: "Privacy Policy"
+});
+Object.assign(I18N["zh-TW"], {
+    appTabPlan: "\u9996\u9801",
+    appTabPractice: "\u7df4\u7fd2",
+    appTabReview: "\u8907\u7fd2",
+    appTabProgress: "\u7d71\u8a08",
+    homeHubKicker: "App Hub",
+    homeHubTitle: "\u8a2d\u5b9a\u8207\u5b78\u7fd2",
+    homeLanguage: "\u8a9e\u8a00",
+    homeRules: "\u5fb7\u5dde\u64b2\u514b\u898f\u5247",
+    homeRulesSub: "\u4f4d\u7f6e\u3001\u724c\u578b\u3001\u6838\u5fc3\u7b56\u7565",
+    homeGlossary: "\u8853\u8a9e\u8868",
+    homeGlossarySub: "\u5e38\u7528\u64b2\u514b\u8a5e\u5f59\u6574\u7406",
+    homeSupport: "\u652f\u6301 / Donate",
+    homeSupportSub: "\u56de\u994b\u3001\u8d0a\u52a9\u8207\u958b\u767c\u652f\u6301",
+    homeAssessment: "\u80fd\u529b\u8a55\u4f30",
+    statsStudioTitle: "\u7d71\u8a08\u5de5\u4f5c\u53f0",
+    rangeCoverageTitle: "\u7bc4\u570d\u8986\u84cb",
+    reviewGoodLabel: "\u826f\u597d",
+    reviewLeakLabel: "\u5f31\u9ede",
+    supportTabDonate: "\u652f\u6301 / Donate",
+    supportTabAbout: "\u95dc\u65bc\u8207\u8a2d\u5b9a",
+    supportTabFeedback: "\u610f\u898b\u53cd\u994b",
+    supportDonatePageTitle: "\u652f\u6301 SpotSense",
+    supportAboutPageTitle: "\u95dc\u65bc\u8207\u8a2d\u5b9a",
+    supportAboutTitle: "\u95dc\u65bc SpotSense",
+    supportAboutBody: "SpotSense \u662f\u4e00\u500b\u7528\u4f86\u5b78\u7fd2\u5fb7\u5dde\u64b2\u514b\u7684\u5168\u65b9\u4f4d\u5b78\u7fd2\u5de5\u5177\uff0c\u6db5\u84cb\u7ffb\u724c\u524d\u8207\u7ffb\u724c\u5f8c\u6c7a\u7b56\u3001\u932f\u984c\u8907\u7fd2\u8207\u7bc4\u570d\u7d00\u5f8b\u3002",
+    supportPrivacyPolicyTitle: "\u96b1\u79c1\u653f\u7b56"
+});
+Object.assign(I18N.ja, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+Object.assign(I18N.ko, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+Object.assign(I18N.es, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    homeHubKicker: "App Hub",
+    homeHubTitle: "Ajustes y aprendizaje",
+    homeLanguage: "Idioma",
+    homeRules: "Reglas de Texas Holdem",
+    homeGlossary: "Glosario",
+    homeSupport: "Support / Donate",
+    homeAssessment: "Evaluacion",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Cobertura de rango"
+});
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+Object.assign(I18N.en, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    homeHubKicker: "App Hub",
+    homeHubTitle: "Settings & learning",
+    homeLanguage: "Language",
+    homeRules: "Texas Holdem Rules",
+    homeRulesSub: "Position, hand ranks, core strategy",
+    homeGlossary: "Glossary",
+    homeGlossarySub: "Poker terms in one place",
+    homeSupport: "Support / Donate",
+    homeSupportSub: "Feedback and support options",
+    homeAssessment: "Ability Assessment",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Range Coverage",
+    reviewGoodLabel: "Good",
+    reviewLeakLabel: "Leak"
+});
+
+Object.assign(I18N["zh-TW"], {
+    appTabPlan: "\u9996\u9801",
+    appTabPractice: "\u7df4\u7fd2",
+    appTabReview: "\u8907\u7fd2",
+    appTabProgress: "\u7d71\u8a08",
+    homeHubKicker: "App Hub",
+    homeHubTitle: "\u8a2d\u5b9a\u8207\u5b78\u7fd2",
+    homeLanguage: "\u8a9e\u8a00",
+    homeRules: "\u5fb7\u5dde\u64b2\u514b\u898f\u5247",
+    homeRulesSub: "\u4f4d\u7f6e\u3001\u724c\u578b\u3001\u6838\u5fc3\u7b56\u7565",
+    homeGlossary: "\u8853\u8a9e\u8868",
+    homeGlossarySub: "\u5e38\u7528\u64b2\u514b\u8a5e\u5f59\u6574\u7406",
+    homeSupport: "\u652f\u6301 / Donate",
+    homeSupportSub: "\u56de\u994b\u3001\u8d0a\u52a9\u8207\u958b\u767c\u652f\u6301",
+    homeAssessment: "\u80fd\u529b\u8a55\u4f30",
+    statsStudioTitle: "\u7d71\u8a08\u5de5\u4f5c\u53f0",
+    rangeCoverageTitle: "\u7bc4\u570d\u8986\u84cb",
+    reviewGoodLabel: "\u826f\u597d",
+    reviewLeakLabel: "\u5f31\u9ede"
+});
+
+Object.assign(I18N.ja, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+
+Object.assign(I18N.ko, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+
+Object.assign(I18N.es, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    homeHubKicker: "App Hub",
+    homeHubTitle: "Ajustes y aprendizaje",
+    homeLanguage: "Idioma",
+    homeRules: "Reglas de Texas Holdem",
+    homeGlossary: "Glosario",
+    homeSupport: "Support / Donate",
+    homeAssessment: "Evaluacion",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Cobertura de rango"
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+
+// Final app-shell labels for the Offsuit-inspired redesign.
+Object.assign(I18N.en, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Range Coverage",
+    reviewGoodLabel: "Good",
+    reviewLeakLabel: "Leak"
+});
+
+Object.assign(I18N["zh-TW"], {
+    appTabPlan: "\u9996\u9801",
+    appTabPractice: "\u7df4\u7fd2",
+    appTabReview: "\u8907\u7fd2",
+    appTabProgress: "\u7d71\u8a08",
+    statsStudioTitle: "\u7d71\u8a08\u5de5\u4f5c\u53f0",
+    rangeCoverageTitle: "\u7bc4\u570d\u8986\u84cb",
+    reviewGoodLabel: "\u826f\u597d",
+    reviewLeakLabel: "\u5f31\u9ede"
+});
+
+Object.assign(I18N.ja, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+
+Object.assign(I18N.ko, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+
+Object.assign(I18N.es, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Cobertura de rango"
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+Object.assign(I18N.en, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    homeGreetingMorning: "Good morning",
+    homeGreetingAfternoon: "Good afternoon",
+    homeGreetingEvening: "Good evening",
+    homeReady: "Ready to get better today?",
+    homeDayStreak: "day streak",
+    homeScenarios: "scenarios",
+    homeFocus: "Focus",
+    homeContinue: "Continue",
+    homeTodayProgress: "Today's Progress",
+    homeReviewScenarios: "scenarios to review",
+    homeBestStreak: "Best Streak",
+    homeDrillsCompleted: "Drills Completed",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Range Coverage",
+    reviewGoodLabel: "Good",
+    reviewLeakLabel: "Leak"
+});
+
+Object.assign(I18N["zh-TW"], {
+    appTabPlan: "\u9996\u9801",
+    appTabPractice: "\u7df4\u7fd2",
+    appTabReview: "\u8907\u7fd2",
+    appTabProgress: "\u7d71\u8a08",
+    homeGreetingMorning: "\u65e9\u5b89",
+    homeGreetingAfternoon: "\u5348\u5b89",
+    homeGreetingEvening: "\u665a\u5b89",
+    homeReady: "\u4eca\u5929\u8981\u8b8a\u5f97\u66f4\u597d\u55ce\uff1f",
+    homeDayStreak: "\u9023\u7e8c\u5929\u6578",
+    homeScenarios: "\u500b\u60c5\u5883",
+    homeFocus: "\u91cd\u9ede",
+    homeContinue: "\u7e7c\u7e8c",
+    homeTodayProgress: "\u4eca\u65e5\u9032\u5ea6",
+    homeReviewScenarios: "\u500b\u60c5\u5883\u5f85\u8907\u7fd2",
+    homeBestStreak: "\u6700\u4f73\u9023\u52dd",
+    homeDrillsCompleted: "\u5b8c\u6210\u8a13\u7df4",
+    statsStudioTitle: "\u7d71\u8a08\u5de5\u4f5c\u53f0",
+    rangeCoverageTitle: "\u7bc4\u570d\u8986\u84cb",
+    reviewGoodLabel: "\u826f\u597d",
+    reviewLeakLabel: "\u5f31\u9ede"
+});
+
+Object.assign(I18N.ja, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+
+Object.assign(I18N.ko, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+
+Object.assign(I18N.es, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    homeGreetingMorning: "Buenos dias",
+    homeGreetingAfternoon: "Buenas tardes",
+    homeGreetingEvening: "Buenas noches",
+    homeReady: "Listo para mejorar hoy?",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Cobertura de rango"
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+Object.assign(I18N.en, {
+    appTabPlan: "Today",
+    appTabPractice: "Practice",
+    appTabProgress: "Review",
+    focusSessionTitle: "Today's Drill",
+    focusSessionCta: "Start Drill",
+    focusSessionMix: "{mix} targeting {leak}."
+});
+
+Object.assign(I18N["zh-TW"], {
+    appTabPlan: "\u4eca\u65e5",
+    appTabPractice: "\u7df4\u7fd2",
+    appTabProgress: "\u56de\u9867",
+    focusSessionTitle: "\u4eca\u65e5\u8a13\u7df4",
+    focusSessionCta: "\u958b\u59cb\u8a13\u7df4",
+    focusSessionMix: "{mix}\uff0c\u91dd\u5c0d {leak}\u3002"
+});
+
+Object.assign(I18N.ja, {
+    appTabPlan: "\u4eca\u65e5",
+    appTabPractice: "\u7df4\u7fd2",
+    appTabProgress: "\u30ec\u30d3\u30e5\u30fc"
+});
+
+Object.assign(I18N.ko, {
+    appTabPlan: "\uc624\ub298",
+    appTabPractice: "\uc5f0\uc2b5",
+    appTabProgress: "\ub9ac\ubdf0"
+});
+
+Object.assign(I18N.es, {
+    appTabPlan: "Hoy",
+    appTabPractice: "Practica",
+    appTabProgress: "Revision",
+    focusSessionTitle: "Drill de hoy",
+    focusSessionCta: "Empezar drill",
+    focusSessionMix: "{mix} enfocado en {leak}."
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+Object.assign(I18N.en, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    homeHubKicker: "App Hub",
+    homeHubTitle: "Settings & learning",
+    homeLanguage: "Language",
+    homeRules: "Texas Holdem Rules",
+    homeRulesSub: "Position, hand ranks, core strategy",
+    homeGlossary: "Glossary",
+    homeGlossarySub: "Poker terms in one place",
+    homeSupport: "Support / Donate",
+    homeSupportSub: "Feedback and support options",
+    homeAssessment: "Ability Assessment",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Range Coverage",
+    reviewGoodLabel: "Good",
+    reviewLeakLabel: "Leak"
+});
+
+Object.assign(I18N["zh-TW"], {
+    appTabPlan: "\u9996\u9801",
+    appTabPractice: "\u7df4\u7fd2",
+    appTabReview: "\u8907\u7fd2",
+    appTabProgress: "\u7d71\u8a08",
+    homeHubKicker: "App Hub",
+    homeHubTitle: "\u8a2d\u5b9a\u8207\u5b78\u7fd2",
+    homeLanguage: "\u8a9e\u8a00",
+    homeRules: "\u5fb7\u5dde\u64b2\u514b\u898f\u5247",
+    homeRulesSub: "\u4f4d\u7f6e\u3001\u724c\u578b\u3001\u6838\u5fc3\u7b56\u7565",
+    homeGlossary: "\u8853\u8a9e\u8868",
+    homeGlossarySub: "\u5e38\u7528\u64b2\u514b\u8a5e\u5f59\u6574\u7406",
+    homeSupport: "\u652f\u6301 / Donate",
+    homeSupportSub: "\u56de\u994b\u3001\u8d0a\u52a9\u8207\u958b\u767c\u652f\u6301",
+    homeAssessment: "\u80fd\u529b\u8a55\u4f30",
+    statsStudioTitle: "\u7d71\u8a08\u5de5\u4f5c\u53f0",
+    rangeCoverageTitle: "\u7bc4\u570d\u8986\u84cb",
+    reviewGoodLabel: "\u826f\u597d",
+    reviewLeakLabel: "\u5f31\u9ede"
+});
+
+Object.assign(I18N.ja, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+
+Object.assign(I18N.ko, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats"
+});
+
+Object.assign(I18N.es, {
+    appTabPlan: "Home",
+    appTabPractice: "Drills",
+    appTabReview: "Review",
+    appTabProgress: "Stats",
+    homeHubKicker: "App Hub",
+    homeHubTitle: "Ajustes y aprendizaje",
+    homeLanguage: "Idioma",
+    homeRules: "Reglas de Texas Holdem",
+    homeGlossary: "Glosario",
+    homeSupport: "Support / Donate",
+    homeAssessment: "Evaluacion",
+    statsStudioTitle: "Stats Studio",
+    rangeCoverageTitle: "Cobertura de rango"
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+// Final locale quality pass for the app shell. Earlier incremental patches can
+// leave new home-screen labels untranslated after the full locale packs load.
+Object.assign(I18N["zh-TW"], {
+    homeHubKicker: "應用中心",
+    homeSupport: "支持 / 贊助",
+    homeSupportSub: "回饋與支持選項",
+    drillTypePushFold: "全下/棄牌",
+    drillThreeBetSizeLabel: "3-Bet 尺寸 bb",
+    drillAnteLabel: "前注",
+    legendPush: "全下"
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+Object.assign(I18N.ja, {
+    appTabPlan: "ホーム",
+    appTabPractice: "ドリル",
+    appTabReview: "復習",
+    appTabProgress: "統計",
+    homeHubKicker: "アプリハブ",
+    homeHubTitle: "設定と学習",
+    homeLanguage: "言語",
+    homeRules: "テキサスホールデムのルール",
+    homeRulesSub: "ポジション、ハンドランク、基本戦略",
+    homeGlossary: "用語集",
+    homeGlossarySub: "ポーカー用語をまとめて確認",
+    homeSupport: "サポート / 寄付",
+    homeSupportSub: "フィードバックと支援オプション",
+    homeAssessment: "実力診断",
+    statsStudioTitle: "統計スタジオ",
+    rangeCoverageTitle: "レンジカバレッジ",
+    reviewGoodLabel: "良好",
+    reviewLeakLabel: "リーク",
+    homeGreetingMorning: "おはようございます",
+    homeGreetingAfternoon: "こんにちは",
+    homeGreetingEvening: "こんばんは",
+    homeReady: "今日も一歩上達しましょう。",
+    homeDayStreak: "日連続",
+    homeScenarios: "シナリオ",
+    homeFocus: "重点",
+    homeContinue: "続ける",
+    homeTodayProgress: "今日の進捗",
+    homeReviewScenarios: "件の復習シナリオ",
+    homeBestStreak: "ベスト連勝",
+    homeDrillsCompleted: "完了したドリル",
+    focusSessionTitle: "今日のドリル",
+    focusSessionCta: "ドリル開始",
+    focusSessionMix: "{mix}（重点: {leak}）",
+    supportTabDonate: "サポート / 寄付",
+    supportTabAbout: "概要と設定",
+    supportTabFeedback: "フィードバック",
+    supportDonatePageTitle: "SpotSense をサポート",
+    supportAboutPageTitle: "概要と設定",
+    supportAboutTitle: "SpotSense について",
+    supportAboutBody: "SpotSense は、プリフロップとポストフロップの判断、復習、レンジ規律を学べるコンパクトなテキサスホールデム学習ツールです。",
+    supportPrivacyPolicyTitle: "プライバシーポリシー"
+});
+
+Object.assign(I18N.ko, {
+    appTabPlan: "홈",
+    appTabPractice: "드릴",
+    appTabReview: "복습",
+    appTabProgress: "통계",
+    homeHubKicker: "앱 허브",
+    homeHubTitle: "설정과 학습",
+    homeLanguage: "언어",
+    homeRules: "텍사스 홀덤 규칙",
+    homeRulesSub: "포지션, 핸드 랭킹, 핵심 전략",
+    homeGlossary: "용어집",
+    homeGlossarySub: "포커 용어를 한곳에서 확인",
+    homeSupport: "후원 / 기부",
+    homeSupportSub: "피드백과 후원 옵션",
+    homeAssessment: "실력 평가",
+    statsStudioTitle: "통계 스튜디오",
+    rangeCoverageTitle: "레인지 커버리지",
+    reviewGoodLabel: "양호",
+    reviewLeakLabel: "리크",
+    homeGreetingMorning: "좋은 아침입니다",
+    homeGreetingAfternoon: "안녕하세요",
+    homeGreetingEvening: "좋은 저녁입니다",
+    homeReady: "오늘도 실력을 높여볼까요?",
+    homeDayStreak: "일 연속",
+    homeScenarios: "시나리오",
+    homeFocus: "집중",
+    homeContinue: "계속",
+    homeTodayProgress: "오늘 진행률",
+    homeReviewScenarios: "복습할 시나리오",
+    homeBestStreak: "최고 연속 기록",
+    homeDrillsCompleted: "완료한 드릴",
+    focusSessionTitle: "오늘의 드릴",
+    focusSessionCta: "드릴 시작",
+    focusSessionMix: "{mix}: {leak} 집중",
+    supportTabDonate: "후원 / 기부",
+    supportTabAbout: "정보 및 설정",
+    supportTabFeedback: "피드백",
+    supportDonatePageTitle: "SpotSense 후원",
+    supportAboutPageTitle: "정보 및 설정",
+    supportAboutTitle: "SpotSense 소개",
+    supportAboutBody: "SpotSense는 프리플롭과 포스트플롭 판단, 복습, 레인지 규율을 함께 학습하는 간결한 텍사스 홀덤 학습 도구입니다.",
+    supportPrivacyPolicyTitle: "개인정보 처리방침"
+});
+
+Object.assign(I18N.es, {
+    appTabPlan: "Inicio",
+    appTabPractice: "Práctica",
+    appTabReview: "Repaso",
+    appTabProgress: "Estadísticas",
+    homeHubKicker: "Centro de la app",
+    homeHubTitle: "Ajustes y aprendizaje",
+    homeLanguage: "Idioma",
+    homeRules: "Reglas de Texas Hold'em",
+    homeRulesSub: "Posiciones, ranking de manos y estrategia base",
+    homeGlossary: "Glosario",
+    homeGlossarySub: "Términos de poker en un solo lugar",
+    homeSupport: "Apoyo / Donar",
+    homeSupportSub: "Comentarios y opciones de apoyo",
+    homeAssessment: "Evaluación de nivel",
+    statsStudioTitle: "Panel de estadísticas",
+    rangeCoverageTitle: "Cobertura de rangos",
+    reviewGoodLabel: "Bien",
+    reviewLeakLabel: "Punto débil",
+    homeGreetingMorning: "Buenos días",
+    homeGreetingAfternoon: "Buenas tardes",
+    homeGreetingEvening: "Buenas noches",
+    homeReady: "¿Listo para mejorar hoy?",
+    homeDayStreak: "días seguidos",
+    homeScenarios: "escenarios",
+    homeFocus: "Foco",
+    homeContinue: "Continuar",
+    homeTodayProgress: "Progreso de hoy",
+    homeReviewScenarios: "escenarios por repasar",
+    homeBestStreak: "Mejor racha",
+    homeDrillsCompleted: "Entrenos completados",
+    quickStartTitle: "Diagnóstico rápido",
+    focusSessionTitle: "Entreno de hoy",
+    focusSessionCta: "Empezar entreno",
+    focusSessionMix: "{mix} enfocado en {leak}.",
+    supportTabDonate: "Apoyo / Donar",
+    supportTabAbout: "Información y ajustes",
+    supportTabFeedback: "Comentarios",
+    supportDonatePageTitle: "Apoya SpotSense",
+    supportAboutPageTitle: "Información y ajustes",
+    supportAboutTitle: "Acerca de SpotSense",
+    supportAboutBody: "SpotSense es una herramienta compacta de estudio de Texas Hold'em para decisiones preflop y postflop, repaso y disciplina de rangos.",
+    supportPrivacyPolicyTitle: "Política de privacidad"
+});
+
+Object.assign(I18N["zh-CN"], {
+    homeHubTitle: "设置与学习",
+    homeGlossarySub: "常用扑克词汇整理"
+});
+
+Object.assign(I18N.es, {
+    statsOverallAccuracy: "Precisión total"
+});
+
+Object.assign(I18N.en, {
+    statsStudioTitle: "Training Stats",
+    statsResetPanelTitle: "Reset training stats",
+    statsResetPanelBody: "Clear lifetime accuracy, hand history, mistake queue, and adaptive weights.",
+    confirmStatsResetFinalTitle: "Reset permanently?",
+    statsResetFinalConfirm: "This cannot be undone. Confirm one more time to reset all stats.",
+    confirmResetFinal: "Reset permanently",
+    drillRaiseRangeLabel: "Raise / shove range",
+    drillCallRangeLabel: "Call range",
+    drillRangeDefaultOption: "Use built-in default range",
+    drillRangeSelectHelp: "Optional. Leave default to use the built-in range."
+});
+
+Object.assign(I18N["zh-TW"], {
+    statsStudioTitle: "\u8a13\u7df4\u6210\u6548",
+    statsResetPanelTitle: "\u91cd\u7f6e\u8a13\u7df4\u7d71\u8a08",
+    statsResetPanelBody: "\u6e05\u9664\u7d2f\u7a4d\u6e96\u78ba\u7387\u3001\u624b\u724c\u7d00\u9304\u3001\u932f\u984c\u968a\u5217\u8207\u81ea\u9069\u61c9\u6b0a\u91cd\u3002",
+    confirmStatsResetFinalTitle: "\u78ba\u5b9a\u6c38\u4e45\u91cd\u7f6e\uff1f",
+    statsResetFinalConfirm: "\u9019\u500b\u64cd\u4f5c\u7121\u6cd5\u5fa9\u539f\u3002\u8acb\u518d\u78ba\u8a8d\u4e00\u6b21\u624d\u6703\u91cd\u7f6e\u6240\u6709\u7d71\u8a08\u3002",
+    confirmResetFinal: "\u6c38\u4e45\u91cd\u7f6e",
+    drillRaiseRangeLabel: "\u52a0\u6ce8\uff0f\u5168\u4e0b\u7bc4\u570d",
+    drillCallRangeLabel: "\u8ddf\u6ce8\u7bc4\u570d",
+    drillRangeDefaultOption: "\u4f7f\u7528\u5167\u5efa\u9810\u8a2d\u7bc4\u570d",
+    drillRangeSelectHelp: "\u9078\u586b\u3002\u7559\u5728\u9810\u8a2d\u6642\u6703\u4f7f\u7528\u539f\u672c\u5167\u5efa\u7bc4\u570d\u3002"
+});
+
+Object.assign(I18N.ja, {
+    statsStudioTitle: "Training Stats",
+    statsResetPanelTitle: "Reset training stats",
+    statsResetPanelBody: "Clear lifetime accuracy, hand history, mistake queue, and adaptive weights.",
+    confirmStatsResetFinalTitle: "Reset permanently?",
+    statsResetFinalConfirm: "This cannot be undone. Confirm one more time to reset all stats.",
+    confirmResetFinal: "Reset permanently",
+    drillRaiseRangeLabel: "Raise / shove range",
+    drillCallRangeLabel: "Call range",
+    drillRangeDefaultOption: "Use built-in default range",
+    drillRangeSelectHelp: "Optional. Leave default to use the built-in range."
+});
+
+Object.assign(I18N.ko, {
+    statsStudioTitle: "Training Stats",
+    statsResetPanelTitle: "Reset training stats",
+    statsResetPanelBody: "Clear lifetime accuracy, hand history, mistake queue, and adaptive weights.",
+    confirmStatsResetFinalTitle: "Reset permanently?",
+    statsResetFinalConfirm: "This cannot be undone. Confirm one more time to reset all stats.",
+    confirmResetFinal: "Reset permanently",
+    drillRaiseRangeLabel: "Raise / shove range",
+    drillCallRangeLabel: "Call range",
+    drillRangeDefaultOption: "Use built-in default range",
+    drillRangeSelectHelp: "Optional. Leave default to use the built-in range."
+});
+
+Object.assign(I18N.es, {
+    statsStudioTitle: "Estadisticas de entrenamiento",
+    statsResetPanelTitle: "Reset training stats",
+    statsResetPanelBody: "Clear lifetime accuracy, hand history, mistake queue, and adaptive weights.",
+    confirmStatsResetFinalTitle: "Reset permanently?",
+    statsResetFinalConfirm: "This cannot be undone. Confirm one more time to reset all stats.",
+    confirmResetFinal: "Reset permanently",
+    drillRaiseRangeLabel: "Raise / shove range",
+    drillCallRangeLabel: "Call range",
+    drillRangeDefaultOption: "Use built-in default range",
+    drillRangeSelectHelp: "Optional. Leave default to use the built-in range."
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+Object.assign(I18N.en, {
+    homeDonate: "Support / Donate",
+    homeDonateSub: "Recommend or sponsor development",
+    homeAboutSettings: "About & Settings",
+    homeAboutSettingsSub: "Language, privacy, and app info",
+    homeFeedback: "Feedback",
+    homeFeedbackSub: "Send issues and suggestions",
+    supportTabDonate: "Support / Donate",
+    supportTabAbout: "About & Settings",
+    supportTabFeedback: "Feedback"
+});
+
+Object.assign(I18N["zh-TW"], {
+    appTabReview: "複習",
+    reviewMistakesTitle: "錯題複習",
+    homeHubKicker: "應用中心",
+    homeSupport: "支持開發",
+    homeDonate: "支持開發",
+    homeDonateSub: "推薦或贊助開發",
+    homeAboutSettings: "關於與設定",
+    homeAboutSettingsSub: "語言、隱私與應用資訊",
+    homeFeedback: "意見反饋",
+    homeFeedbackSub: "回報問題與建議",
+    supportTabDonate: "支持開發",
+    supportTabAbout: "關於與設定",
+    supportTabFeedback: "意見反饋",
+    supportDonatePageTitle: "支持開發",
+    donateSlotTitle: "支持開發",
+    donateSlotBody: "贊助會幫助維持免費、離線優先、不需帳號的訓練工具。",
+    donateCta: "贊助開發"
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+Object.assign(I18N["zh-CN"], {
+    appTabReview: "复习",
+    reviewMistakesTitle: "错题复习",
+    homeHubKicker: "应用中心",
+    homeSupport: "支持开发",
+    homeDonate: "支持开发",
+    homeDonateSub: "推荐或赞助开发",
+    homeAboutSettings: "关于与设置",
+    homeAboutSettingsSub: "语言、隐私与应用信息",
+    homeFeedback: "意见反馈",
+    homeFeedbackSub: "回报问题与建议",
+    supportTabDonate: "支持开发",
+    supportTabAbout: "关于与设置",
+    supportTabFeedback: "意见反馈",
+    supportDonatePageTitle: "支持开发",
+    donateSlotTitle: "支持开发",
+    donateSlotBody: "赞助会帮助维持免费、离线优先、不需账号的训练工具。",
+    donateCta: "赞助开发"
+});
+
+// Final comprehensive locale polish. Keep this block last so late app-shell,
+// stats, support, and range-editor labels do not fall back to English.
+Object.assign(I18N.ja, {
+    statsAllTrainingLabel: "すべてのトレーニングハンド",
+    statsCorrectHands: "正解",
+    statsTotalHandsLabel: "総ハンド数",
+    statsThisWeekHands: "今週 {hands} ハンド",
+    statsWeeklyTrendLabel: "前週比",
+    statsLastSevenDays: "直近7日",
+    statsDailyAccuracyHint: "日別正答率",
+    statsToday: "今日",
+    statsNoPreviousWeek: "前週データなし",
+    homeDonate: "サポート / 寄付",
+    homeDonateSub: "開発を紹介または支援",
+    homeAboutSettings: "概要と設定",
+    homeAboutSettingsSub: "言語、プライバシー、アプリ情報",
+    homeFeedback: "フィードバック",
+    homeFeedbackSub: "問題や提案を送信",
+    trainingFeedbackTitle: "トレーニングフィードバック",
+    soundEffectsLabel: "効果音",
+    wrongAnswerFeedbackLabel: "不正解時の揺れ + バイブレーション",
+    statsLifetimeFilter: "すべて",
+    statsSevenDayTrend: "7日間の正答率推移",
+    positionAccuracyTitle: "ポジション別正答率",
+    handAccuracyTitle: "ハンド別正答率",
+    handAccuracySubtitle: "{trained}/{total} 種類のハンドを練習済み",
+    handAccuracyNoData: "データなし",
+    handAccuracyEmpty: "ヒートマップを作るには、さらにハンドを練習してください。",
+    handAccuracyCellLabel: "{combo}: {hands}ハンドで{accuracy}%",
+    handAccuracyCellNoData: "{combo}: データなし",
+    statsStudioTitle: "トレーニング統計",
+    statsResetPanelTitle: "トレーニング統計をリセット",
+    statsResetPanelBody: "累積正答率、ハンド履歴、ミスキュー、自動調整ウェイトを消去します。",
+    confirmStatsResetFinalTitle: "完全にリセットしますか？",
+    statsResetFinalConfirm: "この操作は元に戻せません。すべての統計をリセットするには、もう一度確認してください。",
+    confirmResetFinal: "完全にリセット",
+    drillThreeBetSizeLabel: "3ベット bb",
+    drillRaiseRangeLabel: "レイズ / オールインレンジ",
+    drillCallRangeLabel: "コールレンジ",
+    drillRangeDefaultOption: "内蔵の標準レンジを使う",
+    drillRangeSelectHelp: "任意。標準のままにすると内蔵レンジを使います。"
+});
+
+Object.assign(I18N.ko, {
+    chartUtgRfiTitle: "UTG RFI 오픈 레인지",
+    chartUtgPushTitle: "UTG 푸시 레인지",
+    rangeCodeErrorPrefix: "알 수 없는 레인지 코드 접두사입니다.",
+    rangeCodeErrorLength: "레인지 코드 페이로드는 48자여야 합니다.",
+    rangeCodeErrorBase64: "레인지 코드에 유효하지 않은 문자가 있습니다.",
+    rangeCodeErrorCrc: "레인지 코드 체크섬이 맞지 않습니다. 입력을 확인하세요.",
+    donateThanks: "SpotSense를 후원해 주셔서 감사합니다.",
+    statsAllTrainingLabel: "전체 훈련 핸드",
+    statsCorrectHands: "정답",
+    statsTotalHandsLabel: "총 핸드",
+    statsThisWeekHands: "이번 주 {hands}핸드",
+    statsWeeklyTrendLabel: "지난주 대비",
+    statsLastSevenDays: "최근 7일",
+    statsDailyAccuracyHint: "일별 정확도",
+    statsToday: "오늘",
+    statsNoPreviousWeek: "지난주 데이터 없음",
+    homeDonate: "후원 / 기부",
+    homeDonateSub: "추천하거나 개발을 후원",
+    homeAboutSettings: "정보 및 설정",
+    homeAboutSettingsSub: "언어, 개인정보, 앱 정보",
+    homeFeedback: "피드백",
+    homeFeedbackSub: "문제와 제안 보내기",
+    trainingFeedbackTitle: "훈련 피드백",
+    soundEffectsLabel: "효과음",
+    wrongAnswerFeedbackLabel: "오답 시 흔들림 + 진동",
+    statsLifetimeFilter: "전체",
+    statsSevenDayTrend: "최근 7일 정확도 추세",
+    positionAccuracyTitle: "포지션별 정확도",
+    handAccuracyTitle: "핸드별 정확도",
+    handAccuracySubtitle: "{trained}/{total} 핸드 유형 훈련됨",
+    handAccuracyNoData: "데이터 없음",
+    handAccuracyEmpty: "히트맵을 만들려면 더 많은 핸드를 훈련하세요.",
+    handAccuracyCellLabel: "{combo}: {hands}핸드 기준 {accuracy}%",
+    handAccuracyCellNoData: "{combo}: 데이터 없음",
+    statsStudioTitle: "훈련 통계",
+    statsResetPanelTitle: "훈련 통계 초기화",
+    statsResetPanelBody: "누적 정확도, 핸드 기록, 오답 큐, 적응형 가중치를 삭제합니다.",
+    confirmStatsResetFinalTitle: "영구적으로 초기화할까요?",
+    statsResetFinalConfirm: "이 작업은 되돌릴 수 없습니다. 모든 통계를 초기화하려면 한 번 더 확인하세요.",
+    confirmResetFinal: "영구 초기화",
+    drillThreeBetSizeLabel: "3벳 bb",
+    drillRaiseRangeLabel: "레이즈 / 올인 레인지",
+    drillCallRangeLabel: "콜 레인지",
+    drillRangeDefaultOption: "내장 기본 레인지 사용",
+    drillRangeSelectHelp: "선택 사항입니다. 기본값을 유지하면 내장 레인지를 사용합니다."
+});
+
+Object.assign(I18N.es, {
+    chartUtgRfiTitle: "Rango de apertura RFI UTG",
+    chartUtgPushTitle: "Rango de push UTG",
+    rangeCodeErrorPrefix: "Prefijo de código de rango desconocido.",
+    rangeCodeErrorLength: "El payload del código de rango debe tener 48 caracteres.",
+    rangeCodeErrorBase64: "El código de rango contiene un carácter inválido.",
+    rangeCodeErrorCrc: "La verificación del código de rango falló. Revisa si hay errores de escritura.",
+    rangeCodeApplied: "Código de rango aplicado a la cuadrícula.",
+    donateCta: "Donar en Ko-fi",
+    donateThanks: "Gracias por apoyar SpotSense.",
+    statsAllTrainingLabel: "Todas las manos entrenadas",
+    statsCorrectHands: "Correctas",
+    statsTotalHandsLabel: "Manos totales",
+    statsThisWeekHands: "{hands} manos esta semana",
+    statsWeeklyTrendLabel: "Frente a la semana anterior",
+    statsLastSevenDays: "Últimos 7 días",
+    statsDailyAccuracyHint: "Precisión diaria",
+    statsToday: "Hoy",
+    statsNoPreviousWeek: "Sin semana anterior",
+    homeDonate: "Apoyo / Donar",
+    homeDonateSub: "Recomienda o patrocina el desarrollo",
+    homeAboutSettings: "Información y ajustes",
+    homeAboutSettingsSub: "Idioma, privacidad e información de la app",
+    homeFeedback: "Comentarios",
+    homeFeedbackSub: "Envía problemas y sugerencias",
+    trainingFeedbackTitle: "Comentarios de entrenamiento",
+    soundEffectsLabel: "Efectos de sonido",
+    wrongAnswerFeedbackLabel: "Sacudida + vibración al fallar",
+    statsLifetimeFilter: "Todo",
+    statsSevenDayTrend: "Tendencia de precisión de 7 días",
+    positionAccuracyTitle: "Precisión por posición",
+    handAccuracyTitle: "Precisión por mano",
+    handAccuracySubtitle: "{trained}/{total} tipos de mano entrenados",
+    handAccuracyNoData: "Sin datos",
+    handAccuracyEmpty: "Entrena más manos para construir este mapa de calor.",
+    handAccuracyCellLabel: "{combo}: {accuracy}% en {hands} manos",
+    handAccuracyCellNoData: "{combo}: sin datos",
+    statsStudioTitle: "Estadísticas de entrenamiento",
+    statsResetPanelTitle: "Restablecer estadísticas de entrenamiento",
+    statsResetPanelBody: "Borra la precisión acumulada, el historial de manos, la cola de errores y los pesos adaptativos.",
+    confirmStatsResetFinalTitle: "¿Restablecer permanentemente?",
+    statsResetFinalConfirm: "Esta acción no se puede deshacer. Confirma una vez más para restablecer todas las estadísticas.",
+    confirmResetFinal: "Restablecer permanentemente",
+    drillTypePushFold: "Push/Fold",
+    drillGameCash: "Cash",
+    drillStackLabel: "Stack bb",
+    drillOpenSizeLabel: "Apertura bb",
+    drillThreeBetSizeLabel: "3-bet bb",
+    drillRaiseRangeLabel: "Rango de raise / shove",
+    drillCallRangeLabel: "Rango de call",
+    drillRangeCodePlaceholder: "Opcional PT1.<payload>",
+    drillRangeDefaultOption: "Usar el rango integrado por defecto",
+    drillRangeSelectHelp: "Opcional. Deja el valor por defecto para usar el rango integrado.",
+    boardTextureTwoTone: "dos tonos",
+    boardTextureWet: "húmedo",
+    legendPush: "Push"
+});
+
+Object.assign(I18N.en, {
+    appBrandAria: "SpotSense Poker Trainer",
+    trainingSectionsAria: "Training sections",
+    pokerRulesInfoTitle: "Poker Rules & Info",
+    practiceModeAria: "Practice mode",
+    viewRangeChartTitle: "View Range Chart",
+    supportShortTitle: "Support",
+    tableContextAria: "Table context",
+    boardCardsAria: "Board cards",
+    primarySectionsAria: "Primary sections",
+    rangeChartAria: "Range chart",
+    closeRulesModalAria: "Close rules modal",
+    glossaryCategoriesAria: "Glossary categories",
+    closeStatsModalAria: "Close stats modal",
+    closeDrillManagerAria: "Close drill manager",
+    heroPositionsAria: "Hero positions",
+    closeAssessmentModalAria: "Close assessment modal",
+    closeSessionSummaryAria: "Close session summary",
+    closeSponsorNoteAria: "Close sponsor note",
+    closeSupportModalAria: "Close support modal",
+    closeAboutSettingsModalAria: "Close about and settings modal",
+    closeFeedbackModalAria: "Close feedback modal",
+    closeRangeEditorAria: "Close range editor",
+    exportToClipboardTitle: "Export to Clipboard",
+    importFromJsonTitle: "Import from JSON"
+});
+
+Object.assign(I18N["zh-TW"], {
+    appBrandAria: "SpotSense 牌局感",
+    trainingSectionsAria: "訓練區段",
+    pokerRulesInfoTitle: "撲克規則與資訊",
+    practiceModeAria: "練習模式",
+    viewRangeChartTitle: "查看範圍圖",
+    supportShortTitle: "支持",
+    tableContextAria: "牌桌情境",
+    boardCardsAria: "公共牌",
+    primarySectionsAria: "主要區段",
+    rangeChartAria: "範圍圖",
+    closeRulesModalAria: "關閉規則視窗",
+    glossaryCategoriesAria: "術語分類",
+    closeStatsModalAria: "關閉統計視窗",
+    closeDrillManagerAria: "關閉訓練管理器",
+    heroPositionsAria: "我方位置",
+    closeAssessmentModalAria: "關閉能力評估視窗",
+    closeSessionSummaryAria: "關閉回合摘要",
+    closeSponsorNoteAria: "關閉贊助提示",
+    closeSupportModalAria: "關閉支持視窗",
+    closeAboutSettingsModalAria: "關閉關於與設定視窗",
+    closeFeedbackModalAria: "關閉意見反饋視窗",
+    closeRangeEditorAria: "關閉範圍編輯器",
+    exportToClipboardTitle: "匯出到剪貼簿",
+    importFromJsonTitle: "從 JSON 匯入"
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+Object.assign(I18N.ja, {
+    appBrandAria: "SpotSense ポーカートレーナー",
+    trainingSectionsAria: "トレーニングセクション",
+    pokerRulesInfoTitle: "ポーカールールと情報",
+    practiceModeAria: "練習モード",
+    viewRangeChartTitle: "レンジ表を表示",
+    rangeEditorTitle: "レンジエディター",
+    supportShortTitle: "サポート",
+    tableContextAria: "テーブル状況",
+    boardCardsAria: "ボードカード",
+    primarySectionsAria: "主要セクション",
+    rangeChartAria: "レンジ表",
+    closeRulesModalAria: "ルール画面を閉じる",
+    glossaryCategoriesAria: "用語カテゴリ",
+    closeStatsModalAria: "統計画面を閉じる",
+    closeDrillManagerAria: "ドリル管理を閉じる",
+    heroPositionsAria: "ヒーローのポジション",
+    closeAssessmentModalAria: "実力診断を閉じる",
+    closeSessionSummaryAria: "セッション概要を閉じる",
+    closeSponsorNoteAria: "スポンサー案内を閉じる",
+    closeSupportModalAria: "サポート画面を閉じる",
+    closeAboutSettingsModalAria: "概要と設定を閉じる",
+    closeFeedbackModalAria: "フィードバック画面を閉じる",
+    closeRangeEditorAria: "レンジエディターを閉じる",
+    exportToClipboardTitle: "クリップボードへ書き出し",
+    importFromJsonTitle: "JSON から読み込み",
+    tableInfoHero: "ヒーロー",
+    badgePushFold: "プッシュ/フォールド"
+});
+
+Object.assign(I18N.ko, {
+    appBrandAria: "SpotSense 포커 트레이너",
+    trainingSectionsAria: "훈련 섹션",
+    pokerRulesInfoTitle: "포커 규칙 및 정보",
+    practiceModeAria: "연습 모드",
+    viewRangeChartTitle: "레인지 차트 보기",
+    rangeEditorTitle: "레인지 편집기",
+    supportShortTitle: "지원",
+    tableContextAria: "테이블 상황",
+    boardCardsAria: "보드 카드",
+    primarySectionsAria: "주요 섹션",
+    rangeChartAria: "레인지 차트",
+    closeRulesModalAria: "규칙 창 닫기",
+    glossaryCategoriesAria: "용어 카테고리",
+    closeStatsModalAria: "통계 창 닫기",
+    closeDrillManagerAria: "드릴 관리자 닫기",
+    heroPositionsAria: "히어로 포지션",
+    closeAssessmentModalAria: "실력 평가 창 닫기",
+    closeSessionSummaryAria: "세션 요약 닫기",
+    closeSponsorNoteAria: "스폰서 안내 닫기",
+    closeSupportModalAria: "지원 창 닫기",
+    closeAboutSettingsModalAria: "정보 및 설정 창 닫기",
+    closeFeedbackModalAria: "피드백 창 닫기",
+    closeRangeEditorAria: "레인지 편집기 닫기",
+    exportToClipboardTitle: "클립보드로 내보내기",
+    importFromJsonTitle: "JSON에서 가져오기",
+    tableInfoHero: "히어로",
+    badgePushFold: "푸시/폴드"
+});
+
+Object.assign(I18N.es, {
+    appBrandAria: "SpotSense entrenador de poker",
+    trainingSectionsAria: "Secciones de entrenamiento",
+    pokerRulesInfoTitle: "Reglas e información de poker",
+    practiceModeAria: "Modo de práctica",
+    viewRangeChartTitle: "Ver tabla de rangos",
+    rangeEditorTitle: "Editor de rangos",
+    supportShortTitle: "Apoyo",
+    tableContextAria: "Contexto de mesa",
+    boardCardsAria: "Cartas del board",
+    primarySectionsAria: "Secciones principales",
+    rangeChartAria: "Tabla de rangos",
+    closeRulesModalAria: "Cerrar reglas",
+    glossaryCategoriesAria: "Categorías del glosario",
+    closeStatsModalAria: "Cerrar estadísticas",
+    closeDrillManagerAria: "Cerrar gestor de entrenos",
+    heroPositionsAria: "Posiciones del héroe",
+    closeAssessmentModalAria: "Cerrar evaluación",
+    closeSessionSummaryAria: "Cerrar resumen de sesión",
+    closeSponsorNoteAria: "Cerrar nota de patrocinio",
+    closeSupportModalAria: "Cerrar apoyo",
+    closeAboutSettingsModalAria: "Cerrar información y ajustes",
+    closeFeedbackModalAria: "Cerrar comentarios",
+    closeRangeEditorAria: "Cerrar editor de rangos",
+    exportToClipboardTitle: "Exportar al portapapeles",
+    importFromJsonTitle: "Importar desde JSON",
+    tableInfoHero: "Héroe",
+    badgeAllStreet: "Postflop",
+    modeAllStreetShort: "Postflop",
+    drillRaiseSizeOverbet: "Sobreapuesta",
+    drillRaiseSizeJam: "All-in"
+});
+
+Object.assign(I18N.en, {
+    reviewMistakesTitle: "Review Mistakes"
+});
+
+Object.assign(I18N.ja, {
+    reviewMistakesTitle: "ミスを復習"
+});
+
+Object.assign(I18N.ko, {
+    reviewMistakesTitle: "오답 복습"
+});
+
+Object.assign(I18N.es, {
+    reviewMistakesTitle: "Repasar errores"
+});

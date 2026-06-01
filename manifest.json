@@ -1,15 +1,15 @@
 {
-    "name": "Preflop",
-    "short_name": "Preflop",
-    "description": "Master poker preflop strategy — RFI, Defense, Push/Fold trainer with adaptive difficulty.",
+    "name": "SpotSense",
+    "short_name": "SpotSense",
+    "description": "A free-forever, full-featured SpotSense poker trainer with preflop and postflop drills, custom ranges, adaptive review, and offline-first practice.",
     "start_url": "./index.html",
     "display": "standalone",
-    "background_color": "#0b1121",
-    "theme_color": "#0b1121",
+    "background_color": "#151817",
+    "theme_color": "#151817",
     "icons": [
         {
             "src": "logo.png",
-            "sizes": "192x192 512x512",
+            "sizes": "1024x1024",
             "type": "image/png",
             "purpose": "any maskable"
         }
