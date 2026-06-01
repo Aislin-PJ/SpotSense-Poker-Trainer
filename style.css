@@ -1515,6 +1515,12 @@ body.is-first-run #progress-panel {
     box-shadow: 0 0 15px rgba(56, 161, 105, 0.5);
 }
 
+.controls.is-answer-locked {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
 /* Keyboard hint */
 .kbd-hint {
     text-align: center;
@@ -1544,7 +1550,7 @@ body.is-first-run #progress-panel {
     padding: 35px 30px;
     border-radius: var(--glassbreak-radius);
     text-align: center;
-    z-index: 100;
+    z-index: 220;
     width: min(90%, calc(100vw - 32px));
     max-width: 420px;
     box-shadow: var(--glassbreak-shadow);

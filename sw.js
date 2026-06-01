@@ -1,4 +1,4 @@
-const CACHE_NAME = 'spotsense-v1';
+const CACHE_NAME = 'spotsense-v2';
 const ASSETS_TO_CACHE = [
     './index.html',
     './style.css',
@@ -7,6 +7,7 @@ const ASSETS_TO_CACHE = [
     './i18n.js',
     './manifest.json',
     './logo.png',
+    './logo-pure.png',
     './logo-transparent.png'
 ];
 

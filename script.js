@@ -1434,6 +1434,16 @@ function syncActionControlsLayout() {
     controlsEl.dataset.actionCount = String(visibleCount);
 }
 
+function setDecisionControlsLocked(isLocked) {
+    const controlsEl = btnFoldEl ? btnFoldEl.closest('.controls') : null;
+    if (!controlsEl) return;
+    controlsEl.classList.toggle('is-answer-locked', isLocked);
+    controlsEl.setAttribute('aria-hidden', isLocked ? 'true' : 'false');
+    [btnFoldEl, btnCallEl, btnRaiseEl, btnAllInEl]
+        .filter(Boolean)
+        .forEach(button => { button.disabled = isLocked; });
+}
+
 function resetActionButtonLabels() {
     const t = I18N[state.lang] || I18N.en;
     if (btnFoldEl) btnFoldEl.innerText = t.btnFold || 'Fold';
@@ -4810,6 +4820,7 @@ function updateScenarioUI() {
 
 function startTurn() {
     feedbackEl.classList.add('hidden');
+    setDecisionControlsLocked(false);
 
     // pick position
     const activeCustomDrill = state.currentMode === 'CUSTOM' ? getActiveCustomDrill() : null;
@@ -4883,7 +4894,11 @@ function startTurn() {
 }
 
 window.handleAction = function (action) {
-    if (!state.currentHand) return;
+    const feedbackIsOpen = feedbackEl
+        && feedbackEl.classList
+        && typeof feedbackEl.classList.contains === 'function'
+        && !feedbackEl.classList.contains('hidden');
+    if (!state.currentHand || feedbackIsOpen) return;
     const wasDiagnosticActive = !!(state.diagnosticSession && state.diagnosticSession.active);
     const isCorrect = action === state.correctAction;
     const combo = getComboName(state.currentHand);
@@ -4908,6 +4923,7 @@ window.handleAction = function (action) {
     if (scoreEl) scoreEl.innerText = state.score;
     streakEl.innerText = state.streak;
     feedbackEl.classList.remove('hidden');
+    setDecisionControlsLocked(true);
     if (!isCorrect) runWrongAnswerCue(feedbackEl);
 
     // Record stats + adaptive weight
