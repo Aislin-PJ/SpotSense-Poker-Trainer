@@ -2,11 +2,13 @@
 // CONSTANTS
 // ============================================================
 const POSITIONS = ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
+const TABLE_POSITION_ORDER_CLOCKWISE = ['BB', 'UTG', 'HJ', 'CO', 'BTN', 'SB'];
+const TABLE_SEAT_SLOTS_CLOCKWISE = ['bb', 'utg', 'hj', 'co', 'btn', 'sb'];
 const SUITS = ['hearts', 'diamonds', 'clubs', 'spades'];
 const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
 const CHART_RANKS = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
 const LS_KEY = 'pokerTrainer_v1';
-const STORAGE_VERSION = 3;
+const STORAGE_VERSION = 4;
 const QUICK_DIAGNOSTIC_HANDS = 20;
 const TRAINING_SESSION_HANDS = 10;
 const MISTAKE_REPLAY_LIMIT = 50;
@@ -18,6 +20,16 @@ const DONATE_URL = 'https://ko-fi.com/preflop777';
 const SUPPORT_FEEDBACK_ENDPOINT = 'https://formspree.io/f/xlgvazpe';
 // Google Publisher Tag web interstitial is the only built-in third-party ad path.
 const GOOGLE_PUBLISHER_TAG_URL = 'https://securepubads.g.doubleclick.net/tag/js/gpt.js';
+const DEAL_SOUND_GAIN = 0.2;
+const WRONG_ANSWER_CUE_SEGMENTS = Object.freeze([
+    { ms: 55, vibrate: true, x: -16 },
+    { ms: 45, vibrate: false, x: 14 },
+    { ms: 55, vibrate: true, x: -12 },
+    { ms: 45, vibrate: false, x: 10 },
+    { ms: 55, vibrate: true, x: -7 },
+    { ms: 65, vibrate: false, x: 6 },
+    { ms: 120, vibrate: false, x: 0 }
+]);
 const AD_SERVICE_DEFAULTS = Object.freeze({
     provider: 'google-publisher-tag',
     enabled: false,
@@ -717,7 +729,7 @@ let state = {
     currentAllStreetScenarioId: null,
     currentAllStreetScenarioIndex: -1,
     currentReviewItem: null,
-    activeTab: 'practice',
+    activeTab: 'plan',
     firstRunCompleted: false,
     firstRunStage: 'preferences',
     focusSession: null,
@@ -736,6 +748,7 @@ let state = {
         achievements: [],
         weeklyActivity: {},
         dailyActivity: {},
+        bestStreak: 0,
         streakForgives: 1
     },
     monetization: {
@@ -749,6 +762,10 @@ let state = {
         dismissedAdDate: null,
         lastDismissedAdAt: null
     },
+    feedbackPreferences: {
+        soundEffectsEnabled: true,
+        wrongAnswerFeedbackEnabled: true
+    },
     chartPosition: 'UTG',
     rangeEditorData: {},    // cellName -> 'raise'|'call'|'fold'
     customRanges: {},       // name -> { raise: [...], call: [...] }
@@ -761,6 +778,7 @@ let state = {
         totalCorrect: 0,
         byPosition: {},
         byMode: {},
+        byCombo: {},
         byStackDepth: {},
         bySpotType: {}
     }
@@ -770,7 +788,7 @@ let state = {
 // LOCAL STORAGE
 // ============================================================
 function getDefaultStats() {
-    return { totalHands: 0, totalCorrect: 0, byPosition: {}, byMode: {}, byCustomDrill: {}, byStackDepth: {}, bySpotType: {} };
+    return { totalHands: 0, totalCorrect: 0, byPosition: {}, byMode: {}, byCombo: {}, byCustomDrill: {}, byStackDepth: {}, bySpotType: {} };
 }
 
 function getDefaultGamification(source = {}) {
@@ -781,6 +799,7 @@ function getDefaultGamification(source = {}) {
         achievements: Array.isArray(source.achievements) ? source.achievements : [],
         weeklyActivity: source.weeklyActivity || {},
         dailyActivity: source.dailyActivity || {},
+        bestStreak: Number.isFinite(Number(source.bestStreak)) ? Math.max(0, Math.floor(Number(source.bestStreak))) : 0,
         streakForgives: Number.isFinite(source.streakForgives) ? source.streakForgives : 1
     };
 }
@@ -798,6 +817,13 @@ function getDefaultMonetization(source = {}) {
         lastAdDate: source.lastAdDate || null,
         dismissedAdDate: source.dismissedAdDate || null,
         lastDismissedAdAt: source.lastDismissedAdAt || null
+    };
+}
+
+function getDefaultFeedbackPreferences(source = {}) {
+    return {
+        soundEffectsEnabled: source.soundEffectsEnabled !== false,
+        wrongAnswerFeedbackEnabled: source.wrongAnswerFeedbackEnabled !== false
     };
 }
 
@@ -824,11 +850,12 @@ function normalizeStoragePayload(saved) {
         assessment: source.assessment || null,
         assessmentSkipped: !!source.assessmentSkipped,
         lang: normalizeLanguage(source.lang) || detectPreferredLanguage(),
-        activeTab: source.activeTab || 'practice',
+        activeTab: source.activeTab || 'plan',
         firstRunCompleted: !!source.firstRunCompleted,
         firstRunStage: source.firstRunStage || 'preferences',
         gamification: getDefaultGamification(source.gamification || {}),
-        monetization: getDefaultMonetization(source.monetization || {})
+        monetization: getDefaultMonetization(source.monetization || {}),
+        feedbackPreferences: getDefaultFeedbackPreferences(source.feedbackPreferences || {})
     };
 }
 
@@ -854,6 +881,7 @@ function loadFromStorage() {
         state.firstRunStage = saved.firstRunStage;
         state.gamification = saved.gamification;
         state.monetization = saved.monetization;
+        state.feedbackPreferences = saved.feedbackPreferences;
         refreshRangeDropdown();
     } catch (e) {
         console.warn('Could not load storage', e);
@@ -883,13 +911,14 @@ function saveToStorage() {
             firstRunCompleted: state.firstRunCompleted,
             firstRunStage: state.firstRunStage,
             gamification: state.gamification,
-            monetization: state.monetization
+            monetization: state.monetization,
+            feedbackPreferences: getDefaultFeedbackPreferences(state.feedbackPreferences || {})
         }));
     } catch (e) { console.warn('Could not save storage', e); }
 }
 
-// Storage v3 migrates the existing pokerTrainer_v1 value in place:
-// absent version/customDrills/allStreetDrills fields are defaulted without changing saved ranges.
+// Storage v4 migrates the existing pokerTrainer_v1 value in place:
+// absent version/customDrills/allStreetDrills/feedbackPreferences fields are defaulted without changing saved ranges.
 
 function generateStableId(prefix) {
     const randomPart = Math.random().toString(36).slice(2, 8);
@@ -1018,6 +1047,17 @@ function normalizeExcludedCardCodes(excludedCards = []) {
 
 function getHandCardCodes(hand) {
     return hand ? [normalizeCardCode(hand.c1), normalizeCardCode(hand.c2)].filter(Boolean) : [];
+}
+
+function getExactComboNames(hand) {
+    const cards = getHandCardCodes(hand);
+    if (cards.length !== 2) return [];
+    const ranked = cards
+        .map(code => ({ code, rankIndex: CHART_RANKS.indexOf(code[0]) }))
+        .sort((a, b) => a.rankIndex - b.rankIndex || a.code.localeCompare(b.code));
+    const forward = ranked.map(card => card.code).join('');
+    const reverse = ranked.slice().reverse().map(card => card.code).join('');
+    return forward === reverse ? [forward] : [forward, reverse];
 }
 
 function getDeckCardCodes(excludedCards = []) {
@@ -1344,8 +1384,8 @@ function getFeedbackActionLabel(action) {
         const drill = getActiveCustomDrill();
         if (drill && drill.type === DRILL_TYPES.ALL_STREET) return getAllStreetActionLabel(action, getActiveAllStreetScenario());
     }
-    if (state.currentMode === 'REVIEW' && state.currentReviewItem && state.currentReviewItem.sourceMode === 'ALL_STREET') {
-        return getAllStreetActionLabel(action, getAllStreetScenarioById(state.currentReviewItem.allStreetScenarioId));
+    if (state.currentMode === 'REVIEW' && state.currentReviewItem && getReviewSourceMode(state.currentReviewItem) === 'ALL_STREET') {
+        return getAllStreetActionLabel(action, state.currentReviewItem.allStreetScenario || getAllStreetScenarioById(state.currentReviewItem.allStreetScenarioId));
     }
     return getCoreActionLabel(action);
 }
@@ -1380,7 +1420,18 @@ function renderBoardCards(cards) {
     if (!boardCardsEl) return;
     const board = Array.isArray(cards) ? cards : [];
     boardCardsEl.classList.toggle('hidden', board.length === 0);
+    boardCardsEl.dataset.cardCount = String(board.length);
     boardCardsEl.innerHTML = board.map(card => renderCard(parseCardCode(card))).join('');
+}
+
+function syncActionControlsLayout() {
+    const controlsEl = btnFoldEl ? btnFoldEl.closest('.controls') : null;
+    if (!controlsEl) return;
+    const actionButtons = [btnFoldEl, btnCallEl, btnRaiseEl, btnAllInEl].filter(Boolean);
+    const visibleCount = actionButtons.filter(button => !button.classList.contains('hidden')).length;
+    controlsEl.classList.toggle('is-two-actions', visibleCount === 2);
+    controlsEl.classList.toggle('is-one-action', visibleCount === 1);
+    controlsEl.dataset.actionCount = String(visibleCount);
 }
 
 function resetActionButtonLabels() {
@@ -1426,14 +1477,14 @@ function renderPostflopControlPanel(scenario = null) {
     updateKeyboardHintForActions(scenario);
 }
 
-function renderScenarioTags(tags = [], badge = '') {
+function renderScenarioTags(tags = []) {
     if (!scenarioTextEl) return;
     scenarioTextEl.classList.remove('scenario-allstreet-summary');
     const cleanTags = tags.filter(Boolean).map(tag => String(tag));
     scenarioTextEl.innerHTML = cleanTags.length
         ? cleanTags.map(tag => `<span class="scenario-tag">${escapeHtml(tag)}</span>`).join('')
         : escapeHtml((I18N[state.lang] || I18N.en).waitingHand || 'Waiting for next hand...');
-    setScenarioBadge(badge === null ? '' : (badge || cleanTags[0] || ''));
+    setScenarioBadge('');
 }
 
 function setScenarioBadge(badgeText = '') {
@@ -1458,7 +1509,6 @@ function renderAllStreetScenarioSummary(scenario, t = I18N[state.lang] || I18N.e
     if (!scenarioTextEl || !scenario) return;
     scenarioTextEl.classList.add('scenario-allstreet-summary');
     const title = getAllStreetScenarioTitle(scenario, t);
-    const roleTags = getHeadsUpPositionTags(scenario, t);
     const line = Array.isArray(scenario.previousAction) ? scenario.previousAction.join(' / ') : '';
     const bodyTemplate = t.allStreetScenarioBody
         || ALL_STREET_SCENARIO_BODY_TEMPLATES[state.lang]
@@ -1476,11 +1526,20 @@ function renderAllStreetScenarioSummary(scenario, t = I18N[state.lang] || I18N.e
     scenarioTextEl.innerHTML = `
         <span class="scenario-tag-row">
             <span class="scenario-tag scenario-tag-primary">${escapeHtml(title)}</span>
-            ${roleTags.map(tag => `<span class="scenario-tag">${escapeHtml(tag)}</span>`).join('')}
         </span>
         <span class="scenario-copy">${escapeHtml(body)}</span>
     `;
     setScenarioBadge('');
+}
+
+function getTableSeatSlot(position, anchorPosition) {
+    if (!POSITIONS.includes(position)) return String(position || '').toLowerCase();
+    if (!POSITIONS.includes(anchorPosition)) return position.toLowerCase();
+    const positionIndex = TABLE_POSITION_ORDER_CLOCKWISE.indexOf(position);
+    const anchorIndex = TABLE_POSITION_ORDER_CLOCKWISE.indexOf(anchorPosition);
+    if (positionIndex === -1 || anchorIndex === -1) return position.toLowerCase();
+    const slotIndex = (positionIndex - anchorIndex + TABLE_POSITION_ORDER_CLOCKWISE.length) % TABLE_POSITION_ORDER_CLOCKWISE.length;
+    return TABLE_SEAT_SLOTS_CLOCKWISE[slotIndex];
 }
 
 function renderTableContextOverlay(model = {}) {
@@ -1494,12 +1553,29 @@ function renderTableContextOverlay(model = {}) {
         return;
     }
     const iconHtml = icon => icon ? `<span aria-hidden="true">${escapeHtml(icon)}</span>` : '';
+    const activeByPosition = Object.fromEntries(positions.map(item => {
+        const rawPosition = item.position || POSITIONS.find(pos => String(item.label || '').includes(pos));
+        return rawPosition ? [rawPosition, item] : null;
+    }).filter(Boolean));
+    const anchorPosition = (positions.find(item => item.role === 'hero' && POSITIONS.includes(item.position)) || {}).position
+        || (POSITIONS.includes(state.currentPosition) ? state.currentPosition : '');
+    const defaultStackByPosition = { UTG: '2.5 BB', HJ: '2.5 BB', CO: '2.5 BB', BTN: '2.5 BB', SB: '0.5 BB', BB: '1 BB' };
+    const seatRing = POSITIONS.map(position => {
+        const active = activeByPosition[position] || null;
+        const role = active && active.role ? active.role : '';
+        const label = active && active.label ? active.label : position;
+        const stack = active ? (active.stack || defaultStackByPosition[position]) : '';
+        const slot = getTableSeatSlot(position, anchorPosition);
+        return { position, slot, role, label, stack, active };
+    });
     tableContextOverlayEl.innerHTML = `
         ${positions.length ? `
             <div class="table-seat-row">
-                ${positions.map(item => `
-                    <span class="table-seat-chip ${item.role ? `is-${escapeHtml(item.role)}` : ''}" title="${escapeHtml(item.label || '')}" aria-label="${escapeHtml(item.aria || item.label || '')}">
-                        ${iconHtml(item.icon)}${escapeHtml(item.label || '')}
+                ${seatRing.map(item => `
+                    <span class="table-seat-chip seat-${escapeHtml(item.slot)} position-${escapeHtml(item.position.toLowerCase())} ${item.role ? `is-${escapeHtml(item.role)}` : ''} ${item.role === 'villain' ? 'is-opponent' : ''} ${item.active ? 'is-active' : 'is-folded'}" title="${escapeHtml(item.label || '')}" aria-label="${escapeHtml(item.active && item.active.aria ? item.active.aria : item.label || item.position)}">
+                        ${iconHtml(item.active && item.active.icon)}
+                        <span class="table-seat-name">${escapeHtml(item.position)}</span>
+                        ${item.stack ? `<span class="table-seat-stack">${escapeHtml(item.stack)}</span>` : ''}
                     </span>
                 `).join('')}
             </div>
@@ -1534,8 +1610,8 @@ function getAllStreetTableModel(scenario, t) {
     if (!scenario) return {};
     return {
         positions: [
-            { role: 'hero', icon: '', label: getRolePositionLabel('hero', scenario.heroPosition, t), aria: getRolePositionLabel('hero', scenario.heroPosition, t) },
-            { role: 'villain', icon: '', label: getRolePositionLabel('villain', scenario.villainPosition, t), aria: getRolePositionLabel('villain', scenario.villainPosition, t) }
+            { role: 'hero', icon: '', position: scenario.heroPosition, label: getRolePositionLabel('hero', scenario.heroPosition, t), aria: getRolePositionLabel('hero', scenario.heroPosition, t) },
+            { role: 'villain', icon: '', position: scenario.villainPosition, label: getRolePositionLabel('villain', scenario.villainPosition, t), aria: getRolePositionLabel('villain', scenario.villainPosition, t) }
         ]
     };
 }
@@ -1588,6 +1664,7 @@ function updateAllStreetActionButtons(scenario = getActiveAllStreetScenario()) {
         btnAllInEl.classList.toggle('hidden', !allowed.includes('All-In'));
         btnAllInEl.innerText = getAllStreetActionLabel('All-In', scenario);
     }
+    syncActionControlsLayout();
 }
 
 function isValidRangeCodeMaybe(code) {
@@ -1605,9 +1682,9 @@ function getCustomDrillRequiredFields(type) {
         case DRILL_TYPES.RFI_FOCUS:
             return ['name', 'type', 'gameType', 'heroPositions'];
         case DRILL_TYPES.DEFENSE_VS_OPEN:
-            return ['name', 'type', 'gameType', 'heroPosition', 'openerPosition', 'ranges'];
+            return ['name', 'type', 'gameType', 'heroPosition', 'openerPosition'];
         case DRILL_TYPES.FACING_3BET:
-            return ['name', 'type', 'gameType', 'heroPosition', 'villainPosition', 'effectiveStackBb', 'openSizeBb', 'threeBetSizeBb', 'ranges'];
+            return ['name', 'type', 'gameType', 'heroPosition', 'villainPosition', 'effectiveStackBb', 'openSizeBb', 'threeBetSizeBb'];
         case DRILL_TYPES.PUSH_FOLD:
             return ['name', 'type', 'gameType', 'heroPositions', 'stackBb'];
         case DRILL_TYPES.ALL_STREET:
@@ -1650,17 +1727,9 @@ function validateCustomDrill(drill) {
     }
 
     if (drill.ranges && typeof drill.ranges === 'object') {
-        if (drill.type === DRILL_TYPES.FACING_3BET && (!drill.ranges.raise || !drill.ranges.call)) {
-            errors.push('ranges');
-        }
-        if (drill.type === DRILL_TYPES.DEFENSE_VS_OPEN && (!drill.ranges.raise || !drill.ranges.call)) {
-            errors.push('ranges');
-        }
         for (const code of Object.values(drill.ranges)) {
             if (!isValidRangeCodeMaybe(code)) errors.push('ranges');
         }
-    } else if (getCustomDrillRequiredFields(drill.type).includes('ranges')) {
-        errors.push('ranges');
     }
 
     return { valid: errors.length === 0, errors: [...new Set(errors)] };
@@ -2314,15 +2383,30 @@ function linkGlossaryTerms(root) {
 function renderPokerGlossary() {
     const container = document.getElementById('poker-glossary-list');
     if (!container) return;
+    const nav = document.getElementById('poker-glossary-nav');
     const lang = state.lang || 'en';
     const grouped = POKER_GLOSSARY.reduce((acc, item) => {
         acc[item.category] = acc[item.category] || [];
         acc[item.category].push(item);
         return acc;
     }, {});
+    const categories = Object.entries(grouped).map(([category, items]) => ({
+        key: category,
+        count: items.length,
+        label: getLocalizedObjectValue(POKER_GLOSSARY_CATEGORY_LABELS[category], lang) || category
+    }));
 
-    container.innerHTML = Object.entries(grouped).map(([category, items]) => {
-        const categoryLabel = getLocalizedObjectValue(POKER_GLOSSARY_CATEGORY_LABELS[category], lang) || category;
+    if (nav) {
+        nav.innerHTML = categories.map((category, index) => `
+            <button class="glossary-category-chip ${index === 0 ? 'active' : ''}" type="button" data-category="${escapeHtml(category.key)}" onclick="scrollGlossaryCategory('${escapeJsArg(category.key)}')">
+                <span>${escapeHtml(category.label)}</span>
+                <small>${category.count}</small>
+            </button>
+        `).join('');
+    }
+
+    container.innerHTML = categories.map(({ key: category, label: categoryLabel }) => {
+        const items = grouped[category] || [];
         const termsHtml = items.map(item => {
             const localName = getGlossaryLocalizedValue(item, 'local', lang) || item.en;
             const desc = getGlossaryLocalizedValue(item, 'desc', lang) || getGlossaryLocalizedValue(item, 'desc', 'en');
@@ -2337,7 +2421,7 @@ function renderPokerGlossary() {
             `;
         }).join('');
         return `
-            <section class="glossary-category">
+            <section id="glossary-category-${escapeHtml(category)}" class="glossary-category">
                 <h4 class="glossary-category-title">${escapeHtml(categoryLabel)}</h4>
                 <div class="glossary-term-grid">${termsHtml}</div>
             </section>
@@ -2345,24 +2429,32 @@ function renderPokerGlossary() {
     }).join('');
 }
 
+window.scrollGlossaryCategory = function (category) {
+    const target = document.getElementById(`glossary-category-${category}`);
+    if (!target) return;
+    document.querySelectorAll('.glossary-category-chip').forEach(button => {
+        button.classList.toggle('active', button.dataset.category === category);
+    });
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
 function setInfoModalPage(page = 'rules') {
     const normalizedPage = page === 'glossary' ? 'glossary' : 'rules';
+    const t = I18N[state.lang] || I18N.en;
+    const titleEl = document.getElementById('info-modal-title');
     const rulesPage = document.getElementById('info-rules-page');
     const glossaryPage = document.getElementById('info-glossary-page');
-    const rulesTab = document.getElementById('info-tab-rules');
-    const glossaryTab = document.getElementById('info-tab-glossary');
+    const modalBody = document.querySelector('#info-modal .rules-modal-body');
     if (rulesPage) rulesPage.classList.toggle('hidden', normalizedPage !== 'rules');
     if (glossaryPage) glossaryPage.classList.toggle('hidden', normalizedPage !== 'glossary');
-    if (rulesTab) {
-        rulesTab.classList.toggle('active', normalizedPage === 'rules');
-        rulesTab.setAttribute('aria-selected', normalizedPage === 'rules' ? 'true' : 'false');
+    if (titleEl) {
+        titleEl.removeAttribute('data-i18n');
+        titleEl.textContent = normalizedPage === 'glossary'
+            ? (t.pokerGlossaryTitle || t.homeGlossary || 'Texas Holdem Terms')
+            : (t.rulesTitle || 'Poker Rules & Strategy');
     }
-    if (glossaryTab) {
-        glossaryTab.classList.toggle('active', normalizedPage === 'glossary');
-        glossaryTab.setAttribute('aria-selected', normalizedPage === 'glossary' ? 'true' : 'false');
-    }
+    if (modalBody) modalBody.scrollTop = 0;
     renderPokerGlossary();
-    if (normalizedPage === 'rules') linkGlossaryTerms(rulesPage);
 }
 
 function openGlossaryTerm(slug) {
@@ -2377,11 +2469,21 @@ function openGlossaryTerm(slug) {
     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
+window.openInfoModalPage = function (page = 'rules') {
+    const modal = document.getElementById('info-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    setInfoModalPage(page);
+};
+
 window.openGlossaryTerm = openGlossaryTerm;
 window.setInfoModalPage = setInfoModalPage;
 
 function getDateKey(date = new Date()) {
-    return date.toISOString().slice(0, 10);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 function getModeLabel(mode, t = I18N[state.lang] || I18N.en) {
@@ -2521,7 +2623,7 @@ function incrementStatBucket(collection, key, isCorrect) {
     if (isCorrect) collection[key].correct++;
 }
 
-function recordStat(position, mode, isCorrect, drillId) {
+function recordStat(position, mode, isCorrect, drillId, combo) {
     state.stats.totalHands++;
     if (isCorrect) state.stats.totalCorrect++;
     if (!state.stats.byPosition[position]) state.stats.byPosition[position] = { hands: 0, correct: 0 };
@@ -2538,7 +2640,9 @@ function recordStat(position, mode, isCorrect, drillId) {
     }
     if (!state.stats.byStackDepth) state.stats.byStackDepth = {};
     if (!state.stats.bySpotType) state.stats.bySpotType = {};
+    if (!state.stats.byCombo) state.stats.byCombo = {};
     const drill = drillId ? state.customDrills[drillId] : null;
+    incrementStatBucket(state.stats.byCombo, combo, isCorrect);
     incrementStatBucket(state.stats.byStackDepth, getStackDepthKeyFromBb(getEffectiveStackBbForStat(mode, drill)), isCorrect);
     incrementStatBucket(state.stats.bySpotType, getSpotTypeKeyForStat(mode, drill), isCorrect);
 }
@@ -2626,11 +2730,121 @@ function renderCard(card) {
     return `<div class="card ${cls}"><div class="rank">${card.rank}</div><div class="suit">${sym}</div></div>`;
 }
 
+let feedbackAudioContext = null;
+let wrongAnswerAnimation = null;
+
+function getWrongAnswerCueDuration() {
+    return WRONG_ANSWER_CUE_SEGMENTS.reduce((total, segment) => total + segment.ms, 0);
+}
+
+function getWrongAnswerHapticPattern() {
+    const pattern = [];
+    let lastVibrate = null;
+    WRONG_ANSWER_CUE_SEGMENTS.forEach(segment => {
+        if (pattern.length > 0 && segment.vibrate === lastVibrate) {
+            pattern[pattern.length - 1] += segment.ms;
+        } else {
+            pattern.push(segment.ms);
+            lastVibrate = segment.vibrate;
+        }
+    });
+    return pattern;
+}
+
+function getWrongAnswerVisualKeyframes() {
+    const total = getWrongAnswerCueDuration();
+    let elapsed = 0;
+    const frames = [{ offset: 0, transform: 'translate(-50%, -50%) scale(1)' }];
+    WRONG_ANSWER_CUE_SEGMENTS.forEach(segment => {
+        elapsed += segment.ms;
+        frames.push({
+            offset: Math.min(1, elapsed / total),
+            transform: `translate(calc(-50% + ${segment.x}px), -50%) scale(1)`
+        });
+    });
+    return frames;
+}
+
 function triggerHaptic(pattern) {
     if (!navigator.vibrate) return;
     const activation = navigator.userActivation;
     if (activation && !activation.isActive && !activation.hasBeenActive) return;
     navigator.vibrate(pattern);
+}
+
+function getFeedbackAudioContext() {
+    const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextCtor) return null;
+    if (!feedbackAudioContext) feedbackAudioContext = new AudioContextCtor();
+    return feedbackAudioContext;
+}
+
+function canPlayFeedbackAudio() {
+    if (!state.feedbackPreferences || !state.feedbackPreferences.soundEffectsEnabled) return false;
+    const activation = navigator.userActivation;
+    return !(activation && !activation.isActive && !activation.hasBeenActive);
+}
+
+function scheduleDealSound(ctx) {
+    const now = ctx.currentTime + 0.01;
+    const duration = 0.085;
+    const sampleCount = Math.max(1, Math.floor(ctx.sampleRate * duration));
+    const buffer = ctx.createBuffer(1, sampleCount, ctx.sampleRate);
+    const channel = buffer.getChannelData(0);
+    for (let i = 0; i < sampleCount; i++) {
+        const progress = i / sampleCount;
+        channel[i] = (Math.random() * 2 - 1) * Math.pow(1 - progress, 1.7);
+    }
+
+    const source = ctx.createBufferSource();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1700, now);
+    filter.Q.setValueAtTime(0.75, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(DEAL_SOUND_GAIN, now + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    source.buffer = buffer;
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    source.start(now);
+    source.stop(now + duration);
+    source.addEventListener('ended', () => {
+        source.disconnect();
+        filter.disconnect();
+        gain.disconnect();
+    }, { once: true });
+}
+
+function playDealSound() {
+    if (!canPlayFeedbackAudio()) return;
+    const ctx = getFeedbackAudioContext();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') {
+        ctx.resume()
+            .then(() => scheduleDealSound(ctx))
+            .catch(() => {});
+        return;
+    }
+    scheduleDealSound(ctx);
+}
+
+function runWrongAnswerCue(el) {
+    if (!el || !state.feedbackPreferences || !state.feedbackPreferences.wrongAnswerFeedbackEnabled) return;
+    if (wrongAnswerAnimation) wrongAnswerAnimation.cancel();
+    if (typeof el.animate === 'function') {
+        wrongAnswerAnimation = el.animate(getWrongAnswerVisualKeyframes(), {
+            duration: getWrongAnswerCueDuration(),
+            easing: 'cubic-bezier(0.2, 0.75, 0.25, 1)',
+            fill: 'none'
+        });
+        wrongAnswerAnimation.addEventListener('finish', () => {
+            wrongAnswerAnimation = null;
+        }, { once: true });
+    }
+    triggerHaptic(getWrongAnswerHapticPattern());
 }
 
 // Toast System
@@ -2663,23 +2877,31 @@ function shouldUseNativeConfirmFallback() {
 
 function requestGlassConfirmation(options) {
     const t = I18N[state.lang] || I18N.en;
-    const message = options.message || t.confirmTitle || 'Confirm action';
+    const title = options.title || t.confirmTitle || 'Confirm action';
+    const hasMessageOption = Object.prototype.hasOwnProperty.call(options, 'message');
+    const message = hasMessageOption ? (options.message || '') : title;
     const modal = getBrowserElement('confirm-modal');
     const titleEl = getBrowserElement('confirm-title');
     const messageEl = getBrowserElement('confirm-message');
     const acceptBtn = getBrowserElement('confirm-accept');
     const cancelBtn = getBrowserElement('confirm-cancel');
-    const closeBtn = getBrowserElement('confirm-close');
-    const canRenderGlassConfirm = modal && titleEl && messageEl && acceptBtn && cancelBtn && closeBtn;
+    const canRenderGlassConfirm = modal && titleEl && messageEl && acceptBtn && cancelBtn;
 
     if (!canRenderGlassConfirm || shouldUseNativeConfirmFallback()) {
-        return typeof confirm === 'function' ? confirm(message) : true;
+        return typeof confirm === 'function' ? confirm(message || title) : true;
     }
 
     if (pendingGlassConfirm) pendingGlassConfirm(false);
 
-    titleEl.textContent = options.title || t.confirmTitle || 'Confirm action';
+    titleEl.textContent = title;
     messageEl.textContent = message;
+    messageEl.hidden = !message;
+    modal.classList.toggle('confirm-modal-no-message', !message);
+    if (message) {
+        modal.setAttribute('aria-describedby', 'confirm-message');
+    } else {
+        modal.removeAttribute('aria-describedby');
+    }
     acceptBtn.textContent = options.confirmLabel || t.confirmOk || 'Confirm';
     cancelBtn.textContent = options.cancelLabel || t.confirmCancel || 'Cancel';
     acceptBtn.classList.toggle('btn-danger', !!options.danger);
@@ -2696,7 +2918,6 @@ function requestGlassConfirmation(options) {
             modal.classList.add('hidden');
             acceptBtn.removeEventListener('click', accept);
             cancelBtn.removeEventListener('click', cancel);
-            closeBtn.removeEventListener('click', cancel);
             modal.removeEventListener('click', onBackdrop);
             document.removeEventListener('keydown', onKeydown);
             pendingGlassConfirm = null;
@@ -2716,11 +2937,16 @@ function requestGlassConfirmation(options) {
         pendingGlassConfirm = finish;
         acceptBtn.addEventListener('click', accept);
         cancelBtn.addEventListener('click', cancel);
-        closeBtn.addEventListener('click', cancel);
         modal.addEventListener('click', onBackdrop);
         document.addEventListener('keydown', onKeydown);
         requestAnimationFrame(() => cancelBtn.focus());
     });
+}
+
+function requestDoubleConfirmation(firstOptions, secondOptions) {
+    const first = requestGlassConfirmation(firstOptions);
+    const requestSecond = ok => ok ? requestGlassConfirmation(secondOptions) : false;
+    return first && typeof first.then === 'function' ? first.then(requestSecond) : requestSecond(first);
 }
 
 function runAfterConfirmation(result, onConfirm) {
@@ -2745,6 +2971,23 @@ function getWeekKey(date = new Date()) {
     return `${year}-W${String(Math.ceil((day + start.getDay() + 1) / 7)).padStart(2, '0')}`;
 }
 
+function getTrainingDayStreak(referenceDate = new Date()) {
+    const dailyActivity = state.gamification && state.gamification.dailyActivity ? state.gamification.dailyActivity : {};
+    const cursor = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate());
+    if (!dailyActivity[getDateKey(cursor)] || !(dailyActivity[getDateKey(cursor)].hands > 0)) {
+        cursor.setDate(cursor.getDate() - 1);
+    }
+
+    let streak = 0;
+    while (streak < 3660) {
+        const activity = dailyActivity[getDateKey(cursor)];
+        if (!activity || !(activity.hands > 0)) break;
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+    }
+    return streak;
+}
+
 function getMasteryKey(mode, drill) {
     if (mode === 'REVIEW' && state.currentReviewItem) return getReviewSourceMode(state.currentReviewItem);
     if (drill) return `CUSTOM:${drill.id}`;
@@ -2757,6 +3000,16 @@ function unlockAchievement(id, label) {
     if (!state.gamification.achievements.some(item => item.id === id)) {
         state.gamification.achievements.push({ id, label, unlockedAt: new Date().toISOString() });
     }
+}
+
+function getBestStreak() {
+    const savedBest = Number(state.gamification && state.gamification.bestStreak) || 0;
+    return Math.max(savedBest, state.streak || 0);
+}
+
+function recordBestStreak() {
+    if (!state.gamification) state.gamification = getDefaultGamification();
+    state.gamification.bestStreak = getBestStreak();
 }
 
 function recordGamification(mode, isCorrect, drill) {
@@ -2855,6 +3108,12 @@ function addMistakeReplayItem(entry) {
         spot: entry.spot || entry.mode,
         stack: entry.stack || null,
         drillId: entry.drillId || null,
+        allStreetScenarioId: entry.allStreetScenarioId || null,
+        allStreetScenario: entry.allStreetScenario || null,
+        defendScenarioId: entry.defendScenarioId || null,
+        heroPosition: entry.heroPosition || entry.position || null,
+        villainPosition: entry.villainPosition || null,
+        openerPosition: entry.openerPosition || null,
         scenario: entry.scenario || '',
         userAction: entry.userAction,
         correctAction: entry.correctAction,
@@ -2916,8 +3175,8 @@ function recordAdImpression() {
 }
 
 function getAdServiceConfig() {
-    const source = (typeof window !== 'undefined' && window.PREFLOP_AD_CONFIG && typeof window.PREFLOP_AD_CONFIG === 'object')
-        ? window.PREFLOP_AD_CONFIG
+    const source = (typeof window !== 'undefined' && window.SPOTSENSE_AD_CONFIG && typeof window.SPOTSENSE_AD_CONFIG === 'object')
+        ? window.SPOTSENSE_AD_CONFIG
         : {};
     return {
         ...AD_SERVICE_DEFAULTS,
@@ -3014,7 +3273,7 @@ function renderMonetizationSlot() {
     return `
         <div class="support-slot" role="note">
             <div>
-                <strong>${t.donateSlotTitle || 'Support Preflop'}</strong>
+                <strong>${t.donateSlotTitle || 'Support SpotSense'}</strong>
                 <p>${t.donateSlotBody || 'Donations help keep the trainer free, offline-first, and account-free.'}</p>
             </div>
             <button class="btn-range-action" type="button" onclick="recordDonateIntent()">${t.donateCta || 'Donate'}</button>
@@ -3223,13 +3482,53 @@ function recordTrainingSessionResult(mode, isCorrect, mistakeLabel) {
     }
 }
 
+function isFocusSessionForDate(session, referenceDate = new Date()) {
+    if (!session || !session.startedAt) return false;
+    const startedAt = new Date(session.startedAt);
+    if (Number.isNaN(startedAt.getTime())) return false;
+    return getDateKey(startedAt) === getDateKey(referenceDate);
+}
+
+function canResumeFocusSession(session, referenceDate = new Date()) {
+    if (!isFocusSessionForDate(session, referenceDate)) return false;
+    const targetHands = Math.max(1, Number(session.targetHands) || TRAINING_SESSION_HANDS || 10);
+    const hands = Math.max(0, Number(session.hands) || 0);
+    return !session.completed && hands < targetHands;
+}
+
+function getDailyTrainingProgress(referenceDate = new Date()) {
+    const fallbackTarget = Math.max(1, Number(TRAINING_SESSION_HANDS) || 10);
+    const session = state.focusSession;
+    let target = fallbackTarget;
+    let completedHands = 0;
+    let active = false;
+    let completed = false;
+
+    if (isFocusSessionForDate(session, referenceDate)) {
+        target = Math.max(1, Number(session.targetHands) || fallbackTarget);
+        completedHands = Math.min(target, Math.max(0, Math.floor(Number(session.hands) || 0)));
+        active = !!session.active;
+        completed = !!session.completed || completedHands >= target;
+    }
+
+    const remaining = Math.max(0, target - completedHands);
+    return {
+        target,
+        completedHands,
+        remaining,
+        progress: Math.min(100, Math.max(0, Math.round((remaining / target) * 100))),
+        active,
+        completed,
+        started: active || completed || completedHands > 0
+    };
+}
+
 function getPersonalizedDashboardModel() {
     const t = I18N[state.lang] || I18N.en;
     const plan = getCurrentTrainingPlan();
     const profile = state.assessment && state.assessment.skillDimensions ? state.assessment.skillDimensions : {};
     const weekly = getWeeklySummary();
     const reviewCount = state.mistakeReplay && state.mistakeReplay.queue ? state.mistakeReplay.queue.length : 0;
-    const daily = state.gamification && state.gamification.dailyActivity ? state.gamification.dailyActivity[getDateKey()] : null;
     const focusTarget = plan.dailyDrill || (plan.adaptivePriorities && plan.adaptivePriorities[0]) || 'RFI';
     return {
         firstRun: !state.assessment && !state.assessmentSkipped && state.stats.totalHands === 0,
@@ -3240,8 +3539,76 @@ function getPersonalizedDashboardModel() {
         baselineLevel: profile.baselineLevel || (state.assessmentSkipped ? (t.assessmentSkipped || 'Assessment skipped') : (t.skillBaselineEmpty || 'Unrated')),
         weakestDimension: profile.weakestDimension ? getModeLabel(profile.weakestDimension, t) : getModeLabel(plan.dailyDrill || 'RFI', t),
         weekly,
-        dailyHands: daily ? daily.hands : 0
+        dailyProgress: getDailyTrainingProgress()
     };
+}
+
+function getHomeGreeting(t) {
+    const hour = new Date().getHours();
+    if (hour < 12) return t.homeGreetingMorning || 'Good morning';
+    if (hour < 18) return t.homeGreetingAfternoon || 'Good afternoon';
+    return t.homeGreetingEvening || 'Good evening';
+}
+
+const HOME_ICON_SVGS = {
+    'calendar-check': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>',
+    target: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+    flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-3.6-2.5-6-4.4-8.5-.4 2.1-1.5 3.6-3.3 4.7.2-2.5-1-4.4-3.1-6C8.4 8.7 5 10.6 5 15a7 7 0 0 0 7 7z"/><path d="M10 16a2 2 0 1 0 4 0c0-1.2-.6-2-1.6-3-.3.9-.9 1.5-1.7 1.9.1-1.1-.4-2-1.2-2.8-.1 1.7-1.5 2.5-1.5 3.9z"/></svg>',
+    trophy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M5 5H3v3a3 3 0 0 0 4 2.8"/><path d="M19 5h2v3a3 3 0 0 1-4 2.8"/></svg>',
+    'rotate-ccw': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>',
+    'book-open': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 5a5 5 0 0 1 7 0v16a5 5 0 0 0-7 0V5z"/><path d="M21 5a5 5 0 0 0-7 0v16a5 5 0 0 1 7 0V5z"/></svg>',
+    tags: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 13.5 13.5 20.5a2 2 0 0 1-2.8 0L3 12.8V4h8.8l8.7 8.7a2 2 0 0 1 0 2.8z"/><path d="M7.5 7.5h.01"/><path d="M14 4h3l4 4v3"/></svg>',
+    'hand-heart': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14l6 6"/><path d="M7 18l2-2h4c.6 0 1.2-.2 1.6-.6l5-4.8a2 2 0 0 0-2.8-2.8l-2.9 2.7"/><path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.5.6L4 15"/><path d="M12 5.5C10.5 4 8 5 8 7c0 2.2 4 4.5 4 4.5s4-2.3 4-4.5c0-2-2.5-3-4-1.5z"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 0 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 0 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1A1.7 1.7 0 0 0 10 3.2V3a2 2 0 0 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.2a1.7 1.7 0 0 0-1.4.9z"/></svg>',
+    'message-square': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>',
+    gauge: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 13a9 9 0 1 0-18 0"/><path d="M5 19h14"/><path d="M12 13l4-4"/><path d="M12 13h.01"/></svg>'
+};
+
+function renderHomeIcon(name, extraClass = '') {
+    const icon = HOME_ICON_SVGS[name] || HOME_ICON_SVGS.target;
+    const className = ['home-icon', extraClass].filter(Boolean).join(' ');
+    return `<span class="${className}" data-home-icon="${name}" aria-hidden="true">${icon}</span>`;
+}
+
+function getStartOfLocalWeek(date = new Date()) {
+    const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const daysSinceMonday = (start.getDay() + 6) % 7;
+    start.setDate(start.getDate() - daysSinceMonday);
+    return start;
+}
+
+function isSameLocalDate(a, b) {
+    return a.getFullYear() === b.getFullYear()
+        && a.getMonth() === b.getMonth()
+        && a.getDate() === b.getDate();
+}
+
+function renderHomeTrend(activeAccuracy = 0, referenceDate = new Date()) {
+    const today = referenceDate;
+    const weekStart = getStartOfLocalWeek(today);
+    const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const dailyActivity = state.gamification && state.gamification.dailyActivity ? state.gamification.dailyActivity : {};
+    const days = dayLabels.map((label, index) => {
+        const day = new Date(weekStart);
+        day.setDate(weekStart.getDate() + index);
+        const activity = dailyActivity[getDateKey(day)] || { hands: 0, correct: 0 };
+        const isToday = isSameLocalDate(day, today);
+        const accuracy = activity.hands > 0 ? pct(activity.correct, activity.hands) : (isToday ? activeAccuracy : 0);
+        return {
+            label,
+            active: isToday,
+            value: Math.max(8, accuracy || 0)
+        };
+    });
+    return `
+        <div class="home-trend" aria-hidden="true">
+            ${days.map(day => `
+                <span class="${day.active ? 'active' : ''}" style="--trend-value: ${day.value}%">
+                    <i></i><b>${day.label}</b>
+                </span>
+            `).join('')}
+        </div>
+    `;
 }
 
 window.renderPersonalizedDashboard = function () {
@@ -3250,27 +3617,129 @@ window.renderPersonalizedDashboard = function () {
     const t = I18N[state.lang] || I18N.en;
     const model = getPersonalizedDashboardModel();
     const firstRunClass = model.firstRun ? ' is-first-run' : '';
-    const focusMix = `70% ${model.dailyLabel} + 30% ${t.modeReviewMistakesShort || 'Review'}`;
+    const dailyCountdown = model.dailyProgress || getDailyTrainingProgress();
+    const dailyGoal = dailyCountdown.target;
+    const dailyRemaining = dailyCountdown.remaining;
+    const dailyProgress = dailyCountdown.progress;
+    const overallAccuracy = pct(state.stats.totalCorrect || 0, state.stats.totalHands || 0);
+    const startAction = model.firstRun ? 'startQuickDiagnostic()' : 'startFocusSession()';
+    const startLabel = model.firstRun
+        ? (t.quickStartCta || 'Start Quick Diagnostic')
+        : dailyCountdown.started && !dailyCountdown.completed
+            ? (t.homeContinue || 'Continue')
+            : (t.focusSessionCta || 'Start Drill');
+    const reviewLabel = (t.reviewMistakesCta || 'Review Mistakes ({count})').replace('{count}', model.reviewCount);
+    const drillsCompleted = Math.floor((state.stats.totalHands || 0) / Math.max(1, TRAINING_SESSION_HANDS || 10));
+    const bestStreak = getBestStreak();
     el.className = `personalized-dashboard glassmorphism${firstRunClass}`;
     el.innerHTML = `
-        <div class="personalized-main">
-            <div>
-                <span class="panel-kicker">${model.firstRun ? (t.quickStartKicker || 'Quick Start') : (t.todayDrillKicker || "Today's Training")}</span>
-                <h2>${model.firstRun ? (t.quickStartTitle || 'Quick Diagnostic') : (t.focusSessionTitle || 'Focus Session')}</h2>
-                <p>${model.firstRun ? (t.quickStartBody || 'Start with a short diagnostic to build your first training plan.') : escapeHtml((t.focusSessionMix || '{mix} based on {leak}.').replace('{mix}', focusMix).replace('{leak}', model.topLeak))}</p>
+        <div class="home-shell">
+            <header class="home-greeting">
+                <div>
+                    <h1>${escapeHtml(getHomeGreeting(t))}</h1>
+                    <p>${t.homeReady || 'Ready to get better today?'}</p>
+                </div>
+            <div class="home-streak">
+                ${renderHomeIcon('calendar-check')}
+                    <strong>${getTrainingDayStreak()}</strong>
+                    <small>${t.homeDayStreak || 'day streak'}</small>
+                </div>
+            </header>
+
+            <section class="home-daily-card" style="--home-progress: ${dailyProgress}%">
+                <div class="home-daily-head">
+                    ${renderHomeIcon('target', 'home-card-icon')}
+                    <div class="home-daily-copy">
+                        <h2>${model.firstRun ? (t.quickStartTitle || 'Quick Diagnostic') : (t.todayDrillKicker || 'Daily Drill')}</h2>
+                        <p>${dailyGoal} ${t.homeScenarios || 'scenarios'}</p>
+                    </div>
+                </div>
+                <div class="home-daily-progress-row">
+                    <div class="home-ring" aria-label="${dailyRemaining} of ${dailyGoal}">
+                        <strong>${dailyRemaining}/${dailyGoal}</strong>
+                    </div>
+                    <div class="home-focus-lines">
+                        <span>${t.homeFocus || 'Focus'}: ${escapeHtml(model.dailyLabel)}</span>
+                        <span>${escapeHtml(model.topLeak)}</span>
+                    </div>
+                </div>
+                <button class="home-continue" type="button" onclick="${startAction}">${startLabel}</button>
+            </section>
+
+            <section class="home-progress-card">
+                <div>
+                    <h3>${t.homeTodayProgress || "Today's Progress"}</h3>
+                    <strong>${overallAccuracy || 0}%</strong>
+                    <p>${t.statsOverallAccuracy || 'Avg Accuracy'}</p>
+                </div>
+                ${renderHomeTrend(overallAccuracy)}
+            </section>
+
+            <div class="home-mini-grid">
+                <section class="home-mini-card">
+                    ${renderHomeIcon('flame')}
+                    <p>${t.homeBestStreak || 'Best Streak'}</p>
+                    <strong>${bestStreak} ${t.statsHands || 'hands'}</strong>
+                </section>
+                <section class="home-mini-card">
+                    ${renderHomeIcon('trophy')}
+                    <p>${t.homeDrillsCompleted || 'Drills Completed'}</p>
+                    <strong>${drillsCompleted}</strong>
+                </section>
             </div>
-            <div class="personalized-actions">
-                <button class="btn-range-action" type="button" onclick="${model.firstRun ? 'startQuickDiagnostic()' : 'startFocusSession()'}">${model.firstRun ? (t.quickStartCta || 'Start Quick Diagnostic') : (t.focusSessionCta || 'Start Focus Session')}</button>
-                <button class="btn-range-action btn-range-clear" type="button" onclick="startMistakeReplay()" ${model.reviewCount ? '' : 'disabled'}>${(t.reviewMistakesCta || 'Review Mistakes ({count})').replace('{count}', model.reviewCount)}</button>
-            </div>
-        </div>
-        <div class="personalized-metrics">
-            <div><span>${t.skillBaseline || 'Baseline'}</span><strong>${escapeHtml(model.baselineLevel)}</strong></div>
-            <div><span>${t.skillWeakest || 'Focus'}</span><strong>${escapeHtml(model.weakestDimension)}</strong></div>
-            <div><span>${t.modeReviewMistakesShort || 'Review'}</span><strong>${model.reviewCount}</strong></div>
-            <div><span>${t.weeklyHands || 'This week'}</span><strong>${model.weekly.hands}</strong></div>
+
+            <button class="home-review-card" type="button" onclick="setActiveTab('review')">
+                ${renderHomeIcon('rotate-ccw')}
+                <div>
+                    <strong>${t.reviewMistakesTitle || 'Review Mistakes'}</strong>
+                    <p>${model.reviewCount} ${t.homeReviewScenarios || 'scenarios to review'}</p>
+                </div>
+                <b aria-hidden="true">›</b>
+            </button>
+
+            <section class="home-hub-card">
+                <div class="home-hub-header">
+                    <div>
+                        <span class="panel-kicker">${t.homeHubKicker || 'App Hub'}</span>
+                        <h3>${t.homeHubTitle || 'Settings & learning'}</h3>
+                    </div>
+                </div>
+                <div class="home-tool-grid">
+                    <button class="home-tool-button" type="button" onclick="openInfoModalPage('rules')">
+                        ${renderHomeIcon('book-open')}
+                        <strong>${t.homeRules || 'Texas Holdem Rules'}</strong>
+                        <small>${t.homeRulesSub || 'Position, hand ranks, core strategy'}</small>
+                    </button>
+                    <button class="home-tool-button" type="button" onclick="openInfoModalPage('glossary')">
+                        ${renderHomeIcon('tags')}
+                        <strong>${t.homeGlossary || 'Glossary'}</strong>
+                        <small>${t.homeGlossarySub || 'Poker terms in one place'}</small>
+                    </button>
+                    <button class="home-tool-button" type="button" onclick="openDonateModal()">
+                        ${renderHomeIcon('hand-heart')}
+                        <strong>${t.homeDonate || t.homeSupport || t.supportTabDonate || 'Support / Donate'}</strong>
+                        <small>${t.homeDonateSub || t.homeSupportSub || 'Recommend or sponsor development'}</small>
+                    </button>
+                    <button class="home-tool-button" type="button" onclick="openAboutModal()">
+                        ${renderHomeIcon('settings')}
+                        <strong>${t.homeAboutSettings || t.supportTabAbout || 'About & Settings'}</strong>
+                        <small>${t.homeAboutSettingsSub || 'Language and app information'}</small>
+                    </button>
+                    <button class="home-tool-button" type="button" onclick="openFeedbackModal()">
+                        ${renderHomeIcon('message-square')}
+                        <strong>${t.homeFeedback || t.supportTabFeedback || 'Feedback'}</strong>
+                        <small>${t.homeFeedbackSub || 'Send issues and suggestions'}</small>
+                    </button>
+                    <button class="home-tool-button" type="button" onclick="openAssessmentModal()">
+                        ${renderHomeIcon('gauge')}
+                        <strong>${t.homeAssessment || 'Ability Assessment'}</strong>
+                        <small>${escapeHtml(model.baselineLevel)}</small>
+                    </button>
+                </div>
+            </section>
         </div>
     `;
+    syncLanguageControls();
 };
 
 function setHiddenById(id, hidden = true) {
@@ -3284,22 +3753,23 @@ function isPlanTrainingActive() {
 }
 
 function syncAppTabPanels() {
-    const activeTab = ['practice', 'plan', 'progress'].includes(state.activeTab) ? state.activeTab : 'practice';
+    const activeTab = ['practice', 'plan', 'review', 'progress'].includes(state.activeTab) ? state.activeTab : 'plan';
     state.activeTab = activeTab;
-    const showPlanTraining = isPlanTrainingActive();
     const practicePanel = document.getElementById('practice-panel');
+    if (document.body && document.body.dataset) document.body.dataset.activeTab = activeTab;
 
-    setHiddenById('practice-panel', activeTab !== 'practice' && !showPlanTraining);
+    setHiddenById('practice-panel', activeTab !== 'practice');
     setHiddenById('plan-panel', activeTab !== 'plan');
-    setHiddenById('progress-panel', activeTab !== 'progress');
+    setHiddenById('progress-panel', activeTab !== 'progress' && activeTab !== 'review');
     setHiddenById('personalized-dashboard', activeTab !== 'plan');
     setHiddenById('header-mode-control', activeTab !== 'practice');
     if (practicePanel && practicePanel.classList) {
-        practicePanel.classList.toggle('plan-training-active', showPlanTraining);
+        practicePanel.classList.toggle('plan-training-active', false);
     }
-    ['practice', 'plan', 'progress'].forEach(item => {
-        const tabEl = document.getElementById(`tab-${item}`);
-        if (tabEl && tabEl.classList) tabEl.classList.toggle('active', item === activeTab);
+    document.querySelectorAll('[data-app-tab]').forEach(tabEl => {
+        const isActive = tabEl.getAttribute('data-app-tab') === activeTab;
+        if (tabEl.classList) tabEl.classList.toggle('active', isActive);
+        tabEl.setAttribute('aria-current', isActive ? 'page' : 'false');
     });
 }
 
@@ -3329,29 +3799,49 @@ function syncLanguageControls() {
     const option = getLanguageOption(state.lang);
     const t = I18N[state.lang] || I18N.en;
     const label = t.languageLabel || 'Language';
-    const select = document.getElementById('language-select');
-    if (select) {
+    const syncSelect = (select, compact = false) => {
+        if (!select) return;
         select.setAttribute('aria-label', `${label}: ${option.label}`);
         select.title = `${label}: ${option.label}`;
-        const hasCompactOptions = select.options
+        const hasOptions = select.options
             && select.options.length === LANGUAGE_OPTIONS.length
             && LANGUAGE_OPTIONS.every((item, index) => {
                 const selectOption = select.options[index];
+                const visibleLabel = compact ? (item.shortLabel || item.label) : item.label;
                 return selectOption
                     && selectOption.value === item.code
-                    && selectOption.textContent === (item.shortLabel || item.label);
+                    && selectOption.textContent === visibleLabel;
             });
-        if (!hasCompactOptions) {
+        if (!hasOptions) {
             select.innerHTML = LANGUAGE_OPTIONS
                 .map(item => {
-                    const visibleLabel = item.shortLabel || item.label;
+                    const visibleLabel = compact ? (item.shortLabel || item.label) : item.label;
                     return `<option value="${escapeHtml(item.code)}" title="${escapeHtml(item.label)}">${escapeHtml(visibleLabel)}</option>`;
                 })
                 .join('');
         }
         select.value = option.code;
-    }
+    };
+    syncSelect(document.getElementById('language-select'), true);
+    syncSelect(document.getElementById('home-language-select'), false);
+    syncSelect(document.getElementById('support-language-select'), false);
 }
+
+function syncFeedbackPreferenceControls() {
+    const prefs = getDefaultFeedbackPreferences(state.feedbackPreferences || {});
+    const soundToggle = document.getElementById('sound-effects-toggle');
+    const wrongAnswerToggle = document.getElementById('wrong-answer-feedback-toggle');
+    if (soundToggle) soundToggle.checked = prefs.soundEffectsEnabled;
+    if (wrongAnswerToggle) wrongAnswerToggle.checked = prefs.wrongAnswerFeedbackEnabled;
+}
+
+window.setFeedbackPreference = function (key, value) {
+    if (!['soundEffectsEnabled', 'wrongAnswerFeedbackEnabled'].includes(key)) return;
+    state.feedbackPreferences = getDefaultFeedbackPreferences(state.feedbackPreferences || {});
+    state.feedbackPreferences[key] = !!value;
+    saveToStorage();
+    syncFeedbackPreferenceControls();
+};
 
 function shouldShowFirstRunFlow() {
     return !state.firstRunCompleted
@@ -3543,6 +4033,161 @@ function getReviewTrendModel(weekly, t) {
     };
 }
 
+function getStatsTrendDeltaLabel(weekly, t) {
+    if (!weekly.previousHands) return '--';
+    return `${weekly.trend > 0 ? '+' : ''}${weekly.trend}%`;
+}
+
+function renderStatsTrendPanel(t = I18N[state.lang] || I18N.en) {
+    const dailyActivity = state.gamification && state.gamification.dailyActivity ? state.gamification.dailyActivity : {};
+    const today = new Date();
+    const points = Array.from({ length: 7 }, (_, index) => {
+        const date = new Date(today);
+        date.setDate(today.getDate() - (6 - index));
+        const activity = dailyActivity[getDateKey(date)] || { hands: 0, correct: 0 };
+        const accuracy = activity.hands ? pct(activity.correct || 0, activity.hands || 0) : 0;
+        return {
+            active: index === 6,
+            accuracy,
+            hands: activity.hands || 0,
+            value: activity.hands ? Math.max(10, accuracy) : 6,
+            label: `${date.getMonth() + 1}/${date.getDate()}`
+        };
+    });
+    return `
+        <div class="stats-trend-panel" aria-label="${escapeHtml(t.statsSevenDayTrend || 'Seven day accuracy trend')}">
+            <div class="stats-trend-header">
+                <span>${t.statsLastSevenDays || 'Last 7 days'}</span>
+                <small>${t.statsDailyAccuracyHint || 'Daily accuracy'}</small>
+            </div>
+            <div class="stats-day-chart" role="list">
+            ${points.map(point => {
+                const title = point.hands
+                    ? `${point.label}: ${point.accuracy}% / ${point.hands} ${t.statsHands || 'hands'}`
+                    : `${point.label}: ${t.handAccuracyNoData || 'No data'}`;
+                return `
+                    <div class="stats-day ${point.hands ? '' : 'is-empty'} ${point.active ? 'active' : ''}" role="listitem" aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}">
+                        <span class="stats-day-value">${point.hands ? `${point.accuracy}%` : '--'}</span>
+                        <span class="stats-day-bar" style="--point: ${point.value}%"></span>
+                        <span class="stats-day-label">${point.active ? (t.statsToday || 'Today') : point.label}</span>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+        </div>
+    `;
+}
+
+function getComboForChartCell(row, col) {
+    const r1 = CHART_RANKS[row];
+    const r2 = CHART_RANKS[col];
+    if (row === col) return r1 + r2;
+    return col > row ? `${r1}${r2}s` : `${r2}${r1}o`;
+}
+
+function getComboStatsSource() {
+    const byCombo = state.stats && state.stats.byCombo ? state.stats.byCombo : {};
+    if (Object.keys(byCombo).length) return byCombo;
+
+    const fallback = {};
+    (state.handHistory || []).forEach(item => {
+        if (!item || !item.combo) return;
+        if (!fallback[item.combo]) fallback[item.combo] = { hands: 0, correct: 0 };
+        fallback[item.combo].hands++;
+        if (item.correct) fallback[item.combo].correct++;
+    });
+    return fallback;
+}
+
+function getHandAccuracySummary(t = I18N[state.lang] || I18N.en) {
+    const rows = Object.entries(getComboStatsSource())
+        .filter(([, data]) => data && data.hands)
+        .map(([combo, data]) => ({
+            combo,
+            hands: data.hands || 0,
+            correct: data.correct || 0,
+            accuracy: pct(data.correct || 0, data.hands || 0)
+        }));
+    const totalHands = rows.reduce((sum, row) => sum + row.hands, 0);
+    const totalCorrect = rows.reduce((sum, row) => sum + row.correct, 0);
+    const weakest = rows.length
+        ? rows.slice().sort((a, b) => a.accuracy - b.accuracy || b.hands - a.hands)[0]
+        : null;
+    return {
+        trainedCombos: rows.length,
+        totalCombos: ALL_COMBOS.length,
+        totalHands,
+        averageAccuracy: pct(totalCorrect, totalHands),
+        weakestLabel: weakest
+            ? `${weakest.combo} ${weakest.accuracy}%`
+            : (t.handAccuracyEmpty || 'Train more hands to build this heatmap.')
+    };
+}
+
+function getHandAccuracyClass(data) {
+    if (!data || !data.hands) return 'no-data';
+    const accuracy = pct(data.correct || 0, data.hands || 0);
+    if (accuracy >= 80) return 'mastered';
+    if (accuracy >= 60) return 'review';
+    return 'leak';
+}
+
+function renderMiniRangeGrid(t = I18N[state.lang] || I18N.en) {
+    const statsByCombo = getComboStatsSource();
+    const cells = [];
+    for (let row = 0; row < CHART_RANKS.length; row++) {
+        for (let col = 0; col < CHART_RANKS.length; col++) {
+            const combo = getComboForChartCell(row, col);
+            const data = statsByCombo[combo] || { hands: 0, correct: 0 };
+            const accuracy = pct(data.correct || 0, data.hands || 0);
+            const cls = getHandAccuracyClass(data);
+            const label = data.hands
+                ? (t.handAccuracyCellLabel || '{combo}: {accuracy}% over {hands} hands')
+                    .replace('{combo}', combo)
+                    .replace('{accuracy}', accuracy)
+                    .replace('{hands}', data.hands)
+                : (t.handAccuracyCellNoData || '{combo}: no data').replace('{combo}', combo);
+            cells.push(`
+                <span class="${cls}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">
+                    <b>${combo}</b>
+                </span>
+            `);
+        }
+    }
+    return `<div class="mini-range-grid hand-accuracy-grid" role="img" aria-label="${escapeHtml(t.handAccuracyTitle || 'Accuracy by hand')}">${cells.join('')}</div>`;
+}
+
+function renderPositionLeakCards(positionRows, t) {
+    const byKey = Object.fromEntries(positionRows.map(row => [row.key, row]));
+    return POSITIONS.map(pos => {
+        const row = byKey[pos] || { label: pos, hands: 0, accuracy: 0 };
+        const isLeak = row.hands > 0 && row.accuracy < 65;
+        const status = !row.hands
+            ? (t.handAccuracyNoData || 'No data')
+            : isLeak ? (t.reviewLeakLabel || 'Leak') : (t.reviewGoodLabel || 'Good');
+        return `
+            <div class="position-leak-card ${isLeak ? 'is-leak' : ''}">
+                <strong>${escapeHtml(pos)}</strong>
+                <span>${row.hands ? `${row.accuracy}%` : '--'}</span>
+                <small>${status}</small>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderMistakeQueueList(mistakeSpots, t) {
+    if (!mistakeSpots.length) {
+        return `<li><span class="mistake-x">!</span><strong>${t.reviewNoMistakes || 'No mistake spots queued.'}</strong><em>${t.reviewNoBreakdownData || 'No data yet.'}</em></li>`;
+    }
+    return mistakeSpots.map(item => `
+        <li>
+            <span class="mistake-x">x</span>
+            <strong>${escapeHtml(item.label)}</strong>
+            <em>${item.count}x${item.action ? ` / ${escapeHtml(getCoreActionLabel(item.action, t))}` : ''}</em>
+        </li>
+    `).join('');
+}
+
 function renderProgressDashboard() {
     const el = document.getElementById('progress-dashboard');
     if (!el) return;
@@ -3553,52 +4198,111 @@ function renderProgressDashboard() {
     const weakness = getReviewWeaknessModel(t, mistakeSpots);
     const trend = getReviewTrendModel(weekly, t);
     const positionRows = getStatRows(state.stats.byPosition, key => key, POSITIONS);
-    const stackRows = getStatRows(state.stats.byStackDepth, key => getStackDepthLabel(key, t), ['short', 'medium', 'deep']);
-    const spotRows = getStatRows(state.stats.bySpotType, key => getSpotTypeLabel(key, t));
-    const mistakeItems = mistakeSpots.length
-        ? mistakeSpots.map(item => `
-            <li>
-                <strong>${escapeHtml(item.label)}</strong>
-                ${item.count}x${item.combos.length ? ` · ${escapeHtml(item.combos.join(', '))}` : ''}${item.action ? ` · ${escapeHtml(getCoreActionLabel(item.action, t))}` : ''}
-            </li>
-        `).join('')
-        : `<li>${t.reviewNoMistakes || 'No mistake spots queued.'}</li>`;
+    const overallAccuracy = profile.overallAccuracy || pct(state.stats.totalCorrect, state.stats.totalHands);
+    const handSummary = getHandAccuracySummary(t);
+    const mistakeItems = renderMistakeQueueList(mistakeSpots, t);
+
+    if (state.activeTab === 'review') {
+        el.className = 'progress-dashboard glassmorphism review-studio';
+        el.innerHTML = `
+            <div class="stats-topbar">
+                <div>
+                    <span class="panel-kicker">${t.appTabReview || 'Review'}</span>
+                    <h2>${t.reviewMistakesTitle || 'Review Mistakes'}</h2>
+                </div>
+                <button class="stats-filter" type="button" onclick="startMistakeReplay()">${t.focusSessionCta || 'Start Drill'}</button>
+            </div>
+            <section class="stats-card mistake-studio-card">
+                <div class="stats-card-header">
+                    <h3>${t.reviewTopMistakeSpots || 'Most missed spots'}</h3>
+                    <span>${mistakeSpots.length}</span>
+                </div>
+                <ul class="stats-mistake-list">${mistakeItems}</ul>
+            </section>
+            <section class="stats-card">
+                <div class="stats-card-header">
+                    <h3>${t.reviewTodayWeakness || "Today's weakness"}</h3>
+                    <span>${escapeHtml(weakness.detail)}</span>
+                </div>
+                <p class="stats-focus-copy">${escapeHtml(weakness.label)}</p>
+            </section>
+            <section class="stats-card">
+                <div class="stats-card-header">
+                    <h3>${t.reviewPositionPerformance || 'By position'}</h3>
+                    <button type="button" onclick="setActiveTab('progress')">${t.appTabProgress || 'Stats'}</button>
+                </div>
+                <div class="position-leak-grid">${renderPositionLeakCards(positionRows, t)}</div>
+            </section>
+        `;
+        return;
+    }
+
+    el.className = 'progress-dashboard glassmorphism stats-studio';
     el.innerHTML = `
-        <span class="panel-kicker">${t.appTabProgress || 'Review'}</span>
-        <h2>${escapeHtml(profile.baselineLevel || t.skillBaselineEmpty || 'Unrated')}</h2>
-        <div class="review-summary-grid">
-            <div class="review-insight">
-                <span>${t.reviewTodayWeakness || "Today's weakness"}</span>
-                <strong>${escapeHtml(weakness.label)}</strong>
-                <p>${escapeHtml(weakness.detail)}</p>
-            </div>
-            <div class="review-insight">
-                <span>${t.reviewRecentImprovement || 'Recent improvement'}</span>
-                <strong>${escapeHtml(trend.value)}</strong>
-                <p>${escapeHtml(trend.detail)}</p>
-            </div>
-            <div class="review-insight">
-                <span>${t.statsAccuracy || 'Accuracy'}</span>
-                <strong>${profile.overallAccuracy || pct(state.stats.totalCorrect, state.stats.totalHands)}%</strong>
-                <p>${state.stats.totalHands || 0} ${t.statsHands || 'hands'} · ${weekly.hands || 0} ${t.weeklyHands || 'this week'}</p>
-            </div>
+        <div class="stats-topbar">
+            <h2>${t.statsStudioTitle || 'Training Stats'}</h2>
+            <button class="stats-filter" type="button">${t.statsLifetimeFilter || 'All'}</button>
         </div>
-        <h3>${t.reviewTopMistakeSpots || 'Most missed spots'}</h3>
-        <ul class="review-mistake-list">${mistakeItems}</ul>
-        <div class="review-breakdown-grid">
-            <section class="review-breakdown">
-                <h3>${t.reviewPositionPerformance || 'By position'}</h3>
-                ${renderReviewTable(positionRows, t)}
-            </section>
-            <section class="review-breakdown">
-                <h3>${t.reviewStackPerformance || 'By stack depth'}</h3>
-                ${renderReviewTable(stackRows, t)}
-            </section>
-            <section class="review-breakdown">
-                <h3>${t.reviewSpotPerformance || 'By spot type'}</h3>
-                ${renderReviewTable(spotRows, t)}
-            </section>
-        </div>
+        <section class="stats-card stats-accuracy-card">
+            <div class="stats-accuracy-header">
+                <div>
+                    <h3>${t.statsOverallAccuracy || 'Overall Accuracy'}</h3>
+                    <p>${t.statsAllTrainingLabel || 'All training hands'}</p>
+                </div>
+                <span class="stats-week-pill">${escapeHtml((t.statsThisWeekHands || '{hands} this week')
+                    .replace('{hands}', weekly.hands || 0)
+                    .replace('{unit}', t.statsHands || 'hands'))}</span>
+            </div>
+            <div class="stats-accuracy-main">
+                <strong>${overallAccuracy || 0}%</strong>
+                <div class="stats-kpi-list" aria-label="${escapeHtml(t.statsOverallAccuracy || 'Overall Accuracy')}">
+                    <span>
+                        <b>${state.stats.totalCorrect || 0}</b>
+                        <em>${t.statsCorrectHands || 'Correct'}</em>
+                    </span>
+                    <span>
+                        <b>${state.stats.totalHands || 0}</b>
+                        <em>${t.statsTotalHandsLabel || 'Total hands'}</em>
+                    </span>
+                    <span>
+                        <b>${escapeHtml(getStatsTrendDeltaLabel(weekly, t))}</b>
+                        <em>${t.statsWeeklyTrendLabel || 'Weekly trend'}</em>
+                    </span>
+                </div>
+            </div>
+            ${renderStatsTrendPanel(t)}
+        </section>
+        <section class="stats-card range-coverage-card hand-accuracy-card">
+            <div class="stats-card-header">
+                <div>
+                    <h3>${t.handAccuracyTitle || 'Accuracy by Hand'}</h3>
+                </div>
+                <strong>${handSummary.totalHands ? `${handSummary.averageAccuracy}%` : '--'}</strong>
+            </div>
+            <div class="range-coverage-body hand-accuracy-body">
+                ${renderMiniRangeGrid(t)}
+                <div class="range-legend">
+                    <span><i class="mastered"></i>${t.handAccuracyMastered || '80%+'}</span>
+                    <span><i class="review"></i>${t.handAccuracyReview || '60-79%'}</span>
+                    <span><i class="leak"></i>${t.handAccuracyLeak || '<60%'}</span>
+                    <span><i class="no-data"></i>${t.handAccuracyNoData || 'No data'}</span>
+                </div>
+            </div>
+        </section>
+        <section class="stats-card">
+            <div class="stats-card-header">
+                <h3>${t.positionAccuracyTitle || t.reviewPositionPerformance || 'Accuracy by Position'}</h3>
+                <button type="button" onclick="setActiveTab('review')">${t.appTabReview || 'Review'}</button>
+            </div>
+            <div class="position-leak-grid">${renderPositionLeakCards(positionRows, t)}</div>
+        </section>
+        <section class="stats-card stats-reset-card">
+            <div>
+                <h3>${t.statsResetPanelTitle || 'Reset training stats'}</h3>
+                <p>${t.statsResetPanelBody || 'Clear lifetime accuracy, hand history, mistake queue, and adaptive weights.'}</p>
+            </div>
+            <button class="btn-reset-stats" type="button" onclick="resetStats()">${t.statsReset || 'Reset All Stats'}</button>
+        </section>
     `;
 }
 
@@ -3622,16 +4326,16 @@ window.renderAppShell = function () {
     setHiddenById('first-run-flow', true);
     setHiddenById('app-header', false);
     if (document.body && document.body.classList) document.body.classList.remove('is-first-run');
-    window.setActiveTab(state.activeTab || 'practice');
+    window.setActiveTab(state.activeTab || 'plan');
     syncLanguageControls();
 };
 
 window.setActiveTab = function (tab) {
-    state.activeTab = ['practice', 'plan', 'progress'].includes(tab) ? tab : 'practice';
+    state.activeTab = ['practice', 'plan', 'review', 'progress'].includes(tab) ? tab : 'plan';
     setHiddenById('practice-mode-panel', !!(state.diagnosticSession && state.diagnosticSession.active));
     syncAppTabPanels();
     if (state.activeTab === 'plan') renderPersonalizedDashboard();
-    if (state.activeTab === 'progress') renderProgressDashboard();
+    if (state.activeTab === 'review' || state.activeTab === 'progress') renderProgressDashboard();
     saveToStorage();
 };
 
@@ -3655,7 +4359,7 @@ window.skipFirstRunFlow = function () {
     skipAssessment();
     state.firstRunCompleted = true;
     state.firstRunStage = 'completed';
-    state.activeTab = 'practice';
+    state.activeTab = 'plan';
     state.diagnosticSession = null;
     state.focusSession = null;
     saveToStorage();
@@ -3676,21 +4380,33 @@ window.startFirstTrainingFromProfile = function () {
 };
 
 window.startFocusSession = function (options = {}) {
-    state.focusSession = createFocusSession(TRAINING_SESSION_HANDS);
-    const nextTab = options.activeTab || 'plan';
+    if (!canResumeFocusSession(state.focusSession) || options.reset) {
+        state.focusSession = createFocusSession(TRAINING_SESSION_HANDS);
+    } else {
+        state.focusSession.active = true;
+    }
+    const nextTab = options.activeTab || 'practice';
     state.activeTab = nextTab;
     if (typeof window.setActiveTab === 'function') window.setActiveTab(nextTab);
     startFocusSessionTurn();
     syncAppTabPanels();
 };
 
+function hideSessionSummaryModal() {
+    const modal = document.getElementById('session-summary-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
 window.startTodayDrill = function () {
-    window.startFocusSession();
+    hideSessionSummaryModal();
+    if (typeof window.closeAdModal === 'function') {
+        window.closeAdModal();
+    }
+    window.startFocusSession({ activeTab: 'practice' });
 };
 
 window.closeSessionSummary = function () {
-    const modal = document.getElementById('session-summary-modal');
-    if (modal) modal.classList.add('hidden');
+    hideSessionSummaryModal();
     renderPersonalizedDashboard();
 };
 
@@ -3701,7 +4417,7 @@ window.recordDonateIntent = function () {
     if (typeof window.open === 'function') {
         window.open(DONATE_URL, '_blank', 'noopener,noreferrer');
     }
-    showToast((I18N[state.lang] || I18N.en).donateThanks || 'Thanks for supporting Preflop.', 'success');
+    showToast((I18N[state.lang] || I18N.en).donateThanks || 'Thanks for supporting SpotSense.', 'success');
 };
 
 function readSupportFeedbackForm() {
@@ -3734,7 +4450,7 @@ function resetSupportFeedbackForm(formData) {
 function buildSupportFeedbackPayload(feedback) {
     const currentCombo = state.currentHand ? getComboName(state.currentHand) : '';
     return {
-        _subject: 'Poker Preflop Trainer Feedback',
+        _subject: 'SpotSense Poker Trainer Feedback',
         email: feedback.email,
         category: feedback.category,
         message: feedback.message,
@@ -3776,7 +4492,7 @@ window.submitSupportFeedback = async function (event) {
         });
         if (!response || !response.ok) throw new Error(`Feedback service returned ${response ? response.status : 'no response'}.`);
         resetSupportFeedbackForm(feedback);
-        showToast(t.supportFeedbackThanks || 'Feedback sent. Thanks for helping improve Preflop.', 'success');
+        showToast(t.supportFeedbackThanks || 'Feedback sent. Thanks for helping improve SpotSense.', 'success');
     } catch (error) {
         console.warn('Could not submit feedback', error);
         showToast(t.supportFeedbackError || 'Could not send feedback. Please try again when you are online.', 'error');
@@ -3849,18 +4565,29 @@ function evaluateCustomDrill(hand, drill) {
 
     let action = 'Fold';
     if (drill.type === DRILL_TYPES.RFI_FOCUS) {
-        const openRange = drill.ranges && drill.ranges.open;
+        const openRange = getDrillRangeCode(drill, 'open') || getDrillRangeCode(drill, 'raise');
         const builtIn = RFI_RANGES[state.currentPosition] || new Set();
         const shouldRaise = openRange ? rangeCodeHasPlayableCombo(openRange, combo) : builtIn.has(combo);
         action = shouldRaise ? 'Raise' : 'Fold';
     } else if (drill.type === DRILL_TYPES.DEFENSE_VS_OPEN || drill.type === DRILL_TYPES.FACING_3BET) {
-        if (rangeCodeHasPlayableCombo(drill.ranges.raise, combo)) {
-            action = drill.allowedActions && drill.allowedActions.includes('All-In') && !drill.allowedActions.includes('Raise') ? 'All-In' : 'Raise';
-        } else if (rangeCodeHasPlayableCombo(drill.ranges.call, combo)) {
-            action = 'Call';
+        const raiseRange = getDrillRangeCode(drill, 'raise');
+        const callRange = getDrillRangeCode(drill, 'call');
+        if (raiseRange || callRange) {
+            if (rangeCodeHasPlayableCombo(raiseRange, combo)) {
+                action = drill.allowedActions && drill.allowedActions.includes('All-In') && !drill.allowedActions.includes('Raise') ? 'All-In' : 'Raise';
+            } else if (rangeCodeHasPlayableCombo(callRange, combo)) {
+                action = 'Call';
+            }
+        } else if (drill.type === DRILL_TYPES.DEFENSE_VS_OPEN) {
+            const ctx = getCurrentCustomDrillContext(drill) || {};
+            const sc = getDefenseScenarioForPositions(ctx.heroPosition || drill.heroPosition, ctx.openerPosition || drill.openerPosition);
+            if (sc.THREE_BET && sc.THREE_BET.has(combo)) action = 'Raise';
+            else if (sc.CALL && sc.CALL.has(combo)) action = 'Call';
+        } else {
+            action = getDefaultFacingThreeBetAction(combo);
         }
     } else if (drill.type === DRILL_TYPES.PUSH_FOLD) {
-        const shoveRange = drill.ranges && drill.ranges.shove;
+        const shoveRange = getDrillRangeCode(drill, 'shove') || getDrillRangeCode(drill, 'raise');
         const stackRanges = PUSH_RANGES_BY_STACK[String(drill.stackBb)] || PUSH_RANGES_BY_STACK[state.currentStack] || PUSH_10BB;
         const builtIn = stackRanges[state.currentPosition] || new Set();
         const shouldShove = shoveRange ? rangeCodeHasPlayableCombo(shoveRange, combo) : builtIn.has(combo);
@@ -3882,6 +4609,7 @@ function evaluateCustomDrill(hand, drill) {
 
 function evaluateAllStreet(hand, scenario = getCurrentAllStreetScenario()) {
     const combo = getComboName(hand);
+    const exactCombos = getExactComboNames(hand);
     if (!scenario) return { action: 'Fold', explanation: `${combo}: no all-street scenario is active.` };
 
     let action = scenario.defaultAction || 'Fold';
@@ -3897,7 +4625,7 @@ function evaluateAllStreet(hand, scenario = getCurrentAllStreetScenario()) {
     } else {
         const comboActions = scenario.comboActions || {};
         for (const [candidateAction, combos] of Object.entries(comboActions)) {
-            if (Array.isArray(combos) && combos.includes(combo)) {
+            if (Array.isArray(combos) && (combos.includes(combo) || exactCombos.some(exactCombo => combos.includes(exactCombo)))) {
                 action = candidateAction;
                 break;
             }
@@ -3989,52 +4717,54 @@ function updateScenarioUI() {
     const t = I18N[state.lang] || I18N.en;
     const pos = t.position[state.currentPosition] || state.currentPosition;
     let tags = [];
-    let badge = '';
     let tableModel = {};
     const openText = t.scenarioTagOpen || 'open';
     const firstInText = t.scenarioTagFirstIn || 'First in';
     const reviewText = t.scenarioTagReview || t.modeReviewMistakesShort || 'Review';
+    const openSizeTag = size => `${openText} ${size}bb`;
+    const threeBetSizeTag = size => `3-Bet ${size}bb`;
     const buildHeadsUpModel = (hero, villain = '') => ({
         positions: [
-            hero ? { role: 'hero', icon: '', label: getRolePositionLabel('hero', hero, t), aria: getRolePositionLabel('hero', hero, t) } : null,
-            villain ? { role: 'villain', icon: '', label: getRolePositionLabel('villain', villain, t), aria: getRolePositionLabel('villain', villain, t) } : null
+            hero ? { role: 'hero', icon: '', position: hero, label: getRolePositionLabel('hero', hero, t), aria: getRolePositionLabel('hero', hero, t) } : null,
+            villain ? { role: 'villain', icon: '', position: villain, label: getRolePositionLabel('villain', villain, t), aria: getRolePositionLabel('villain', villain, t) } : null
         ].filter(Boolean)
     });
     renderBoardCards([]);
     renderPostflopControlPanel(null);
 
     if (state.diagnosticSession && state.diagnosticSession.active && state.diagnosticSession.currentSpot && state.diagnosticSession.currentSpot.type === 'FACING_3BET') {
-        tags = [`CO ${openText} 2.5bb`, 'BTN 3-Bet 9bb', t.drillTypeFacing3Bet || 'Facing 3-Bet'];
-        badge = 'CO vs BTN';
+        tags = [openSizeTag(2.5), threeBetSizeTag(9), t.drillTypeFacing3Bet || 'Facing 3-Bet'];
         tableModel = buildHeadsUpModel('CO', 'BTN');
     } else if (state.currentMode === 'REVIEW' && state.currentReviewItem) {
         const sourceMode = getReviewSourceMode(state.currentReviewItem);
         const sourceLabel = getModeLabel(sourceMode, t);
-        const position = state.currentReviewItem.position || state.currentPosition || '';
+        const position = state.currentReviewItem.heroPosition || state.currentReviewItem.position || state.currentPosition || '';
+        const reviewScenario = state.currentReviewItem.defendScenarioId && DEFEND_SCENARIOS[state.currentReviewItem.defendScenarioId]
+            ? DEFEND_SCENARIOS[state.currentReviewItem.defendScenarioId]
+            : null;
+        const opponent = state.currentReviewItem.villainPosition
+            || state.currentReviewItem.openerPosition
+            || (reviewScenario && reviewScenario.villain)
+            || '';
         const stackTag = state.currentReviewItem.stack ? `${state.currentReviewItem.stack}bb` : '';
-        tags = [reviewText, sourceLabel, position, stackTag].filter(Boolean);
-        badge = position || sourceLabel;
-        tableModel = buildHeadsUpModel(position);
+        tags = [reviewText, sourceLabel, stackTag].filter(Boolean);
+        tableModel = buildHeadsUpModel(position, opponent);
     } else if (state.currentMode === 'ALL_STREET') {
         const scenario = getCurrentAllStreetScenario();
         renderBoardCards(scenario.boardCards);
         renderPostflopControlPanel(scenario);
-        badge = null;
         tableModel = getAllStreetTableModel(scenario, t);
         renderAllStreetScenarioSummary(scenario, t);
         updateAllStreetActionButtons();
     } else if (state.currentMode === 'RFI') {
-        tags = [state.currentPosition, firstInText];
-        badge = state.currentPosition;
+        tags = [firstInText];
         tableModel = buildHeadsUpModel(state.currentPosition);
     } else if (state.currentMode === 'PUSH_FOLD') {
-        tags = [state.currentPosition, t.badgePushFold || 'Push/Fold', `${state.currentStack}bb`];
-        badge = state.currentPosition;
+        tags = [t.badgePushFold || 'Push/Fold', `${state.currentStack}bb`];
         tableModel = buildHeadsUpModel(state.currentPosition);
     } else if (state.currentMode === 'DEFEND') {
         const sc = DEFEND_SCENARIOS[state.currentDefendScenario];
-        tags = [`${sc.villain} ${openText} 2.5bb`, `${sc.hero} vs ${sc.villain}`];
-        badge = `${sc.hero} vs ${sc.villain}`;
+        tags = [openSizeTag(2.5)];
         tableModel = buildHeadsUpModel(sc.hero, sc.villain);
     } else if (state.currentMode === 'CUSTOM') {
         const drill = getActiveCustomDrill();
@@ -4042,7 +4772,6 @@ function updateScenarioUI() {
             const scenario = getActiveAllStreetScenario();
             renderBoardCards(scenario.boardCards);
             renderPostflopControlPanel(scenario);
-            badge = null;
             tableModel = getAllStreetTableModel(scenario, t);
             renderAllStreetScenarioSummary(scenario, t);
             updateAllStreetActionButtons(scenario);
@@ -4051,35 +4780,30 @@ function updateScenarioUI() {
             const hero = ctx.heroPosition || drill.heroPosition;
             const villain = ctx.villainPosition || drill.villainPosition;
             tags = [
-                `${hero} ${openText} ${ctx.openSizeBb || drill.openSizeBb}bb`,
-                `${villain} 3-Bet ${ctx.threeBetSizeBb || drill.threeBetSizeBb}bb`
+                openSizeTag(ctx.openSizeBb || drill.openSizeBb),
+                threeBetSizeTag(ctx.threeBetSizeBb || drill.threeBetSizeBb)
             ];
-            badge = `${hero} vs ${villain}`;
             tableModel = buildHeadsUpModel(hero, villain);
         } else if (drill && drill.type === DRILL_TYPES.DEFENSE_VS_OPEN) {
             const ctx = getCurrentCustomDrillContext(drill);
             const hero = ctx.heroPosition || drill.heroPosition;
             const opener = ctx.openerPosition || drill.openerPosition;
-            tags = [`${opener} ${openText} ${ctx.openSizeBb || drill.openSizeBb || 2.5}bb`, `${hero} vs ${opener}`];
-            badge = `${hero} vs ${opener}`;
+            tags = [openSizeTag(ctx.openSizeBb || drill.openSizeBb || 2.5)];
             tableModel = buildHeadsUpModel(hero, opener);
         } else if (drill && drill.type === DRILL_TYPES.RFI_FOCUS) {
-            tags = [state.currentPosition, firstInText, drill.name || t.badgeCustom || 'Custom'];
-            badge = state.currentPosition;
+            tags = [firstInText, drill.name || t.badgeCustom || 'Custom'];
             tableModel = buildHeadsUpModel(state.currentPosition);
         } else if (drill && drill.type === DRILL_TYPES.PUSH_FOLD) {
-            tags = [state.currentPosition, t.badgePushFold || 'Push/Fold', `${drill.stackBb || state.currentStack}bb`];
-            badge = state.currentPosition;
+            tags = [t.badgePushFold || 'Push/Fold', `${drill.stackBb || state.currentStack}bb`];
             tableModel = buildHeadsUpModel(state.currentPosition);
         } else {
-            tags = [state.currentPosition || pos, t.badgeCustom || 'Custom'];
-            badge = state.currentPosition || pos;
+            tags = [t.badgeCustom || 'Custom'];
             tableModel = buildHeadsUpModel(state.currentPosition || pos);
         }
     }
     if (!(state.currentMode === 'ALL_STREET'
         || (state.currentMode === 'CUSTOM' && getActiveCustomDrill() && getActiveCustomDrill().type === DRILL_TYPES.ALL_STREET))) {
-        renderScenarioTags(tags, badge);
+        renderScenarioTags(tags);
     }
     renderTableContextOverlay(tableModel);
 }
@@ -4099,7 +4823,7 @@ function startTurn() {
             state.currentHand = null;
             holeCardsEl.innerHTML = '<div class="card empty"></div><div class="card empty"></div>';
             scenarioTextEl.innerText = (I18N[state.lang] || I18N.en).reviewEmpty || 'No mistakes ready for review.';
-            heroPositionEl.innerText = (I18N[state.lang] || I18N.en).modeReviewMistakesShort || 'Review';
+            setScenarioBadge('');
             renderBoardCards([]);
             renderPostflopControlPanel(null);
             renderTableContextOverlay({});
@@ -4148,7 +4872,7 @@ function startTurn() {
     }
 
     holeCardsEl.innerHTML = renderCard(hand.c1) + renderCard(hand.c2);
-    triggerHaptic(20);
+    playDealSound();
 
     updateScenarioUI();
 
@@ -4167,22 +4891,16 @@ window.handleAction = function (action) {
     if (isCorrect) {
         state.score += 10;
         state.streak++;
+        recordBestStreak();
         feedbackTitleEl.innerText = I18N[state.lang].feedbackCorrect;
         feedbackEl.className = 'feedback success';
         if (feedbackIconEl) feedbackIconEl.innerText = '✅';
-        triggerHaptic([30, 50, 30]);
     } else {
         state.score = Math.max(0, state.score - 5);
-        if (state.streak >= 3 && state.gamification && state.gamification.streakForgives > 0) {
-            state.gamification.streakForgives--;
-            unlockAchievement('forgiving_streak', 'Streak protected');
-        } else {
-            state.streak = 0;
-        }
+        state.streak = 0;
         feedbackTitleEl.innerText = I18N[state.lang].feedbackIncorrect;
         feedbackEl.className = 'feedback error';
         if (feedbackIconEl) feedbackIconEl.innerText = '❌';
-        triggerHaptic(200);
     }
 
     feedbackMsgEl.innerHTML = `${I18N[state.lang].feedbackDetail(getFeedbackActionLabel(action), getFeedbackActionLabel(state.correctAction))}<br><br>${state.explanation}`;
@@ -4190,12 +4908,14 @@ window.handleAction = function (action) {
     if (scoreEl) scoreEl.innerText = state.score;
     streakEl.innerText = state.streak;
     feedbackEl.classList.remove('hidden');
+    if (!isCorrect) runWrongAnswerCue(feedbackEl);
 
     // Record stats + adaptive weight
     const activeDrill = state.currentMode === 'CUSTOM' ? getActiveCustomDrill() : null;
+    const activeDrillContext = activeDrill ? getCurrentCustomDrillContext(activeDrill) : null;
     const sourceMode = state.currentMode === 'REVIEW' && state.currentReviewItem ? getReviewSourceMode(state.currentReviewItem) : state.currentMode;
     const mistakeLabel = getMistakeLabel(sourceMode, state.currentPosition, state.correctAction);
-    recordStat(state.currentPosition, state.currentMode, isCorrect, activeDrill ? activeDrill.id : null);
+    recordStat(state.currentPosition, state.currentMode, isCorrect, activeDrill ? activeDrill.id : null, combo);
     recordDiagnosticResult(action, state.correctAction, isCorrect, combo);
     if (!isCorrect && !wasDiagnosticActive && state.currentMode !== 'REVIEW') {
         addMistakeReplayItem({
@@ -4206,7 +4926,20 @@ window.handleAction = function (action) {
             spot: sourceMode,
             stack: state.currentMode === 'PUSH_FOLD' ? state.currentStack : null,
             drillId: activeDrill ? activeDrill.id : null,
-            allStreetScenarioId: state.currentMode === 'ALL_STREET' ? state.currentAllStreetScenarioId : null,
+            allStreetScenarioId: state.currentMode === 'ALL_STREET'
+                ? state.currentAllStreetScenarioId
+                : activeDrillContext && activeDrillContext.allStreetScenario
+                    ? activeDrillContext.allStreetScenario.id
+                    : null,
+            allStreetScenario: state.currentMode === 'ALL_STREET'
+                ? getCurrentAllStreetScenario()
+                : activeDrillContext && activeDrillContext.allStreetScenario
+                    ? activeDrillContext.allStreetScenario
+                    : null,
+            defendScenarioId: state.currentMode === 'DEFEND' ? state.currentDefendScenario : null,
+            heroPosition: activeDrillContext && activeDrillContext.heroPosition ? activeDrillContext.heroPosition : state.currentPosition,
+            villainPosition: activeDrillContext && activeDrillContext.villainPosition ? activeDrillContext.villainPosition : null,
+            openerPosition: activeDrillContext && activeDrillContext.openerPosition ? activeDrillContext.openerPosition : null,
             scenario: scenarioTextEl ? scenarioTextEl.innerText : '',
             userAction: action,
             correctAction: state.correctAction,
@@ -4226,7 +4959,12 @@ window.handleAction = function (action) {
         combo, position: state.currentPosition, mode: state.currentMode,
         stack: state.currentMode === 'PUSH_FOLD' ? state.currentStack : null,
         drillId: activeDrill ? activeDrill.id : null,
-        allStreetScenarioId: state.currentMode === 'ALL_STREET' ? state.currentAllStreetScenarioId : null,
+        allStreetScenarioId: state.currentMode === 'ALL_STREET'
+            ? state.currentAllStreetScenarioId
+            : activeDrillContext && activeDrillContext.allStreetScenario
+                ? activeDrillContext.allStreetScenario.id
+                : null,
+        defendScenarioId: state.currentMode === 'DEFEND' ? state.currentDefendScenario : null,
         userAction: action, correctAction: state.correctAction, correct: isCorrect
     };
     state.handHistory.unshift(entry);
@@ -4253,9 +4991,11 @@ function updateCustomActionButtons() {
     if (state.currentMode !== 'CUSTOM') return;
     const drill = getActiveCustomDrill();
     if (!drill) {
+        if (btnFoldEl) btnFoldEl.classList.remove('hidden');
         btnCallEl.classList.remove('hidden');
         btnRaiseEl.classList.remove('hidden');
-        btnAllInEl.classList.remove('hidden');
+        btnAllInEl.classList.add('hidden');
+        syncActionControlsLayout();
         return;
     }
     if (drill.type === DRILL_TYPES.ALL_STREET) {
@@ -4266,9 +5006,11 @@ function updateCustomActionButtons() {
         : drill.type === DRILL_TYPES.RFI_FOCUS ? ['Fold', 'Raise']
             : ['Fold', 'Call', 'Raise'];
     const allowed = drill.allowedActions || defaultAllowed;
+    if (btnFoldEl) btnFoldEl.classList.toggle('hidden', !allowed.includes('Fold'));
     btnCallEl.classList.toggle('hidden', !allowed.includes('Call'));
     btnRaiseEl.classList.toggle('hidden', !allowed.includes('Raise'));
     btnAllInEl.classList.toggle('hidden', !allowed.includes('All-In'));
+    syncActionControlsLayout();
 }
 
 function updateReviewActionButtons() {
@@ -4279,9 +5021,11 @@ function updateReviewActionButtons() {
         : source === 'RFI' ? ['Fold', 'Raise']
             : ['Fold', 'Call', 'Raise'];
     if (item && item.correctAction === 'All-In' && !allowed.includes('All-In')) allowed.push('All-In');
+    if (btnFoldEl) btnFoldEl.classList.toggle('hidden', !allowed.includes('Fold'));
     btnCallEl.classList.toggle('hidden', !allowed.includes('Call'));
     btnRaiseEl.classList.toggle('hidden', !allowed.includes('Raise'));
     btnAllInEl.classList.toggle('hidden', !allowed.includes('All-In'));
+    syncActionControlsLayout();
 }
 
 window.startMistakeReplay = function () {
@@ -4290,8 +5034,8 @@ window.startMistakeReplay = function () {
         showToast(t.reviewEmpty || 'No mistakes ready for review.', 'info');
         return;
     }
-    state.activeTab = 'plan';
-    if (typeof window.setActiveTab === 'function') window.setActiveTab('plan');
+    state.activeTab = 'practice';
+    if (typeof window.setActiveTab === 'function') window.setActiveTab('practice');
     const selector = document.getElementById('mode-selector');
     if (selector) selector.value = 'REVIEW';
     changeMode('REVIEW');
@@ -4303,7 +5047,7 @@ window.startMistakeReplay = function () {
 // ============================================================
 window.changeMode = function (newMode, preserveScore, options = {}) {
     const preserveTurn = options === true || !!(options && options.preserveTurn);
-    if (newMode === 'REVIEW') state.activeTab = 'plan';
+    if (newMode === 'REVIEW') state.activeTab = 'practice';
     if (!preserveScore && state.focusSession && state.focusSession.active) {
         state.focusSession.active = false;
     }
@@ -4318,6 +5062,7 @@ window.changeMode = function (newMode, preserveScore, options = {}) {
     document.body.className = '';
     const t = I18N[state.lang];
     resetActionButtonLabels();
+    if (btnFoldEl) btnFoldEl.classList.remove('hidden');
 
     const stackSelector = document.getElementById('stack-selector');
 
@@ -4363,7 +5108,7 @@ window.changeMode = function (newMode, preserveScore, options = {}) {
         coachContentEl.innerHTML = t.coachCustom;
         btnCallEl.classList.remove('hidden');
         btnRaiseEl.classList.remove('hidden');
-        btnAllInEl.classList.remove('hidden');
+        btnAllInEl.classList.add('hidden');
         if (stackSelector) stackSelector.classList.add('hidden');
         const customCtrl = document.getElementById('custom-mode-controls');
         if (customCtrl) customCtrl.classList.remove('hidden');
@@ -4412,6 +5157,7 @@ window.changeMode = function (newMode, preserveScore, options = {}) {
         startTurn();
     }
     updateReviewActionButtons();
+    syncActionControlsLayout();
     renderHandHistory();
     renderPersonalizedDashboard();
     syncAppTabPanels();
@@ -4575,8 +5321,9 @@ window.resetStats = function () {
                 accuracyHudEl.innerText = '—';
                 accuracyHudEl.style.color = 'var(--text-secondary)';
             }
-            openStatsModal();
+            closeStatsModal();
             renderPersonalizedDashboard();
+            if (state.activeTab === 'review' || state.activeTab === 'progress') renderProgressDashboard();
         }
     );
 };
@@ -4587,14 +5334,62 @@ window.toggleGamificationHidden = function () {
     openStatsModal();
 };
 
+function openSupportWindow(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    closeSupportModal();
+    modal.classList.remove('hidden');
+    syncLanguageControls();
+}
+
+function closeSupportWindow(id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add('hidden');
+}
+
+window.openDonateModal = function () {
+    openSupportWindow('support-donate-modal');
+};
+
+window.closeDonateModal = function () {
+    closeSupportWindow('support-donate-modal');
+};
+
+window.openAboutModal = function () {
+    openSupportWindow('support-about-modal');
+    syncFeedbackPreferenceControls();
+};
+
+window.closeAboutModal = function () {
+    closeSupportWindow('support-about-modal');
+};
+
+window.openFeedbackModal = function () {
+    openSupportWindow('support-feedback-modal');
+};
+
+window.closeFeedbackModal = function () {
+    closeSupportWindow('support-feedback-modal');
+};
+
 window.openSupportModal = function () {
-    const modal = document.getElementById('support-modal');
-    if (modal) modal.classList.remove('hidden');
+    openDonateModal();
 };
 
 window.closeSupportModal = function () {
-    const modal = document.getElementById('support-modal');
-    if (modal) modal.classList.add('hidden');
+    ['support-donate-modal', 'support-about-modal', 'support-feedback-modal'].forEach(id => closeSupportWindow(id));
+};
+
+window.setSupportPage = function (page = 'donate') {
+    if (page === 'about') {
+        openAboutModal();
+        return;
+    }
+    if (page === 'feedback') {
+        openFeedbackModal();
+        return;
+    }
+    openDonateModal();
 };
 
 // ============================================================
@@ -4760,6 +5555,62 @@ function countEditorStates(es) {
     return { raise, call, fold };
 }
 
+function savedRangeToEditorState(range) {
+    const es = {};
+    if (!range || typeof range !== 'object') return es;
+    (Array.isArray(range.raise) ? range.raise : []).forEach(combo => { es[combo] = 'raise'; });
+    (Array.isArray(range.call) ? range.call : []).forEach(combo => { es[combo] = 'call'; });
+    return es;
+}
+
+function getSavedRangeCode(name) {
+    const range = name ? state.customRanges[name] : null;
+    if (!range) return '';
+    return encodeEditorStateToRangeCode(savedRangeToEditorState(range));
+}
+
+function normalizeRangeCodeForCompare(code) {
+    if (!code) return '';
+    return encodeEditorStateToRangeCode(decodeRangeCodeToEditorState(code));
+}
+
+function findSavedRangeNameByCode(code) {
+    let normalized = '';
+    try {
+        normalized = normalizeRangeCodeForCompare(code);
+    } catch (error) {
+        return '';
+    }
+    return Object.keys(state.customRanges || {}).find(name => getSavedRangeCode(name) === normalized) || '';
+}
+
+function getDrillRangeCode(drill, key) {
+    if (!drill) return '';
+    const refName = drill.rangeRefs && drill.rangeRefs[key];
+    const liveCode = refName ? getSavedRangeCode(refName) : '';
+    return liveCode || (drill.ranges && drill.ranges[key]) || '';
+}
+
+function getDefenseScenarioForPositions(heroPosition, openerPosition) {
+    return Object.values(DEFEND_SCENARIOS).find(sc => sc.hero === heroPosition && sc.villain === openerPosition)
+        || DEFEND_SCENARIOS[state.currentDefendScenario]
+        || DEFEND_SCENARIOS.BTN_VS_CO;
+}
+
+function getDefaultFacingThreeBetRanges() {
+    return {
+        raise: new Set(['AA', 'KK', 'QQ', 'AKs', 'AKo']),
+        call: new Set(['JJ', 'TT', '99', 'AQs', 'AJs', 'KQs', 'AQo'])
+    };
+}
+
+function getDefaultFacingThreeBetAction(combo) {
+    const ranges = getDefaultFacingThreeBetRanges();
+    if (ranges.raise.has(combo)) return 'Raise';
+    if (ranges.call.has(combo)) return 'Call';
+    return 'Fold';
+}
+
 function getCompactRangeCodeFromEditor() {
     return encodeEditorStateToRangeCode(editorState).slice(RANGE_CODE_PREFIX.length);
 }
@@ -4922,12 +5773,37 @@ window.deleteCustomRange = function () {
 
 function refreshRangeDropdown() {
     const sel = document.getElementById('range-load-select');
-    if (!sel) return;
     const t = I18N[state.lang] || I18N.en;
     const names = Object.keys(state.customRanges);
-    sel.innerHTML = names.length === 0
-        ? `<option value="">${escapeHtml(t.rangeNoSavedOption || '-- No saved ranges --')}</option>`
-        : names.map(n => `<option value="${n}">${n}</option>`).join('');
+    if (sel) {
+        sel.innerHTML = names.length === 0
+            ? `<option value="">${escapeHtml(t.rangeNoSavedOption || '-- No saved ranges --')}</option>`
+            : names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+    }
+    refreshDrillRangeSelects();
+}
+
+function refreshDrillRangeSelects() {
+    const t = I18N[state.lang] || I18N.en;
+    const names = Object.keys(state.customRanges || {}).sort((a, b) => a.localeCompare(b));
+    const defaultLabel = t.drillRangeDefaultOption || 'Use built-in default range';
+    const emptyLabel = t.customNoSavedRanges || 'No saved ranges.';
+    const renderOptions = currentValue => {
+        const options = [`<option value="">${escapeHtml(defaultLabel)}</option>`];
+        if (names.length) {
+            options.push(...names.map(name => `<option value="${escapeHtml(name)}" ${name === currentValue ? 'selected' : ''}>${escapeHtml(name)}</option>`));
+        } else {
+            options.push(`<option value="" disabled>${escapeHtml(emptyLabel)}</option>`);
+        }
+        return options.join('');
+    };
+    ['drill-raise-range-select', 'drill-call-range-select'].forEach(id => {
+        const select = document.getElementById(id);
+        if (!select) return;
+        const currentValue = names.includes(select.value) ? select.value : '';
+        select.innerHTML = renderOptions(currentValue);
+        select.value = currentValue;
+    });
 }
 
 window.selectCustomRange = function (name) {
@@ -5004,6 +5880,7 @@ window.selectCustomDrill = function (id) {
 };
 
 window.openDrillManager = function () {
+    refreshDrillRangeSelects();
     resetDrillForm();
     renderDrillManagerList();
     const modal = document.getElementById('drill-manager-modal');
@@ -5059,10 +5936,13 @@ function setDrillBuilderDefaults(drill) {
     const openSizeIsRandom = isDrillRandomValue(drill.openSizeBb);
     setValue('drill-open-size-input', openSizeIsRandom ? 2.5 : (drill.openSizeBb || 2.5));
     setValue('drill-threebet-size-input', drill.threeBetSizeBb || 9);
-    setValue('drill-raise-range-input', (drill.ranges && (drill.ranges.raise || drill.ranges.open || drill.ranges.shove)) || '');
-    setValue('drill-call-range-input', (drill.ranges && drill.ranges.call) || '');
-    const ante = document.getElementById('drill-ante-input');
-    if (ante) ante.checked = !!drill.ante;
+    refreshDrillRangeSelects();
+    const primaryRangeRef = (drill.rangeRefs && (drill.rangeRefs.raise || drill.rangeRefs.open || drill.rangeRefs.shove))
+        || findSavedRangeNameByCode(drill.ranges && (drill.ranges.raise || drill.ranges.open || drill.ranges.shove));
+    const callRangeRef = (drill.rangeRefs && drill.rangeRefs.call)
+        || findSavedRangeNameByCode(drill.ranges && drill.ranges.call);
+    setValue('drill-raise-range-select', primaryRangeRef || '');
+    setValue('drill-call-range-select', callRangeRef || '');
     const randomOpenSize = document.getElementById('drill-open-size-random-input');
     if (randomOpenSize) randomOpenSize.checked = openSizeIsRandom;
     syncDrillOpenSizeRandom();
@@ -5110,7 +5990,6 @@ window.syncDrillFormFields = function () {
     setDrillFieldHidden('drill-open-size-field', !(isRfi || isDefense || isFacing3Bet));
     setDrillFieldHidden('drill-open-size-random-field', !(isRfi || isDefense || isFacing3Bet));
     setDrillFieldHidden('drill-threebet-size-field', !isFacing3Bet);
-    setDrillFieldHidden('drill-ante-field', !isPushFold);
     setDrillFieldHidden('drill-allstreet-fields', !isAllStreet);
     setDrillFieldHidden('drill-raise-range-field', isAllStreet);
     setDrillFieldHidden('drill-call-range-field', !(isDefense || isFacing3Bet));
@@ -5151,43 +6030,50 @@ function getNextAutoDrillName() {
 function readDrillDetailFormFields(type) {
     const t = I18N[state.lang] || I18N.en;
     const valueOf = id => (document.getElementById(id) || {}).value;
-    const checkedOf = id => !!((document.getElementById(id) || {}).checked);
-    const raiseCode = String(valueOf('drill-raise-range-input') || '').trim();
-    const callCode = String(valueOf('drill-call-range-input') || '').trim();
+    const primaryRangeName = String(valueOf('drill-raise-range-select') || '').trim();
+    const callRangeName = String(valueOf('drill-call-range-select') || '').trim();
     const ranges = {};
+    const rangeRefs = {};
+    const applySelectedRange = (rangeKey, refKey, rangeName) => {
+        if (!rangeName || !state.customRanges[rangeName]) return;
+        const code = getSavedRangeCode(rangeName);
+        if (!code) return;
+        ranges[rangeKey] = code;
+        rangeRefs[refKey] = rangeName;
+    };
+    const withRangeRefs = payload => Object.keys(rangeRefs).length ? { ...payload, rangeRefs } : payload;
     const common = {
-        openSizeBb: getDrillOpenSizeFormValue(),
-        ante: checkedOf('drill-ante-input')
+        openSizeBb: getDrillOpenSizeFormValue()
     };
     if (type === DRILL_TYPES.RFI_FOCUS) {
-        if (raiseCode) ranges.open = raiseCode;
-        return {
+        applySelectedRange('open', 'open', primaryRangeName);
+        return withRangeRefs({
             ...common,
             heroPositions: getSelectedHeroPositions(),
             allowedActions: ['Fold', 'Raise'],
             ranges
-        };
+        });
     }
     if (type === DRILL_TYPES.DEFENSE_VS_OPEN) {
-        if (raiseCode) ranges.raise = raiseCode;
-        if (callCode) ranges.call = callCode;
-        return {
+        applySelectedRange('raise', 'raise', primaryRangeName);
+        applySelectedRange('call', 'call', callRangeName);
+        return withRangeRefs({
             ...common,
             heroPosition: valueOf('drill-hero-position-select') || 'BTN',
             openerPosition: valueOf('drill-opener-position-select') || 'CO',
             allowedActions: ['Fold', 'Call', 'Raise'],
             ranges
-        };
+        });
     }
     if (type === DRILL_TYPES.PUSH_FOLD) {
-        if (raiseCode) ranges.shove = raiseCode;
-        return {
+        applySelectedRange('shove', 'shove', primaryRangeName);
+        return withRangeRefs({
             ...common,
             heroPositions: getSelectedHeroPositions(),
             stackBb: Number(valueOf('drill-stack-input') || 10),
             allowedActions: ['Fold', 'All-In'],
             ranges
-        };
+        });
     }
     if (type === DRILL_TYPES.ALL_STREET) {
         const effectiveStackBb = Number(valueOf('drill-stack-input') || 100);
@@ -5205,9 +6091,9 @@ function readDrillDetailFormFields(type) {
             ranges: {}
         };
     }
-    if (raiseCode) ranges.raise = raiseCode;
-    if (callCode) ranges.call = callCode;
-    return {
+    applySelectedRange('raise', 'raise', primaryRangeName);
+    applySelectedRange('call', 'call', callRangeName);
+    return withRangeRefs({
         ...common,
         heroPosition: valueOf('drill-hero-position-select') || 'BTN',
         villainPosition: valueOf('drill-villain-position-select') || 'BB',
@@ -5215,7 +6101,7 @@ function readDrillDetailFormFields(type) {
         threeBetSizeBb: Number(valueOf('drill-threebet-size-input') || 9),
         allowedActions: ['Fold', 'Call', 'Raise'],
         ranges
-    };
+    });
 }
 
 window.saveDrillFromForm = function (event) {
@@ -5281,7 +6167,7 @@ window.deleteDrillFromManager = function (id) {
     return runAfterConfirmation(
         requestGlassConfirmation({
             title: t.confirmDrillDeleteTitle || 'Delete drill?',
-            message: t.drillDeleteConfirm || 'Delete this drill?',
+            message: '',
             confirmLabel: t.drillDeleteAction || t.drillDelete || 'Delete',
             cancelLabel: t.confirmCancel || 'Cancel',
             danger: true
@@ -5409,26 +6295,214 @@ window.importRange = function () {
 // ============================================================
 // CHART MODAL (all positions)
 // ============================================================
+function normalizeChartPosition(position, fallback = 'UTG') {
+    const normalized = String(position || '').toUpperCase();
+    return ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB'].includes(normalized) ? normalized : fallback;
+}
+
+function getCurrentChartContextPosition() {
+    if (state.currentMode === 'REVIEW' && state.currentReviewItem) {
+        return normalizeChartPosition(state.currentReviewItem.heroPosition || state.currentReviewItem.position || state.currentPosition, 'UTG');
+    }
+    if (state.currentMode === 'RFI' || state.currentMode === 'PUSH_FOLD') {
+        return normalizeChartPosition(state.currentPosition, 'UTG');
+    }
+    if (state.currentMode === 'CUSTOM') {
+        const drill = getActiveCustomDrill();
+        if (drill && (drill.type === DRILL_TYPES.RFI_FOCUS || drill.type === DRILL_TYPES.PUSH_FOLD)) {
+            const fallback = Array.isArray(drill.heroPositions) && drill.heroPositions.length ? drill.heroPositions[0] : 'BTN';
+            return normalizeChartPosition(state.currentPosition || fallback, fallback);
+        }
+    }
+    return normalizeChartPosition(state.chartPosition, 'UTG');
+}
+
+function syncChartPositionToCurrentContext() {
+    state.chartPosition = getCurrentChartContextPosition();
+}
+
+function buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges = false) {
+    const currentCombo = state.currentHand ? getComboName(state.currentHand) : null;
+    const raiseRange = range3Bet || new Set();
+    const callRange = rangeCall || new Set();
+    let gridHTML = '';
+    for (let r1 of CHART_RANKS) {
+        for (let r2 of CHART_RANKS) {
+            const i1 = CHART_RANKS.indexOf(r1), i2 = CHART_RANKS.indexOf(r2);
+            const isPair = i1 === i2, isSuited = i2 > i1;
+            const high = i1 <= i2 ? r1 : r2, low = i1 <= i2 ? r2 : r1;
+            const name = isPair ? `${high}${low}` : `${high}${low}${isSuited ? 's' : 'o'}`;
+            const isCurrent = name === currentCombo;
+            const bg = useActionRanges
+                ? (raiseRange.has(name) ? 'raise' : (callRange.has(name) ? 'defend-call' : 'fold'))
+                : (range && range.has(name) ? 'raise' : 'fold');
+            gridHTML += `<div class="chart-cell ${bg}${isCurrent ? ' highlight' : ''}">${name}</div>`;
+        }
+    }
+    return gridHTML;
+}
+
+function getReviewChartTitle(label, t = I18N[state.lang] || I18N.en) {
+    const reviewLabel = t.scenarioTagReview || t.modeReviewMistakesShort || 'Review';
+    return `${reviewLabel}: ${label}`;
+}
+
+function getReviewCustomDrill(item) {
+    if (!item || !item.drillId || !state.customDrills) return null;
+    return state.customDrills[item.drillId] || null;
+}
+
+function getReviewDefendScenario(item) {
+    if (item && item.defendScenarioId && DEFEND_SCENARIOS[item.defendScenarioId]) {
+        return DEFEND_SCENARIOS[item.defendScenarioId];
+    }
+    const hero = normalizeChartPosition(item && (item.heroPosition || item.position), '');
+    const scenarioText = String(item && item.scenario || '');
+    const exact = Object.values(DEFEND_SCENARIOS).find(sc => sc.hero === hero && scenarioText.includes(sc.villain));
+    if (exact) return exact;
+    return Object.values(DEFEND_SCENARIOS).find(sc => sc.hero === hero)
+        || DEFEND_SCENARIOS[state.currentDefendScenario]
+        || DEFEND_SCENARIOS.BTN_VS_CO;
+}
+
+function getReviewAllStreetScenario(item) {
+    if (item && item.allStreetScenario) return item.allStreetScenario;
+    if (item && item.allStreetScenarioId) {
+        const builtInScenario = getAllStreetScenarioById(item.allStreetScenarioId);
+        if (builtInScenario) return builtInScenario;
+    }
+    const drill = getReviewCustomDrill(item);
+    if (drill && drill.type === DRILL_TYPES.ALL_STREET) return buildCustomAllStreetScenario(drill);
+    return getCurrentAllStreetScenario();
+}
+
+function renderChartModalAllStreetSummary(scenario, t = I18N[state.lang] || I18N.en) {
+    const wrapper = document.querySelector('#chart-modal .modal-content');
+    if (!wrapper || !scenario) return;
+    const board = (scenario.boardCards || []).join(' ');
+    const texture = getLocalizedBoardTextureLabels(scenario, t).join(', ');
+    const sizes = getLocalizedPostflopSizeLabels(scenario, t).join(', ');
+    wrapper.innerHTML = `
+            <div class="modal-header"><h2>${escapeHtml(getAllStreetScenarioTitle(scenario, t))}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>
+            <div class="modal-body chart-modal-body all-street-chart-body">
+                <div class="all-street-chart-summary">
+                    <p><strong>${escapeHtml(t.postflopBoardLabel || 'Board')}:</strong> ${escapeHtml(board)} (${escapeHtml(texture)})</p>
+                    <p><strong>${escapeHtml(t.postflopLineLabel || 'Line')}:</strong> ${escapeHtml((scenario.previousAction || []).join(' / '))}</p>
+                    <p><strong>${escapeHtml(t.postflopPotLabel || 'Pot')}:</strong> ${scenario.potBb}bb / <strong>${escapeHtml(t.postflopStackLabel || 'Stack')}:</strong> ${scenario.effectiveStackBb}bb / <strong>SPR:</strong> ${scenario.spr}</p>
+                    <p><strong>${escapeHtml(t.postflopSizesLabel || 'Sizes')}:</strong> ${escapeHtml(sizes)}</p>
+                </div>
+            </div>`;
+}
+
+function renderReviewChartGrid() {
+    const wrapper = document.querySelector('#chart-modal .modal-content');
+    if (!wrapper) return;
+    const t = I18N[state.lang] || I18N.en;
+    const item = state.currentReviewItem;
+    if (!item) {
+        wrapper.innerHTML = `<div class="modal-header"><h2>${escapeHtml(t.modeReviewMistakesShort || 'Review')}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div><div class="modal-body chart-modal-body"><p>${escapeHtml(t.reviewEmpty || 'No mistakes ready for review.')}</p></div>`;
+        return;
+    }
+
+    const sourceMode = getReviewSourceMode(item);
+    const position = normalizeChartPosition(item.heroPosition || item.position || state.currentPosition, 'UTG');
+    state.chartPosition = position;
+    let range, range3Bet, rangeCall;
+    let useActionRanges = false;
+    let titleLabel = getModeLabel(sourceMode, t);
+    let legendHTML = '';
+
+    if (sourceMode === 'ALL_STREET') {
+        renderChartModalAllStreetSummary(getReviewAllStreetScenario(item), t);
+        return;
+    }
+
+    if (sourceMode === 'RFI') {
+        range = RFI_RANGES[position] || RFI_RANGES.UTG;
+        titleLabel = (t.chartRfiTitle || '{position} RFI open range').replace('{position}', position);
+        legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendRaise}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+    } else if (sourceMode === 'PUSH_FOLD') {
+        const stack = String(item.stack || state.currentStack || '10');
+        const pRanges = PUSH_RANGES_BY_STACK[stack] || PUSH_10BB;
+        range = pRanges[position] || pRanges.UTG || PUSH_10BB.UTG;
+        titleLabel = (t.chartPushTitle || '{position} {stack}bb push range')
+            .replace('{position}', position)
+            .replace('{stack}', stack);
+        legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendPush || 'Push'}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+    } else if (sourceMode === 'DEFEND') {
+        const sc = getReviewDefendScenario(item);
+        range3Bet = sc.THREE_BET;
+        rangeCall = sc.CALL || new Set();
+        useActionRanges = true;
+        titleLabel = (t.chartDefenseTitle || '{hero} vs {villain} defense')
+            .replace('{hero}', sc.hero)
+            .replace('{villain}', sc.villain);
+        legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>3-Bet</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${t.legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+    } else if (sourceMode === 'CUSTOM') {
+        const drill = getReviewCustomDrill(item);
+        if (drill && drill.type === DRILL_TYPES.ALL_STREET) {
+            renderChartModalAllStreetSummary(getReviewAllStreetScenario(item), t);
+            return;
+        }
+
+        titleLabel = drill ? drill.name : (t.chartCustomRangeTitle || 'Custom range');
+        if (drill && drill.type === DRILL_TYPES.RFI_FOCUS) {
+            const openRange = getDrillRangeCode(drill, 'open') || getDrillRangeCode(drill, 'raise');
+            range = openRange ? rangeCodeToPlayableSet(openRange) : (RFI_RANGES[position] || RFI_RANGES.UTG);
+            titleLabel = `${titleLabel} · ${position}`;
+            legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendRaise}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+        } else if (drill && drill.type === DRILL_TYPES.PUSH_FOLD) {
+            const stack = String(item.stack || drill.stackBb || state.currentStack || '10');
+            const shoveRange = getDrillRangeCode(drill, 'shove') || getDrillRangeCode(drill, 'raise');
+            const stackRanges = PUSH_RANGES_BY_STACK[stack] || PUSH_10BB;
+            range = shoveRange ? rangeCodeToPlayableSet(shoveRange) : (stackRanges[position] || stackRanges.UTG || PUSH_10BB.UTG);
+            titleLabel = `${titleLabel} · ${position} ${stack}bb`;
+            legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendPush || 'Push'}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+        } else {
+            const raiseCode = drill ? getDrillRangeCode(drill, 'raise') : '';
+            const callCode = drill ? getDrillRangeCode(drill, 'call') : '';
+            if (raiseCode || callCode) {
+                range3Bet = rangeCodeToPlayableSet(raiseCode);
+                rangeCall = rangeCodeToPlayableSet(callCode);
+            } else if (drill && drill.type === DRILL_TYPES.DEFENSE_VS_OPEN) {
+                const sc = getDefenseScenarioForPositions(item.heroPosition || position, item.openerPosition || drill.openerPosition);
+                range3Bet = sc.THREE_BET;
+                rangeCall = sc.CALL || new Set();
+                titleLabel = (t.chartDefenseTitle || '{hero} vs {villain} defense')
+                    .replace('{hero}', sc.hero)
+                    .replace('{villain}', sc.villain);
+            } else {
+                range3Bet = new Set(['AA', 'KK', 'QQ', 'AKs', 'AKo']);
+                rangeCall = new Set(['JJ', 'TT', '99', 'AQs', 'AJs', 'KQs', 'AQo']);
+            }
+            useActionRanges = true;
+            legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendRaise}</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${t.legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+        }
+    } else {
+        range = RFI_RANGES[position] || RFI_RANGES.UTG;
+        titleLabel = (t.chartRfiTitle || '{position} RFI open range').replace('{position}', position);
+        legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendRaise}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+    }
+
+    const titleHTML = `<div class="modal-header"><h2>${escapeHtml(getReviewChartTitle(titleLabel, t))}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
+    const gridHTML = buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges);
+    wrapper.innerHTML = `${titleHTML}<div class="modal-body chart-modal-body"><div id="chart-grid" class="chart-grid">${gridHTML}</div>${legendHTML}</div>`;
+}
+
 window.renderChartGrid = function () {
+    if (state.currentMode === 'REVIEW') {
+        renderReviewChartGrid();
+        return;
+    }
+
     const chartPos = state.chartPosition || 'UTG';
     let range, range3Bet, rangeCall;
+    let useActionRanges = false;
     let titleHTML = '', legendHTML = '', gridHTML = '';
 
     if (state.currentMode === 'ALL_STREET') {
         const scenario = getCurrentAllStreetScenario();
-        const t = I18N[state.lang] || I18N.en;
-        const board = scenario.boardCards.join(' ');
-        const texture = getLocalizedBoardTextureLabels(scenario, t).join(', ');
-        const sizes = getLocalizedPostflopSizeLabels(scenario, t).join(', ');
-        const wrapper = document.querySelector('#chart-modal .modal-content');
-        wrapper.innerHTML = `
-            <div class="modal-header"><h2>${escapeHtml(getAllStreetScenarioTitle(scenario, t))}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>
-            <div class="all-street-chart-summary">
-                <p><strong>${escapeHtml(t.postflopBoardLabel || 'Board')}:</strong> ${escapeHtml(board)} (${escapeHtml(texture)})</p>
-                <p><strong>${escapeHtml(t.postflopLineLabel || 'Line')}:</strong> ${escapeHtml(scenario.previousAction.join(' / '))}</p>
-                <p><strong>${escapeHtml(t.postflopPotLabel || 'Pot')}:</strong> ${scenario.potBb}bb / <strong>${escapeHtml(t.postflopStackLabel || 'Stack')}:</strong> ${scenario.effectiveStackBb}bb / <strong>SPR:</strong> ${scenario.spr}</p>
-                <p><strong>${escapeHtml(t.postflopSizesLabel || 'Sizes')}:</strong> ${escapeHtml(sizes)}</p>
-            </div>`;
+        renderChartModalAllStreetSummary(scenario);
         return;
     }
 
@@ -5451,6 +6525,7 @@ window.renderChartGrid = function () {
         const t = I18N[state.lang] || I18N.en;
         const sc = DEFEND_SCENARIOS[state.currentDefendScenario] || DEFEND_SCENARIOS.BTN_VS_CO;
         range3Bet = sc.THREE_BET; rangeCall = sc.CALL || new Set();
+        useActionRanges = true;
         const posLabel = (t.chartDefenseTitle || '{hero} vs {villain} defense')
             .replace('{hero}', sc.hero)
             .replace('{villain}', sc.villain);
@@ -5460,24 +6535,61 @@ window.renderChartGrid = function () {
         const drill = getActiveCustomDrill();
         if (drill && drill.type === DRILL_TYPES.ALL_STREET) {
             const scenario = buildCustomAllStreetScenario(drill);
-            const t = I18N[state.lang] || I18N.en;
-            const board = scenario.boardCards.join(' ');
-            const texture = getLocalizedBoardTextureLabels(scenario, t).join(', ');
-            const sizes = getLocalizedPostflopSizeLabels(scenario, t).join(', ');
-            titleHTML = `<div class="modal-header"><h2>${escapeHtml(getAllStreetScenarioTitle(scenario, t))}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
-            const wrapper = document.querySelector('#chart-modal .modal-content');
-            wrapper.innerHTML = titleHTML + `
-                <div class="all-street-chart-summary">
-                    <p><strong>${escapeHtml(t.postflopBoardLabel || 'Board')}:</strong> ${escapeHtml(board)} (${escapeHtml(texture)})</p>
-                    <p><strong>${escapeHtml(t.postflopLineLabel || 'Line')}:</strong> ${escapeHtml(scenario.previousAction.join(' / '))}</p>
-                    <p><strong>${escapeHtml(t.postflopPotLabel || 'Pot')}:</strong> ${scenario.potBb}bb / <strong>${escapeHtml(t.postflopStackLabel || 'Stack')}:</strong> ${scenario.effectiveStackBb}bb / <strong>SPR:</strong> ${scenario.spr}</p>
-                    <p><strong>${escapeHtml(t.postflopSizesLabel || 'Sizes')}:</strong> ${escapeHtml(sizes)}</p>
-                </div>`;
+            renderChartModalAllStreetSummary(scenario);
             return;
+        } else if (drill && drill.type === DRILL_TYPES.RFI_FOCUS) {
+            const t = I18N[state.lang] || I18N.en;
+            const position = normalizeChartPosition(state.currentPosition || (Array.isArray(drill.heroPositions) && drill.heroPositions[0]), 'BTN');
+            const openRange = getDrillRangeCode(drill, 'open') || getDrillRangeCode(drill, 'raise');
+            range = openRange ? rangeCodeToPlayableSet(openRange) : (RFI_RANGES[position] || RFI_RANGES.BTN || RFI_RANGES.UTG);
+            const posLabel = (t.chartRfiTitle || '{position} RFI open range').replace('{position}', position);
+            titleHTML = `<div class="modal-header"><h2>${escapeHtml(drill.name ? `${drill.name} - ${posLabel}` : posLabel)}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
+            legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${I18N[state.lang].legendRaise}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
+        } else if (drill && drill.type === DRILL_TYPES.PUSH_FOLD) {
+            const t = I18N[state.lang] || I18N.en;
+            const position = normalizeChartPosition(state.currentPosition || (Array.isArray(drill.heroPositions) && drill.heroPositions[0]), 'BTN');
+            const stack = String(drill.stackBb || state.currentStack || '10');
+            const shoveRange = getDrillRangeCode(drill, 'shove') || getDrillRangeCode(drill, 'raise');
+            const stackRanges = PUSH_RANGES_BY_STACK[stack] || PUSH_RANGES_BY_STACK[state.currentStack] || PUSH_10BB;
+            range = shoveRange ? rangeCodeToPlayableSet(shoveRange) : (stackRanges[position] || stackRanges.UTG || PUSH_10BB.UTG);
+            const posLabel = (t.chartPushTitle || '{position} {stack}bb push range')
+                .replace('{position}', position)
+                .replace('{stack}', stack);
+            titleHTML = `<div class="modal-header"><h2>${escapeHtml(drill.name ? `${drill.name} - ${posLabel}` : posLabel)}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
+            legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendPush || 'Push'}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
+        } else if (drill && drill.type === DRILL_TYPES.DEFENSE_VS_OPEN) {
+            const t = I18N[state.lang] || I18N.en;
+            const ctx = getCurrentCustomDrillContext(drill) || {};
+            const raiseCode = getDrillRangeCode(drill, 'raise');
+            const callCode = getDrillRangeCode(drill, 'call');
+            if (raiseCode || callCode) {
+                range3Bet = rangeCodeToPlayableSet(raiseCode);
+                rangeCall = rangeCodeToPlayableSet(callCode);
+            } else {
+                const sc = getDefenseScenarioForPositions(ctx.heroPosition || drill.heroPosition, ctx.openerPosition || drill.openerPosition);
+                range3Bet = sc.THREE_BET;
+                rangeCall = sc.CALL || new Set();
+            }
+            useActionRanges = true;
+            const sc = getDefenseScenarioForPositions(ctx.heroPosition || drill.heroPosition, ctx.openerPosition || drill.openerPosition);
+            const posLabel = (t.chartDefenseTitle || '{hero} vs {villain} defense')
+                .replace('{hero}', sc.hero)
+                .replace('{villain}', sc.villain);
+            titleHTML = `<div class="modal-header"><h2>${escapeHtml(drill.name ? `${drill.name} - ${posLabel}` : posLabel)}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
+            legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>3-Bet</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${I18N[state.lang].legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
         } else if (drill && drill.type === DRILL_TYPES.FACING_3BET) {
             const t = I18N[state.lang] || I18N.en;
-            range3Bet = rangeCodeToPlayableSet(drill.ranges.raise);
-            rangeCall = rangeCodeToPlayableSet(drill.ranges.call);
+            const raiseCode = getDrillRangeCode(drill, 'raise');
+            const callCode = getDrillRangeCode(drill, 'call');
+            if (raiseCode || callCode) {
+                range3Bet = rangeCodeToPlayableSet(raiseCode);
+                rangeCall = rangeCodeToPlayableSet(callCode);
+            } else {
+                const defaults = getDefaultFacingThreeBetRanges();
+                range3Bet = defaults.raise;
+                rangeCall = defaults.call;
+            }
+            useActionRanges = true;
             const previewTitle = (t.chartRangePreviewTitle || '{name} range preview').replace('{name}', drill.name);
             titleHTML = `<div class="modal-header"><h2>${escapeHtml(previewTitle)}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
             legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${I18N[state.lang].legendRaise}</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${I18N[state.lang].legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
@@ -5486,28 +6598,13 @@ window.renderChartGrid = function () {
             const custom = state.customRanges[state.currentCustomRangeName];
             range3Bet = new Set(custom ? custom.raise || [] : []);
             rangeCall = new Set(custom ? custom.call || [] : []);
+            useActionRanges = true;
             titleHTML = `<div class="modal-header"><h2>${escapeHtml(state.currentCustomRangeName || t.chartCustomRangeTitle || 'Custom range')}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
             legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${I18N[state.lang].legendRaise}</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${I18N[state.lang].legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
         }
     }
 
-    const currentCombo = state.currentHand ? getComboName(state.currentHand) : null;
-    for (let r1 of CHART_RANKS) {
-        for (let r2 of CHART_RANKS) {
-            const i1 = CHART_RANKS.indexOf(r1), i2 = CHART_RANKS.indexOf(r2);
-            const isPair = i1 === i2, isSuited = i2 > i1;
-            const high = i1 <= i2 ? r1 : r2, low = i1 <= i2 ? r2 : r1;
-            const name = isPair ? `${high}${low}` : `${high}${low}${isSuited ? 's' : 'o'}`;
-            const isCurrent = name === currentCombo;
-            let bg;
-            if (state.currentMode === 'DEFEND' || state.currentMode === 'CUSTOM') {
-                bg = range3Bet.has(name) ? 'raise' : (rangeCall.has(name) ? 'defend-call' : 'fold');
-            } else {
-                bg = range && range.has(name) ? 'raise' : 'fold';
-            }
-            gridHTML += `<div class="chart-cell ${bg}${isCurrent ? ' highlight' : ''}">${name}</div>`;
-        }
-    }
+    gridHTML = buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges);
 
     // Position selector tabs for non-defend modes
     let posSelector = '';
@@ -5528,6 +6625,7 @@ window.setChartPosition = function (pos) {
 
 window.toggleChartModal = function () {
     if (chartModalEl.classList.contains('hidden')) {
+        syncChartPositionToCurrentContext();
         renderChartGrid();
         chartModalEl.classList.remove('hidden');
     } else {
@@ -5628,6 +6726,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 7. Range dropdown init
     refreshRangeDropdown();
+    syncFeedbackPreferenceControls();
 
     // 8. Assessment preview reacts immediately to questionnaire edits
     ASSESSMENT_FIELDS.forEach(field => {
@@ -5641,20 +6740,72 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function applyStaticI18n() {
+    const langData = I18N[state.lang] || I18N.en;
+    if (document.documentElement) {
+        document.documentElement.lang = state.lang || 'en';
+    }
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        const langData = I18N[state.lang];
         if (langData && typeof langData[key] === 'string') {
             el.innerHTML = langData[key];
         }
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
-        const langData = I18N[state.lang];
         if (langData && typeof langData[key] === 'string') {
             el.setAttribute('placeholder', langData[key]);
         }
     });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        if (langData && typeof langData[key] === 'string') {
+            el.setAttribute('title', langData[key]);
+        }
+    });
+    document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+        const key = el.getAttribute('data-i18n-aria-label');
+        if (langData && typeof langData[key] === 'string') {
+            el.setAttribute('aria-label', langData[key]);
+        }
+    });
+    applyLocalizedStaticAttributes(langData);
     renderPokerGlossary();
     setInfoModalPage(document.getElementById('info-glossary-page')?.classList.contains('hidden') === false ? 'glossary' : 'rules');
+}
+
+function applyLocalizedStaticAttributes(langData) {
+    const setAttrs = (selector, key, attrs = ['aria-label']) => {
+        const value = langData && langData[key];
+        if (typeof value !== 'string') return;
+        document.querySelectorAll(selector).forEach(el => {
+            attrs.forEach(attr => el.setAttribute(attr, value));
+        });
+    };
+    setAttrs('.header-logo-mark', 'appBrandAria', ['title', 'aria-label']);
+    setAttrs('#top-level-tabs', 'trainingSectionsAria');
+    setAttrs('#language-select', 'languageLabel');
+    setAttrs('#mode-selector', 'practiceModeAria');
+    setAttrs('.header-top-right .btn-icon[onclick="toggleInfoModal()"]', 'pokerRulesInfoTitle', ['title', 'aria-label']);
+    setAttrs('button[onclick="toggleChartModal()"]', 'viewRangeChartTitle', ['title', 'aria-label']);
+    setAttrs('#btn-range-editor', 'rangeEditorTitle', ['title', 'aria-label']);
+    setAttrs('#btn-assessment', 'assessmentTitle', ['title', 'aria-label']);
+    setAttrs('#btn-support', 'supportShortTitle', ['title', 'aria-label']);
+    setAttrs('#table-context-overlay', 'tableContextAria');
+    setAttrs('#board-cards', 'boardCardsAria');
+    setAttrs('#app-bottom-nav', 'primarySectionsAria');
+    setAttrs('#chart-modal', 'rangeChartAria');
+    setAttrs('#info-modal .btn-close', 'closeRulesModalAria');
+    setAttrs('#poker-glossary-nav', 'glossaryCategoriesAria');
+    setAttrs('#stats-modal .btn-close', 'closeStatsModalAria');
+    setAttrs('#drill-manager-modal .btn-close', 'closeDrillManagerAria');
+    setAttrs('#drill-hero-position-chips', 'heroPositionsAria');
+    setAttrs('#assessment-modal .btn-close', 'closeAssessmentModalAria');
+    setAttrs('#session-summary-modal .btn-close', 'closeSessionSummaryAria');
+    setAttrs('#ad-modal-close', 'closeSponsorNoteAria');
+    setAttrs('#support-donate-modal .btn-close', 'closeSupportModalAria');
+    setAttrs('#support-about-modal .btn-close', 'closeAboutSettingsModalAria');
+    setAttrs('#support-feedback-modal .btn-close', 'closeFeedbackModalAria');
+    setAttrs('#range-editor-modal .btn-close', 'closeRangeEditorAria');
+    setAttrs('button[onclick="exportRange()"]', 'exportToClipboardTitle', ['title', 'aria-label']);
+    setAttrs('button[onclick="importRange()"]', 'importFromJsonTitle', ['title', 'aria-label']);
 }
