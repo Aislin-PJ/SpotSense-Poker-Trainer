@@ -13,6 +13,14 @@ const QUICK_DIAGNOSTIC_HANDS = 20;
 const TRAINING_SESSION_HANDS = 10;
 const MISTAKE_REPLAY_LIMIT = 50;
 const DAILY_HAND_GOAL = 20;
+const DAILY_PLAN_REVIEW_RATIO = 0.25;
+const DAILY_PLAN_REVIEW_BACKLOG_RATIO = 0.35;
+const DAILY_PLAN_REVIEW_HEAVY_BACKLOG_RATIO = 0.4;
+const DAILY_PLAN_MAINTENANCE_RATIO = 0.15;
+const DAILY_PLAN_REVIEW_BACKLOG_THRESHOLD = 8;
+const DAILY_PLAN_REVIEW_HEAVY_BACKLOG_THRESHOLD = 12;
+const DAILY_PLAN_TARGETS = ['RFI', 'DEFEND', 'PUSH_FOLD', 'FACING_3BET', 'ALL_STREET'];
+const SPACED_REVIEW_INTERVALS = [1, 3, 7, 14];
 const AD_SESSION_THRESHOLD = 50;
 const AD_HAND_THRESHOLD = 500;
 const AD_DAILY_LIMIT = 3;
@@ -607,6 +615,396 @@ const RFI_RANGES = {
 };
 RFI_RANGES.SB = RFI_RANGES.BTN;
 
+const ACTION_FREQUENCY_ORDER = ['Raise', 'All-In', 'Call', 'Fold'];
+const ACTION_FREQUENCY_SHORT_LABELS = { Raise: 'R', 'All-In': 'AI', Call: 'C', Fold: 'F' };
+const RANGE_DATA_SOURCES = Object.freeze({
+    TYLOO_RFI_6MAX_2026: Object.freeze({
+        label: 'Tyloo MIT RFI reference',
+        detail: '6-max RFI percentages from tyloo/poker-range-analyzer, MIT License. HJ uses the source MP table.',
+        url: 'https://github.com/tyloo/poker-range-analyzer',
+        license: 'MIT'
+    }),
+    TYLOO_BB_DEFENSE_BTN_2026: Object.freeze({
+        label: 'Tyloo MIT BB defense reference',
+        detail: 'BB defense percentages versus BTN open from tyloo/poker-range-analyzer, MIT License.',
+        url: 'https://github.com/tyloo/poker-range-analyzer/blob/main/lib/ranges/bb.ts',
+        license: 'MIT'
+    }),
+    AHTOOOXA_GREENLINE_2026: Object.freeze({
+        label: 'AHTOOOXA MIT Greenline reference',
+        detail: 'Greenline preflop charts from AHTOOOXA/poker-charts, MIT License. HJ uses the source MP row.',
+        url: 'https://github.com/AHTOOOXA/poker-charts/blob/main/src/data/ranges/greenline.ts',
+        license: 'MIT'
+    }),
+    CANDY_POKER_HU_PUSH_FOLD_2026: Object.freeze({
+        label: 'CandyPoker MIT HU push/fold reference',
+        detail: 'Heads-up SB push/fold threshold table from sweeterthancandy/CandyPoker, MIT License.',
+        url: 'https://github.com/sweeterthancandy/CandyPoker#readme',
+        license: 'MIT'
+    }),
+    INTERNAL_SIMPLIFIED_BASELINE: Object.freeze({
+        label: 'Internal simplified baseline',
+        detail: 'Built-in training range shown as pure 100/0 because no licensed mixed-frequency export is attached.',
+        url: '',
+        license: 'Internal'
+    })
+});
+const RFI_FREQUENCY_SOURCE_ID = 'TYLOO_RFI_6MAX_2026';
+const GREENLINE_SOURCE_ID = 'AHTOOOXA_GREENLINE_2026';
+const DEFENSE_FREQUENCY_SOURCE_IDS = Object.freeze({
+    BTN_VS_CO: GREENLINE_SOURCE_ID,
+    BTN_VS_HJ: GREENLINE_SOURCE_ID,
+    BB_VS_BTN: 'TYLOO_BB_DEFENSE_BTN_2026',
+    BB_VS_SB: GREENLINE_SOURCE_ID,
+    SB_VS_BTN: GREENLINE_SOURCE_ID
+});
+const FACING_THREE_BET_FREQUENCY_SOURCE_ID = GREENLINE_SOURCE_ID;
+const CANDY_POKER_HU_PUSH_FOLD_SOURCE_ID = 'CANDY_POKER_HU_PUSH_FOLD_2026';
+const INTERNAL_BASELINE_SOURCE_ID = 'INTERNAL_SIMPLIFIED_BASELINE';
+// RFI percentages are sourced from the MIT-licensed tyloo/poker-range-analyzer
+// data. The source uses MP; this app maps that row to HJ because the app's
+// six-max seat model is UTG/HJ/CO/BTN/SB/BB.
+const RFI_ACTION_FREQUENCIES = {
+    UTG: {
+        'AA': { Raise: 100 },
+        'KK': { Raise: 100 },
+        'QQ': { Raise: 100 },
+        'JJ': { Raise: 100 },
+        'TT': { Raise: 100 },
+        '99': { Raise: 100 },
+        '88': { Raise: 100 },
+        '77': { Raise: 100 },
+        '66': { Raise: 50, Fold: 50 },
+        '55': { Raise: 25, Fold: 75 },
+        'AKs': { Raise: 100 },
+        'AQs': { Raise: 100 },
+        'AJs': { Raise: 100 },
+        'ATs': { Raise: 100 },
+        'KQs': { Raise: 100 },
+        'KJs': { Raise: 100 },
+        'KTs': { Raise: 75, Fold: 25 },
+        'QJs': { Raise: 100 },
+        'QTs': { Raise: 50, Fold: 50 },
+        'JTs': { Raise: 100 },
+        'A9s': { Raise: 50, Fold: 50 },
+        'A8s': { Raise: 25, Fold: 75 },
+        'A5s': { Raise: 50, Fold: 50 },
+        'A4s': { Raise: 25, Fold: 75 },
+        'AKo': { Raise: 100 },
+        'AQo': { Raise: 100 },
+        'AJo': { Raise: 100 },
+        'ATo': { Raise: 50, Fold: 50 },
+        'KQo': { Raise: 75, Fold: 25 },
+    },
+    HJ: {
+        'AA': { Raise: 100 },
+        'KK': { Raise: 100 },
+        'QQ': { Raise: 100 },
+        'JJ': { Raise: 100 },
+        'TT': { Raise: 100 },
+        '99': { Raise: 100 },
+        '88': { Raise: 100 },
+        '77': { Raise: 100 },
+        '66': { Raise: 75, Fold: 25 },
+        '55': { Raise: 50, Fold: 50 },
+        '44': { Raise: 25, Fold: 75 },
+        'AKs': { Raise: 100 },
+        'AQs': { Raise: 100 },
+        'AJs': { Raise: 100 },
+        'ATs': { Raise: 100 },
+        'A9s': { Raise: 75, Fold: 25 },
+        'A8s': { Raise: 50, Fold: 50 },
+        'A5s': { Raise: 75, Fold: 25 },
+        'A4s': { Raise: 50, Fold: 50 },
+        'A3s': { Raise: 25, Fold: 75 },
+        'KQs': { Raise: 100 },
+        'KJs': { Raise: 100 },
+        'KTs': { Raise: 100 },
+        'K9s': { Raise: 25, Fold: 75 },
+        'QJs': { Raise: 100 },
+        'QTs': { Raise: 75, Fold: 25 },
+        'Q9s': { Raise: 25, Fold: 75 },
+        'JTs': { Raise: 100 },
+        'J9s': { Raise: 25, Fold: 75 },
+        'T9s': { Raise: 50, Fold: 50 },
+        'AKo': { Raise: 100 },
+        'AQo': { Raise: 100 },
+        'AJo': { Raise: 100 },
+        'ATo': { Raise: 75, Fold: 25 },
+        'KQo': { Raise: 100 },
+        'KJo': { Raise: 50, Fold: 50 },
+        'QJo': { Raise: 25, Fold: 75 },
+    },
+    CO: {
+        'AA': { Raise: 100 },
+        'KK': { Raise: 100 },
+        'QQ': { Raise: 100 },
+        'JJ': { Raise: 100 },
+        'TT': { Raise: 100 },
+        '99': { Raise: 100 },
+        '88': { Raise: 100 },
+        '77': { Raise: 100 },
+        '66': { Raise: 100 },
+        '55': { Raise: 100 },
+        '44': { Raise: 75, Fold: 25 },
+        '33': { Raise: 50, Fold: 50 },
+        '22': { Raise: 50, Fold: 50 },
+        'AKs': { Raise: 100 },
+        'AQs': { Raise: 100 },
+        'AJs': { Raise: 100 },
+        'ATs': { Raise: 100 },
+        'A9s': { Raise: 100 },
+        'A8s': { Raise: 100 },
+        'A7s': { Raise: 100 },
+        'A6s': { Raise: 100 },
+        'A5s': { Raise: 100 },
+        'A4s': { Raise: 100 },
+        'A3s': { Raise: 100 },
+        'A2s': { Raise: 75, Fold: 25 },
+        'KQs': { Raise: 100 },
+        'KJs': { Raise: 100 },
+        'KTs': { Raise: 100 },
+        'K9s': { Raise: 100 },
+        'K8s': { Raise: 50, Fold: 50 },
+        'K7s': { Raise: 25, Fold: 75 },
+        'QJs': { Raise: 100 },
+        'QTs': { Raise: 100 },
+        'Q9s': { Raise: 100 },
+        'Q8s': { Raise: 50, Fold: 50 },
+        'JTs': { Raise: 100 },
+        'J9s': { Raise: 100 },
+        'J8s': { Raise: 50, Fold: 50 },
+        'T9s': { Raise: 100 },
+        'T8s': { Raise: 75, Fold: 25 },
+        '98s': { Raise: 100 },
+        '97s': { Raise: 50, Fold: 50 },
+        '87s': { Raise: 100 },
+        '86s': { Raise: 50, Fold: 50 },
+        '76s': { Raise: 100 },
+        '75s': { Raise: 25, Fold: 75 },
+        '65s': { Raise: 75, Fold: 25 },
+        '54s': { Raise: 50, Fold: 50 },
+        'AKo': { Raise: 100 },
+        'AQo': { Raise: 100 },
+        'AJo': { Raise: 100 },
+        'ATo': { Raise: 100 },
+        'A9o': { Raise: 75, Fold: 25 },
+        'A8o': { Raise: 50, Fold: 50 },
+        'A7o': { Raise: 25, Fold: 75 },
+        'KQo': { Raise: 100 },
+        'KJo': { Raise: 100 },
+        'KTo': { Raise: 75, Fold: 25 },
+        'QJo': { Raise: 100 },
+        'QTo': { Raise: 50, Fold: 50 },
+        'JTo': { Raise: 75, Fold: 25 },
+    },
+    BTN: {
+        'AA': { Raise: 100 },
+        'KK': { Raise: 100 },
+        'QQ': { Raise: 100 },
+        'JJ': { Raise: 100 },
+        'TT': { Raise: 100 },
+        '99': { Raise: 100 },
+        '88': { Raise: 100 },
+        '77': { Raise: 100 },
+        '66': { Raise: 100 },
+        '55': { Raise: 100 },
+        '44': { Raise: 100 },
+        '33': { Raise: 100 },
+        '22': { Raise: 100 },
+        'AKs': { Raise: 100 },
+        'AQs': { Raise: 100 },
+        'AJs': { Raise: 100 },
+        'ATs': { Raise: 100 },
+        'A9s': { Raise: 100 },
+        'A8s': { Raise: 100 },
+        'A7s': { Raise: 100 },
+        'A6s': { Raise: 100 },
+        'A5s': { Raise: 100 },
+        'A4s': { Raise: 100 },
+        'A3s': { Raise: 100 },
+        'A2s': { Raise: 100 },
+        'KQs': { Raise: 100 },
+        'KJs': { Raise: 100 },
+        'KTs': { Raise: 100 },
+        'K9s': { Raise: 100 },
+        'K8s': { Raise: 100 },
+        'K7s': { Raise: 100 },
+        'K6s': { Raise: 100 },
+        'K5s': { Raise: 100 },
+        'K4s': { Raise: 75, Fold: 25 },
+        'K3s': { Raise: 75, Fold: 25 },
+        'K2s': { Raise: 50, Fold: 50 },
+        'QJs': { Raise: 100 },
+        'QTs': { Raise: 100 },
+        'Q9s': { Raise: 100 },
+        'Q8s': { Raise: 100 },
+        'Q7s': { Raise: 75, Fold: 25 },
+        'Q6s': { Raise: 75, Fold: 25 },
+        'Q5s': { Raise: 50, Fold: 50 },
+        'Q4s': { Raise: 50, Fold: 50 },
+        'JTs': { Raise: 100 },
+        'J9s': { Raise: 100 },
+        'J8s': { Raise: 100 },
+        'J7s': { Raise: 75, Fold: 25 },
+        'J6s': { Raise: 50, Fold: 50 },
+        'T9s': { Raise: 100 },
+        'T8s': { Raise: 100 },
+        'T7s': { Raise: 75, Fold: 25 },
+        '98s': { Raise: 100 },
+        '97s': { Raise: 100 },
+        '96s': { Raise: 75, Fold: 25 },
+        '87s': { Raise: 100 },
+        '86s': { Raise: 100 },
+        '85s': { Raise: 50, Fold: 50 },
+        '76s': { Raise: 100 },
+        '75s': { Raise: 100 },
+        '74s': { Raise: 50, Fold: 50 },
+        '65s': { Raise: 100 },
+        '64s': { Raise: 75, Fold: 25 },
+        '54s': { Raise: 100 },
+        '53s': { Raise: 75, Fold: 25 },
+        '43s': { Raise: 75, Fold: 25 },
+        '32s': { Raise: 50, Fold: 50 },
+        'AKo': { Raise: 100 },
+        'AQo': { Raise: 100 },
+        'AJo': { Raise: 100 },
+        'ATo': { Raise: 100 },
+        'A9o': { Raise: 100 },
+        'A8o': { Raise: 100 },
+        'A7o': { Raise: 100 },
+        'A6o': { Raise: 100 },
+        'A5o': { Raise: 100 },
+        'A4o': { Raise: 100 },
+        'A3o': { Raise: 75, Fold: 25 },
+        'A2o': { Raise: 75, Fold: 25 },
+        'KQo': { Raise: 100 },
+        'KJo': { Raise: 100 },
+        'KTo': { Raise: 100 },
+        'K9o': { Raise: 100 },
+        'K8o': { Raise: 75, Fold: 25 },
+        'K7o': { Raise: 50, Fold: 50 },
+        'QJo': { Raise: 100 },
+        'QTo': { Raise: 100 },
+        'Q9o': { Raise: 100 },
+        'Q8o': { Raise: 50, Fold: 50 },
+        'JTo': { Raise: 100 },
+        'J9o': { Raise: 100 },
+        'J8o': { Raise: 50, Fold: 50 },
+        'T9o': { Raise: 100 },
+        'T8o': { Raise: 75, Fold: 25 },
+        '98o': { Raise: 100 },
+        '97o': { Raise: 50, Fold: 50 },
+        '87o': { Raise: 100 },
+        '76o': { Raise: 75, Fold: 25 },
+        '65o': { Raise: 50, Fold: 50 },
+    },
+    SB: {
+        'AA': { Raise: 100 },
+        'KK': { Raise: 100 },
+        'QQ': { Raise: 100 },
+        'JJ': { Raise: 100 },
+        'TT': { Raise: 100 },
+        '99': { Raise: 100 },
+        '88': { Raise: 100 },
+        '77': { Raise: 100 },
+        '66': { Raise: 100 },
+        '55': { Raise: 100 },
+        '44': { Raise: 100 },
+        '33': { Raise: 100 },
+        '22': { Raise: 100 },
+        'AKs': { Raise: 100 },
+        'AQs': { Raise: 100 },
+        'AJs': { Raise: 100 },
+        'ATs': { Raise: 100 },
+        'A9s': { Raise: 100 },
+        'A8s': { Raise: 100 },
+        'A7s': { Raise: 100 },
+        'A6s': { Raise: 100 },
+        'A5s': { Raise: 100 },
+        'A4s': { Raise: 100 },
+        'A3s': { Raise: 100 },
+        'A2s': { Raise: 100 },
+        'KQs': { Raise: 100 },
+        'KJs': { Raise: 100 },
+        'KTs': { Raise: 100 },
+        'K9s': { Raise: 100 },
+        'K8s': { Raise: 100 },
+        'K7s': { Raise: 100 },
+        'K6s': { Raise: 100 },
+        'K5s': { Raise: 100 },
+        'K4s': { Raise: 100 },
+        'K3s': { Raise: 100 },
+        'K2s': { Raise: 100 },
+        'QJs': { Raise: 100 },
+        'QTs': { Raise: 100 },
+        'Q9s': { Raise: 100 },
+        'Q8s': { Raise: 100 },
+        'Q7s': { Raise: 100 },
+        'Q6s': { Raise: 100 },
+        'Q5s': { Raise: 75, Fold: 25 },
+        'Q4s': { Raise: 75, Fold: 25 },
+        'Q3s': { Raise: 50, Fold: 50 },
+        'Q2s': { Raise: 50, Fold: 50 },
+        'JTs': { Raise: 100 },
+        'J9s': { Raise: 100 },
+        'J8s': { Raise: 100 },
+        'J7s': { Raise: 100 },
+        'J6s': { Raise: 75, Fold: 25 },
+        'J5s': { Raise: 50, Fold: 50 },
+        'T9s': { Raise: 100 },
+        'T8s': { Raise: 100 },
+        'T7s': { Raise: 100 },
+        'T6s': { Raise: 50, Fold: 50 },
+        '98s': { Raise: 100 },
+        '97s': { Raise: 100 },
+        '96s': { Raise: 75, Fold: 25 },
+        '87s': { Raise: 100 },
+        '86s': { Raise: 100 },
+        '85s': { Raise: 75, Fold: 25 },
+        '76s': { Raise: 100 },
+        '75s': { Raise: 100 },
+        '65s': { Raise: 100 },
+        '64s': { Raise: 100 },
+        '54s': { Raise: 100 },
+        '53s': { Raise: 75, Fold: 25 },
+        '43s': { Raise: 75, Fold: 25 },
+        'AKo': { Raise: 100 },
+        'AQo': { Raise: 100 },
+        'AJo': { Raise: 100 },
+        'ATo': { Raise: 100 },
+        'A9o': { Raise: 100 },
+        'A8o': { Raise: 100 },
+        'A7o': { Raise: 100 },
+        'A6o': { Raise: 100 },
+        'A5o': { Raise: 100 },
+        'A4o': { Raise: 100 },
+        'A3o': { Raise: 100 },
+        'A2o': { Raise: 100 },
+        'KQo': { Raise: 100 },
+        'KJo': { Raise: 100 },
+        'KTo': { Raise: 100 },
+        'K9o': { Raise: 100 },
+        'K8o': { Raise: 100 },
+        'K7o': { Raise: 75, Fold: 25 },
+        'K6o': { Raise: 75, Fold: 25 },
+        'K5o': { Raise: 50, Fold: 50 },
+        'QJo': { Raise: 100 },
+        'QTo': { Raise: 100 },
+        'Q9o': { Raise: 100 },
+        'Q8o': { Raise: 75, Fold: 25 },
+        'JTo': { Raise: 100 },
+        'J9o': { Raise: 100 },
+        'J8o': { Raise: 75, Fold: 25 },
+        'T9o': { Raise: 100 },
+        'T8o': { Raise: 75, Fold: 25 },
+        '98o': { Raise: 100 },
+        '87o': { Raise: 100 },
+        '76o': { Raise: 75, Fold: 25 },
+        '65o': { Raise: 75, Fold: 25 },
+    },
+};
+
 // ============================================================
 // PUSH / FOLD RANGES (multiple stack sizes)
 // ============================================================
@@ -657,6 +1055,43 @@ PUSH_15BB.BB = PUSH_15BB.SB;
 
 const PUSH_RANGES_BY_STACK = { '6': PUSH_6BB, '8': PUSH_8BB, '10': PUSH_10BB, '12': PUSH_12BB, '15': PUSH_15BB };
 
+const CANDY_POKER_HU_SB_PUSH_THRESHOLD_MATRIX = Object.freeze([
+    [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
+    [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 19, 19],
+    [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 16, 13, 12],
+    [20, 20, 20, 20, 20, 20, 20, 20, 18, 17, 13, 10, 8],
+    [20, 20, 20, 20, 20, 20, 20, 20, 20, 11, 10, 7, 6],
+    [20, 20, 20, 20, 20, 20, 20, 20, 20, 14, 5, 4, 3],
+    [20, 18, 13, 13, 16, 20, 20, 20, 20, 18, 8, 2, 2],
+    [20, 16, 10, 8, 9, 10, 14, 20, 20, 20, 14, 2, 2],
+    [20, 15, 9, 6, 5, 4, 7, 10, 20, 20, 16, 7, 2],
+    [20, 14, 8, 6, 4, 3, 2, 2, 2, 20, 20, 12, 2],
+    [20, 13, 8, 5, 3, 2, 2, 2, 2, 2, 20, 9, 1],
+    [20, 12, 7, 5, 3, 2, 1, 1, 1, 1, 1, 20, 1],
+    [20, 11, 7, 4, 2, 2, 1, 1, 1, 1, 1, 1, 20]
+]);
+
+function buildHeadsUpPushThresholds(matrix) {
+    const thresholds = {};
+    matrix.forEach((row, rowIndex) => {
+        row.forEach((threshold, colIndex) => {
+            const rowRank = CHART_RANKS[rowIndex];
+            const colRank = CHART_RANKS[colIndex];
+            const combo = rowIndex === colIndex
+                ? `${rowRank}${rowRank}`
+                : rowIndex < colIndex
+                    ? `${rowRank}${colRank}o`
+                    : `${colRank}${rowRank}s`;
+            thresholds[combo] = threshold;
+        });
+    });
+    return thresholds;
+}
+
+const CANDY_POKER_HU_SB_PUSH_THRESHOLDS = Object.freeze(
+    buildHeadsUpPushThresholds(CANDY_POKER_HU_SB_PUSH_THRESHOLD_MATRIX)
+);
+
 // ============================================================
 // DEFEND SCENARIOS
 // ============================================================
@@ -685,6 +1120,237 @@ const DEFEND_SCENARIOS = {
         hero: 'SB', villain: 'BTN',
         THREE_BET: new Set(['AA', 'KK', 'QQ', 'JJ', 'TT', '99', 'AKs', 'AQs', 'AJs', 'ATs', 'KQs', 'KJs', 'A5s', 'A4s', 'A3s', 'A2s', 'AKo', 'AQo', 'AJo']),
         CALL: new Set() // SB folds or 3-bets — minimal calling
+    }
+};
+
+const DEFENSE_ACTION_FREQUENCIES = {
+    BB_VS_BTN: {
+        'AA': { Raise: 100 },
+        'KK': { Raise: 100 },
+        'QQ': { Raise: 100 },
+        'JJ': { Raise: 75, Call: 25 },
+        'TT': { Raise: 50, Call: 50 },
+        '99': { Raise: 25, Call: 75 },
+        '88': { Raise: 25, Call: 75 },
+        '77': { Call: 100 },
+        '66': { Call: 100 },
+        '55': { Call: 100 },
+        '44': { Call: 100 },
+        '33': { Call: 100 },
+        '22': { Call: 100 },
+        'AKs': { Raise: 75, Call: 25 },
+        'AQs': { Raise: 50, Call: 50 },
+        'AJs': { Raise: 50, Call: 50 },
+        'ATs': { Raise: 25, Call: 75 },
+        'A9s': { Raise: 25, Call: 75 },
+        'A8s': { Raise: 25, Call: 75 },
+        'A7s': { Raise: 25, Call: 75 },
+        'A6s': { Raise: 25, Call: 75 },
+        'A5s': { Raise: 50, Call: 50 },
+        'A4s': { Raise: 50, Call: 50 },
+        'A3s': { Raise: 25, Call: 75 },
+        'A2s': { Raise: 25, Call: 75 },
+        'KQs': { Raise: 50, Call: 50 },
+        'KJs': { Raise: 25, Call: 75 },
+        'KTs': { Raise: 25, Call: 75 },
+        'K9s': { Call: 100 },
+        'K8s': { Call: 100 },
+        'K7s': { Call: 100 },
+        'K6s': { Call: 100 },
+        'K5s': { Call: 100 },
+        'K4s': { Call: 100 },
+        'K3s': { Call: 100 },
+        'K2s': { Call: 100 },
+        'QJs': { Raise: 25, Call: 75 },
+        'QTs': { Raise: 25, Call: 75 },
+        'Q9s': { Call: 100 },
+        'Q8s': { Call: 100 },
+        'Q7s': { Call: 100 },
+        'Q6s': { Call: 100 },
+        'Q5s': { Call: 100 },
+        'Q4s': { Call: 100 },
+        'Q3s': { Call: 75, Fold: 25 },
+        'Q2s': { Call: 75, Fold: 25 },
+        'JTs': { Raise: 25, Call: 75 },
+        'J9s': { Call: 100 },
+        'J8s': { Call: 100 },
+        'J7s': { Call: 100 },
+        'J6s': { Call: 75, Fold: 25 },
+        'J5s': { Call: 75, Fold: 25 },
+        'J4s': { Call: 50, Fold: 50 },
+        'T9s': { Raise: 25, Call: 75 },
+        'T8s': { Call: 100 },
+        'T7s': { Call: 100 },
+        'T6s': { Call: 75, Fold: 25 },
+        '98s': { Raise: 25, Call: 75 },
+        '97s': { Call: 100 },
+        '96s': { Call: 100 },
+        '95s': { Call: 50, Fold: 50 },
+        '87s': { Raise: 25, Call: 75 },
+        '86s': { Call: 100 },
+        '85s': { Call: 75, Fold: 25 },
+        '76s': { Raise: 25, Call: 75 },
+        '75s': { Call: 100 },
+        '74s': { Call: 50, Fold: 50 },
+        '65s': { Raise: 25, Call: 75 },
+        '64s': { Call: 100 },
+        '54s': { Raise: 25, Call: 75 },
+        '53s': { Call: 100 },
+        '43s': { Call: 100 },
+        '42s': { Call: 50, Fold: 50 },
+        '32s': { Call: 75, Fold: 25 },
+        'AKo': { Raise: 75, Call: 25 },
+        'AQo': { Raise: 50, Call: 50 },
+        'AJo': { Raise: 25, Call: 75 },
+        'ATo': { Call: 100 },
+        'A9o': { Call: 100 },
+        'A8o': { Call: 100 },
+        'A7o': { Call: 100 },
+        'A6o': { Call: 100 },
+        'A5o': { Call: 100 },
+        'A4o': { Call: 100 },
+        'A3o': { Call: 100 },
+        'A2o': { Call: 100 },
+        'KQo': { Raise: 25, Call: 75 },
+        'KJo': { Call: 100 },
+        'KTo': { Call: 100 },
+        'K9o': { Call: 100 },
+        'K8o': { Call: 75, Fold: 25 },
+        'K7o': { Call: 75, Fold: 25 },
+        'K6o': { Call: 50, Fold: 50 },
+        'K5o': { Call: 50, Fold: 50 },
+        'K4o': { Call: 50, Fold: 50 },
+        'K3o': { Call: 25, Fold: 75 },
+        'K2o': { Call: 25, Fold: 75 },
+        'QJo': { Call: 100 },
+        'QTo': { Call: 100 },
+        'Q9o': { Call: 100 },
+        'Q8o': { Call: 75, Fold: 25 },
+        'Q7o': { Call: 50, Fold: 50 },
+        'Q6o': { Call: 50, Fold: 50 },
+        'JTo': { Call: 100 },
+        'J9o': { Call: 100 },
+        'J8o': { Call: 75, Fold: 25 },
+        'J7o': { Call: 50, Fold: 50 },
+        'T9o': { Call: 100 },
+        'T8o': { Call: 100 },
+        'T7o': { Call: 50, Fold: 50 },
+        '98o': { Call: 100 },
+        '97o': { Call: 75, Fold: 25 },
+        '87o': { Call: 100 },
+        '86o': { Call: 75, Fold: 25 },
+        '76o': { Call: 100 },
+        '75o': { Call: 50, Fold: 50 },
+        '65o': { Call: 100 },
+        '64o': { Call: 50, Fold: 50 },
+        '54o': { Call: 100 },
+        '53o': { Call: 50, Fold: 50 },
+        '43o': { Call: 50, Fold: 50 },
+    },
+};
+
+// Compact Greenline source tables. Plain strings in the upstream chart become
+// 100% pure actions; two-action cells become 50/50 mixed frequencies.
+const GREENLINE_DEFENSE_ACTION_FREQUENCIES = {
+    BTN_VS_CO: {
+        raise: ['54s', '55', '64s', '65s', '66', '75s', '76s', '77', '85s', '86s', '87s', '88', '96s', '97s', '98s', '99', 'A2s', 'A3s', 'A4s', 'A5s', 'A6s', 'A7s', 'A8s', 'A9o', 'A9s', 'AA', 'AJo', 'AJs', 'AKo', 'AKs', 'AQo', 'AQs', 'ATo', 'ATs', 'J7s', 'J8s', 'J9s', 'JJ', 'JTs', 'K5s', 'K6s', 'K7s', 'K8s', 'K9s', 'KJo', 'KJs', 'KK', 'KQo', 'KQs', 'KTo', 'KTs', 'Q6s', 'Q7s', 'Q8s', 'Q9s', 'QJo', 'QJs', 'QQ', 'QTs', 'T7s', 'T8s', 'T9s', 'TT'],
+        call: [],
+        mixed: {
+            44: { Raise: 50, Fold: 50 }
+        }
+    },
+    BTN_VS_HJ: {
+        raise: ['44', '54s', '55', '65s', '66', '75s', '76s', '77', '86s', '87s', '88', '97s', '98s', '99', 'A2s', 'A3s', 'A4s', 'A5s', 'A9s', 'AA', 'AJo', 'AJs', 'AKo', 'AKs', 'AQo', 'AQs', 'ATs', 'J9s', 'JJ', 'JTs', 'K9s', 'KJs', 'KK', 'KQo', 'KQs', 'KTs', 'Q9s', 'QJs', 'QQ', 'QTs', 'T8s', 'T9s', 'TT'],
+        call: [],
+        mixed: {}
+    },
+    BB_VS_SB: {
+        raise: ['22', '33', '43s', '44', '53s', '54s', '55', '64s', '65s', '66', '74s', '75s', '76s', '77', '84s', '85s', '86s', '87s', '88', '93s', '94s', '95s', '96s', '97s', '98s', '99', 'A2s', 'A3s', 'A4s', 'A5s', 'A6s', 'A7s', 'A8s', 'A9o', 'A9s', 'AA', 'AJo', 'AJs', 'AKo', 'AKs', 'AQo', 'AQs', 'ATo', 'ATs', 'J3s', 'J4s', 'J5s', 'J6s', 'J7s', 'J8s', 'J9o', 'J9s', 'JJ', 'JTo', 'JTs', 'K2s', 'K3s', 'K4s', 'K5s', 'K6s', 'K7s', 'K8s', 'K9o', 'K9s', 'KJo', 'KJs', 'KK', 'KQo', 'KQs', 'KTo', 'KTs', 'Q2s', 'Q3s', 'Q4s', 'Q5s', 'Q6s', 'Q7s', 'Q8s', 'Q9o', 'Q9s', 'QJo', 'QJs', 'QQ', 'QTo', 'QTs', 'T3s', 'T4s', 'T5s', 'T6s', 'T7s', 'T8s', 'T9s', 'TT'],
+        call: ['32s', '42s', '52s', '54o', '63s', '65o', '73s', '75o', '76o', '83s', '86o', '87o', '97o', '98o', 'A2o', 'A3o', 'A4o', 'A5o', 'A6o', 'A7o', 'A8o', 'J7o', 'J8o', 'K4o', 'K5o', 'K6o', 'K7o', 'K8o', 'Q6o', 'Q7o', 'Q8o', 'T8o', 'T9o'],
+        mixed: {}
+    },
+    SB_VS_BTN: {
+        raise: ['22', '33', '44', '54s', '55', '64s', '65s', '66', '74s', '75s', '76s', '77', '85s', '86s', '87s', '88', '96s', '97s', '98s', '99', 'A2s', 'A3s', 'A4s', 'A5s', 'A6s', 'A7s', 'A8s', 'A9o', 'A9s', 'AA', 'AJo', 'AJs', 'AKo', 'AKs', 'AQo', 'AQs', 'ATo', 'ATs', 'J6s', 'J7s', 'J8s', 'J9s', 'JJ', 'JTs', 'K2s', 'K3s', 'K4s', 'K5s', 'K6s', 'K7s', 'K8s', 'K9s', 'KJo', 'KJs', 'KK', 'KQo', 'KQs', 'KTo', 'KTs', 'Q5s', 'Q6s', 'Q7s', 'Q8s', 'Q9s', 'QJo', 'QJs', 'QQ', 'QTs', 'T6s', 'T7s', 'T8s', 'T9s', 'TT'],
+        call: [],
+        mixed: {}
+    }
+};
+
+const GREENLINE_FACING_THREE_BET_ACTION_FREQUENCIES = {
+    UTG_VS_HJ: {
+        raise: ['AA', 'AKo', 'AKs', 'KK', 'QQ'],
+        call: ['99', 'AJs', 'AQs', 'ATs', 'JJ', 'KJs', 'KQs', 'KTs', 'TT'],
+        mixed: { 'A5s': { Raise: 50, Fold: 50 }, 'AQo': { Raise: 50, Fold: 50 } }
+    },
+    UTG_VS_CO: {
+        raise: ['AA', 'AKo', 'AKs', 'KK', 'QQ'],
+        call: ['88', '99', 'AJs', 'AQs', 'ATs', 'JJ', 'KJs', 'KQs', 'KTs', 'QJs', 'TT'],
+        mixed: { 'A5s': { Raise: 50, Fold: 50 }, 'AQo': { Raise: 50, Fold: 50 } }
+    },
+    UTG_VS_BTN: {
+        raise: ['AA', 'AKo', 'AKs', 'KK', 'QQ'],
+        call: ['55', '66', '77', '87s', '88', '99', 'AJs', 'AQs', 'ATs', 'JJ', 'JTs', 'KJs', 'KQs', 'KTs', 'QJs', 'QTs', 'T9s', 'TT'],
+        mixed: { 'A4s': { Raise: 50, Fold: 50 }, 'A5s': { Raise: 50, Fold: 50 }, 'AQo': { Raise: 50, Fold: 50 } }
+    },
+    UTG_VS_SB: {
+        raise: ['AA', 'AKs', 'KK', 'QQ'],
+        call: ['66', '77', '87s', '88', '99', 'AJs', 'AKo', 'AQs', 'ATs', 'JJ', 'JTs', 'KJs', 'KQs', 'QJs', 'T9s', 'TT'],
+        mixed: {}
+    },
+    UTG_VS_BB: {
+        raise: ['AA', 'AKo', 'AKs', 'KK', 'QQ'],
+        call: ['87s', '88', '99', 'AJs', 'AQs', 'ATs', 'JJ', 'JTs', 'KJs', 'KQs', 'QJs', 'T9s', 'TT'],
+        mixed: { 'A4s': { Raise: 50, Fold: 50 }, 'A5s': { Raise: 50, Fold: 50 }, 'KTs': { Raise: 50, Fold: 50 } }
+    },
+    HJ_VS_CO: {
+        raise: ['AA', 'AKo', 'AKs', 'KK', 'QQ'],
+        call: ['77', '88', '99', 'AJs', 'AQs', 'ATs', 'JJ', 'JTs', 'KJs', 'KQs', 'QJs', 'QTs', 'TT'],
+        mixed: { 'A4s': { Raise: 50, Fold: 50 }, 'A5s': { Raise: 50, Fold: 50 }, 'AQo': { Raise: 50, Fold: 50 }, 'KTs': { Raise: 50, Fold: 50 } }
+    },
+    HJ_VS_BTN: {
+        raise: ['AA', 'AKo', 'AKs', 'KK', 'QQ'],
+        call: ['55', '65s', '66', '76s', '77', '87s', '88', '99', 'A9s', 'AJs', 'AQs', 'ATs', 'JJ', 'JTs', 'KJs', 'KQs', 'QJs', 'QTs', 'T9s', 'TT'],
+        mixed: { 'A4s': { Raise: 50, Fold: 50 }, 'A5s': { Raise: 50, Fold: 50 }, 'AQo': { Raise: 50, Fold: 50 }, 'KTs': { Raise: 50, Fold: 50 } }
+    },
+    HJ_VS_SB: {
+        raise: ['AA', 'AKs', 'KK', 'QQ'],
+        call: ['55', '65s', '66', '76s', '77', '87s', '88', '99', 'A9s', 'AJs', 'AKo', 'AQs', 'ATs', 'JJ', 'JTs', 'KJs', 'KQs', 'QJs', 'T9s', 'TT'],
+        mixed: { 'A4s': { Raise: 50, Fold: 50 }, 'A5s': { Raise: 50, Fold: 50 }, 'KTs': { Raise: 50, Fold: 50 }, 'QTs': { Raise: 50, Fold: 50 } }
+    },
+    HJ_VS_BB: {
+        raise: ['AA', 'AKo', 'AKs', 'KK', 'QQ'],
+        call: ['65s', '76s', '77', '87s', '88', '99', 'AJs', 'AQs', 'ATs', 'JJ', 'JTs', 'KJs', 'KQs', 'QJs', 'TT'],
+        mixed: { 'A4s': { Raise: 50, Fold: 50 }, 'A5s': { Raise: 50, Fold: 50 }, 'KTs': { Raise: 50, Fold: 50 } }
+    },
+    CO_VS_BTN: {
+        raise: ['AA', 'AKo', 'AKs', 'JJ', 'KK', 'QQ'],
+        call: ['54s', '55', '65s', '66', '76s', '77', '87s', '88', '98s', '99', 'A6s', 'A7s', 'A9s', 'AJo', 'AJs', 'AQs', 'ATs', 'J9s', 'JTs', 'KJs', 'KQo', 'KQs', 'KTs', 'QJs', 'QTs', 'T9s', 'TT'],
+        mixed: { 'A4s': { Raise: 50, Fold: 50 }, 'A5s': { Raise: 50, Fold: 50 }, 'A8s': { Raise: 50, Fold: 50 }, 'AQo': { Raise: 50, Fold: 50 }, 'K9s': { Raise: 50, Fold: 50 } }
+    },
+    CO_VS_SB: {
+        raise: ['AA', 'AKo', 'AKs', 'KK', 'QQ'],
+        call: ['54s', '55', '65s', '66', '76s', '77', '87s', '88', '98s', '99', 'A9s', 'AJs', 'AQo', 'AQs', 'ATs', 'JJ', 'JTs', 'KJs', 'KQs', 'KTs', 'QJs', 'QTs', 'T9s', 'TT'],
+        mixed: { 'A4s': { Raise: 50, Fold: 50 }, 'A5s': { Raise: 50, Fold: 50 }, 'A8s': { Raise: 50, Fold: 50 }, 'KQo': { Raise: 50, Fold: 50 } }
+    },
+    CO_VS_BB: {
+        raise: ['AA', 'AKo', 'AKs', 'KK', 'QQ'],
+        call: ['54s', '55', '65s', '66', '76s', '77', '87s', '88', '99', 'A9s', 'AJs', 'AQs', 'ATs', 'JJ', 'JTs', 'K9s', 'KJs', 'KQs', 'KTs', 'QJs', 'QTs', 'T9s', 'TT'],
+        mixed: { 'A4s': { Raise: 50, Fold: 50 }, 'A5s': { Raise: 50, Fold: 50 }, 'A8s': { Raise: 50, Fold: 50 }, 'K8s': { Raise: 50, Fold: 50 } }
+    },
+    BTN_VS_SB: {
+        raise: ['AA', 'AKo', 'AKs', 'JJ', 'KK', 'QQ'],
+        call: ['22', '33', '44', '54s', '55', '65s', '66', '76s', '77', '87s', '88', '97s', '98s', '99', 'A4s', 'A5s', 'A6s', 'A8s', 'A9s', 'AJs', 'AQo', 'AQs', 'ATo', 'ATs', 'J8s', 'J9s', 'JTs', 'K8s', 'K9s', 'KJs', 'KQs', 'KTs', 'Q8s', 'Q9s', 'QJs', 'QTs', 'T8s', 'T9s', 'TT'],
+        mixed: { 'A2s': { Raise: 50, Fold: 50 }, 'A3s': { Raise: 50, Fold: 50 }, 'A7s': { Raise: 50, Fold: 50 }, 'AJo': { Raise: 50, Fold: 50 }, 'K6s': { Raise: 50, Fold: 50 }, 'K7s': { Raise: 50, Fold: 50 }, 'KQo': { Raise: 50, Fold: 50 } }
+    },
+    BTN_VS_BB: {
+        raise: ['AA', 'AKo', 'AKs', 'JJ', 'KK', 'QQ'],
+        call: ['22', '33', '44', '54s', '55', '65s', '66', '76s', '77', '87s', '88', '98s', '99', 'A4s', 'A5s', 'A6s', 'A7s', 'A8s', 'A9s', 'AJs', 'AQo', 'AQs', 'ATo', 'ATs', 'J8s', 'J9s', 'JTs', 'K8s', 'K9s', 'KJs', 'KQs', 'KTs', 'Q9s', 'QJs', 'QTs', 'T8s', 'T9s', 'TT'],
+        mixed: { 'A2s': { Raise: 50, Fold: 50 }, 'A3s': { Raise: 50, Fold: 50 }, 'AJo': { Raise: 50, Fold: 50 }, 'K6s': { Raise: 50, Fold: 50 }, 'K7s': { Raise: 50, Fold: 50 }, 'KQo': { Raise: 50, Fold: 50 } }
+    },
+    SB_VS_BB: {
+        raise: ['AA', 'AKo', 'AKs', 'JJ', 'KK', 'QQ', 'TT'],
+        call: ['22', '33', '44', '54s', '55', '65s', '66', '76s', '77', '87s', '88', '97s', '98s', '99', 'A3s', 'A4s', 'A5s', 'A7s', 'A8s', 'A9s', 'AJs', 'AQs', 'ATo', 'ATs', 'J9s', 'JTs', 'K6s', 'K7s', 'K8s', 'K9s', 'KJo', 'KJs', 'KQs', 'KTs', 'Q9s', 'QJs', 'QTs', 'T8s', 'T9s'],
+        mixed: { 'A2s': { Raise: 50, Fold: 50 }, 'A6s': { Raise: 50, Fold: 50 }, 'AJo': { Raise: 50, Fold: 50 }, 'AQo': { Raise: 50, Fold: 50 }, 'J8s': { Raise: 50, Fold: 50 }, 'KQo': { Raise: 50, Fold: 50 }, 'Q8s': { Raise: 50, Fold: 50 } }
     }
 };
 
@@ -719,6 +1385,9 @@ let state = {
     currentHand: null,
     currentPosition: null,
     correctAction: null,
+    currentActionFrequencies: null,
+    currentAcceptableActions: [],
+    selectedChartCombo: null,
     explanation: '',
     lang: detectPreferredLanguage(),
     currentStack: '10',
@@ -735,6 +1404,7 @@ let state = {
     focusSession: null,
     trainingSession: null,
     diagnosticSession: null,
+    pendingCompletion: null,
     handHistory: [],
     mistakeReplay: {
         queue: [],
@@ -827,9 +1497,49 @@ function getDefaultFeedbackPreferences(source = {}) {
     };
 }
 
-function getDefaultMistakeReplay(source = {}) {
+function normalizeIsoDate(value, fallback = null) {
+    if (!value) return fallback;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? fallback : date.toISOString();
+}
+
+function normalizeMistakeReviewItem(item = {}, fallbackDueAt = new Date().toISOString()) {
+    const attempts = Math.max(0, Math.floor(Number(item.attempts) || 0));
+    const intervalDays = Math.max(0, Math.floor(Number(item.intervalDays) || 0));
+    const ease = Number.isFinite(Number(item.ease)) ? Math.max(1.3, Number(item.ease)) : 2.5;
+    const successStreak = Math.max(0, Math.floor(Number(item.successStreak) || 0));
     return {
-        queue: Array.isArray(source.queue) ? source.queue.slice(-MISTAKE_REPLAY_LIMIT) : [],
+        ...item,
+        attempts,
+        intervalDays,
+        ease,
+        successStreak,
+        lastResult: item.lastResult || 'new',
+        dueAt: normalizeIsoDate(item.dueAt, fallbackDueAt),
+        lastReviewedAt: normalizeIsoDate(item.lastReviewedAt, item.lastReviewedAt || null)
+    };
+}
+
+function sortMistakeReviewQueue(queue, referenceDate = new Date()) {
+    const referenceTime = referenceDate.getTime();
+    return queue.slice().sort((a, b) => {
+        const aDue = new Date(a.dueAt || 0).getTime();
+        const bDue = new Date(b.dueAt || 0).getTime();
+        const aIsDue = Number.isNaN(aDue) || aDue <= referenceTime;
+        const bIsDue = Number.isNaN(bDue) || bDue <= referenceTime;
+        if (aIsDue !== bIsDue) return aIsDue ? -1 : 1;
+        if (aDue !== bDue) return aDue - bDue;
+        return String(b.addedAt || '').localeCompare(String(a.addedAt || ''));
+    });
+}
+
+function getDefaultMistakeReplay(source = {}) {
+    const now = new Date().toISOString();
+    const queue = Array.isArray(source.queue)
+        ? source.queue.map(item => normalizeMistakeReviewItem(item, now))
+        : [];
+    return {
+        queue: sortMistakeReviewQueue(queue).slice(0, MISTAKE_REPLAY_LIMIT),
         completed: Array.isArray(source.completed) ? source.completed.slice(-MISTAKE_REPLAY_LIMIT) : []
     };
 }
@@ -1323,6 +2033,187 @@ function getCoreActionLabel(action, t = I18N[state.lang] || I18N.en) {
         'All-In': t.btnAllIn || 'All-In'
     };
     return labels[action] || action;
+}
+
+function normalizeActionFrequencies(frequencies, fallbackAction = 'Fold') {
+    const normalized = {};
+    let total = 0;
+    ACTION_FREQUENCY_ORDER.forEach(action => {
+        const value = Number(frequencies && frequencies[action]);
+        const percent = Number.isFinite(value) ? Math.max(0, Math.round(value)) : 0;
+        normalized[action] = percent;
+        total += percent;
+    });
+
+    if (total <= 0) {
+        ACTION_FREQUENCY_ORDER.forEach(action => { normalized[action] = 0; });
+        normalized[fallbackAction] = 100;
+        return normalized;
+    }
+
+    if (total !== 100) {
+        let remaining = 100;
+        ACTION_FREQUENCY_ORDER.forEach((action, index) => {
+            if (index === ACTION_FREQUENCY_ORDER.length - 1) {
+                normalized[action] = Math.max(0, remaining);
+                return;
+            }
+            normalized[action] = Math.min(normalized[action], remaining);
+            remaining -= normalized[action];
+        });
+    }
+
+    return normalized;
+}
+
+function getPositiveFrequencyActions(frequencies) {
+    return ACTION_FREQUENCY_ORDER.filter(action => Number(frequencies && frequencies[action]) > 0);
+}
+
+function getDominantFrequencyAction(frequencies, fallbackAction = 'Fold') {
+    let bestAction = fallbackAction;
+    let bestFrequency = -1;
+    ACTION_FREQUENCY_ORDER.forEach(action => {
+        const frequency = Number(frequencies && frequencies[action]) || 0;
+        if (frequency > bestFrequency) {
+            bestAction = action;
+            bestFrequency = frequency;
+        }
+    });
+    return bestFrequency > 0 ? bestAction : fallbackAction;
+}
+
+function getActionFrequencySummary(frequencies, t = I18N[state.lang] || I18N.en, actionLabels = {}) {
+    return getPositiveFrequencyActions(frequencies)
+        .map(action => `${actionLabels[action] || getCoreActionLabel(action, t)} ${frequencies[action]}%`)
+        .join(' / ');
+}
+
+function getCompactActionFrequencySummary(frequencies, shortLabels = ACTION_FREQUENCY_SHORT_LABELS) {
+    return getPositiveFrequencyActions(frequencies)
+        .map(action => `${shortLabels[action] || ACTION_FREQUENCY_SHORT_LABELS[action] || action[0]}${frequencies[action]}`)
+        .join('/');
+}
+
+function getRfiActionFrequencies(position, combo) {
+    const normalizedPosition = isValidPosition(position) ? position : 'UTG';
+    const sourceTable = RFI_ACTION_FREQUENCIES[normalizedPosition];
+    if (sourceTable) {
+        const sourced = sourceTable[combo];
+        return normalizeActionFrequencies(sourced || { Fold: 100 }, sourced ? 'Raise' : 'Fold');
+    }
+    const range = RFI_RANGES[normalizedPosition];
+    const fallbackAction = range && range.has(combo) ? 'Raise' : 'Fold';
+    return normalizeActionFrequencies({ [fallbackAction]: 100 }, fallbackAction);
+}
+
+function getPushFoldActionFrequencies(position, stack, combo) {
+    const chartPosition = normalizeChartPosition(position, 'UTG');
+    const numericStack = Number(stack);
+    const headsUpSbThreshold = CANDY_POKER_HU_SB_PUSH_THRESHOLDS[combo];
+    if (chartPosition === 'SB' && Number.isFinite(numericStack) && Number.isFinite(headsUpSbThreshold)) {
+        const sourcedAction = numericStack <= headsUpSbThreshold ? 'All-In' : 'Fold';
+        return normalizeActionFrequencies({ [sourcedAction]: 100 }, sourcedAction);
+    }
+    const ranges = PUSH_RANGES_BY_STACK[String(stack)] || PUSH_10BB;
+    const range = ranges[chartPosition] || ranges.UTG || PUSH_10BB.UTG;
+    const fallbackAction = range && range.has(combo) ? 'All-In' : 'Fold';
+    return normalizeActionFrequencies({ [fallbackAction]: 100 }, fallbackAction);
+}
+
+function getActionRangeFrequencies(combo, raiseRange, callRange) {
+    if (raiseRange && raiseRange.has(combo)) return normalizeActionFrequencies({ Raise: 100 }, 'Raise');
+    if (callRange && callRange.has(combo)) return normalizeActionFrequencies({ Call: 100 }, 'Call');
+    return normalizeActionFrequencies({ Fold: 100 }, 'Fold');
+}
+
+function getCompactSourceChartFrequencies(chart, combo) {
+    if (!chart) return null;
+    if (chart.mixed && chart.mixed[combo]) return chart.mixed[combo];
+    if (Array.isArray(chart.raise) && chart.raise.includes(combo)) return { Raise: 100 };
+    if (Array.isArray(chart.call) && chart.call.includes(combo)) return { Call: 100 };
+    return { Fold: 100 };
+}
+
+function getRangeSetsFromCompactSourceChart(chart) {
+    const raise = new Set(Array.isArray(chart && chart.raise) ? chart.raise : []);
+    const call = new Set(Array.isArray(chart && chart.call) ? chart.call : []);
+    if (chart && chart.mixed) {
+        Object.entries(chart.mixed).forEach(([combo, frequencies]) => {
+            if ((frequencies.Raise || 0) > 0 || (frequencies['All-In'] || 0) > 0) raise.add(combo);
+            if ((frequencies.Call || 0) > 0) call.add(combo);
+        });
+    }
+    return { raise, call };
+}
+
+function getDefenseActionFrequencies(scenarioId, combo, scenario = null) {
+    const sourceTable = DEFENSE_ACTION_FREQUENCIES[scenarioId];
+    if (sourceTable) {
+        const sourced = sourceTable[combo];
+        return normalizeActionFrequencies(sourced || { Fold: 100 }, sourced ? getDominantFrequencyAction(sourced, 'Fold') : 'Fold');
+    }
+    const greenlineTable = GREENLINE_DEFENSE_ACTION_FREQUENCIES[scenarioId];
+    if (greenlineTable) {
+        const sourced = getCompactSourceChartFrequencies(greenlineTable, combo);
+        return normalizeActionFrequencies(sourced, getDominantFrequencyAction(sourced, 'Fold'));
+    }
+    const sc = scenario || DEFEND_SCENARIOS[scenarioId];
+    return getActionRangeFrequencies(combo, sc && sc.THREE_BET, sc && sc.CALL);
+}
+
+function getFacingThreeBetScenarioId(heroPosition, villainPosition) {
+    const hero = normalizeChartPosition(heroPosition, '');
+    const villain = normalizeChartPosition(villainPosition, '');
+    if (!hero || !villain || hero === villain) return '';
+    return `${hero}_VS_${villain}`;
+}
+
+function getDefaultFacingThreeBetFallbackRanges() {
+    return {
+        raise: new Set(['AA', 'KK', 'QQ', 'AKs', 'AKo']),
+        call: new Set(['JJ', 'TT', '99', 'AQs', 'AJs', 'KQs', 'AQo'])
+    };
+}
+
+function getFacingThreeBetRanges(heroPosition = 'CO', villainPosition = 'BTN') {
+    const scenarioId = getFacingThreeBetScenarioId(heroPosition, villainPosition);
+    const sourceTable = GREENLINE_FACING_THREE_BET_ACTION_FREQUENCIES[scenarioId];
+    if (sourceTable) return getRangeSetsFromCompactSourceChart(sourceTable);
+    return getDefaultFacingThreeBetFallbackRanges();
+}
+
+function getFacingThreeBetActionFrequencies(heroPosition, villainPosition, combo) {
+    const scenarioId = getFacingThreeBetScenarioId(heroPosition || 'CO', villainPosition || 'BTN');
+    const sourceTable = GREENLINE_FACING_THREE_BET_ACTION_FREQUENCIES[scenarioId];
+    if (sourceTable) {
+        const sourced = getCompactSourceChartFrequencies(sourceTable, combo);
+        return normalizeActionFrequencies(sourced, getDominantFrequencyAction(sourced, 'Fold'));
+    }
+    const fallback = getDefaultFacingThreeBetFallbackRanges();
+    return getActionRangeFrequencies(combo, fallback.raise, fallback.call);
+}
+
+function isMixedActionFrequency(frequencies) {
+    return getPositiveFrequencyActions(frequencies).length > 1;
+}
+
+function getMixedFrequencyExplanationSuffix(frequencies) {
+    return isMixedActionFrequency(frequencies)
+        ? ` Recommended mix: ${getActionFrequencySummary(frequencies)}.`
+        : '';
+}
+
+function isActionCorrectForCurrentSpot(action) {
+    const acceptable = Array.isArray(state.currentAcceptableActions) ? state.currentAcceptableActions : [];
+    return acceptable.length ? acceptable.includes(action) : action === state.correctAction;
+}
+
+function getFeedbackCorrectActionLabelForSpot() {
+    if (state.currentActionFrequencies && isMixedActionFrequency(state.currentActionFrequencies)) {
+        return getActionFrequencySummary(state.currentActionFrequencies);
+    }
+    return getFeedbackActionLabel(state.correctAction);
 }
 
 function getAllStreetActionLabel(action, scenario = getCurrentAllStreetScenario()) {
@@ -1963,7 +2854,7 @@ function renderDiagnosticSummary() {
     `).join('');
     const profileHtml = `
         <div class="assessment-profile-grid">
-            <div><span>${t.skillBaseline || 'Baseline'}</span><strong>${escapeHtml(profile.baselineLevel || getBaselineLevel(accuracy, diagnostic.averageResponseMs || 0))}</strong></div>
+            <div><span>${t.skillBaseline || 'Baseline'}</span><strong>${escapeHtml(getSkillLevelLabel(profile.baselineLevel || getBaselineLevel(accuracy, diagnostic.averageResponseMs || 0), t))}</strong></div>
             <div><span>${t.skillWeakest || 'Weakest'}</span><strong>${getModeLabel(profile.weakestDimension || 'RFI', t)}</strong></div>
             <div><span>${t.skillFastest || 'Avg Speed'}</span><strong>${avgSeconds}s</strong></div>
         </div>
@@ -2120,13 +3011,17 @@ function prepareDiagnosticTurn() {
 
 function evaluateDiagnosticFacing3Bet(hand) {
     const combo = getComboName(hand);
-    if (['AA', 'KK', 'QQ', 'AKs', 'AKo'].includes(combo)) {
-        return { action: 'Raise', explanation: `Diagnostic Facing 3-Bet: ${combo} is a value 4-bet.` };
-    }
-    if (['JJ', 'TT', '99', 'AQs', 'AJs', 'KQs', 'AQo'].includes(combo)) {
-        return { action: 'Call', explanation: `Diagnostic Facing 3-Bet: ${combo} has enough equity to continue.` };
-    }
-    return { action: 'Fold', explanation: `Diagnostic Facing 3-Bet: ${combo} is outside the continue range.` };
+    const actionFrequencies = getFacingThreeBetActionFrequencies('CO', 'BTN', combo);
+    const action = getDominantFrequencyAction(actionFrequencies, 'Fold');
+    const acceptableActions = getPositiveFrequencyActions(actionFrequencies);
+    const summary = getActionFrequencySummary(actionFrequencies);
+    return {
+        action,
+        actionFrequencies,
+        acceptableActions,
+        explanation: `Diagnostic Facing 3-Bet: ${combo} uses the CO vs BTN source-backed continue mix (${summary}).`
+            + getMixedFrequencyExplanationSuffix(actionFrequencies)
+    };
 }
 
 function getDiagnosticMistakeCategory(spot, correctAction) {
@@ -2151,13 +3046,15 @@ function recordDiagnosticResult(action, correctAction, isCorrect, combo) {
     session.total++;
     session.totalResponseMs += responseMs;
     if (!isCorrect) session.mistakeCategories[category] = (session.mistakeCategories[category] || 0) + 1;
-    if (session.total >= session.targetHands) finishDiagnosticSession();
+    if (session.total >= session.targetHands) queueDiagnosticCompletion(session);
 }
 
 function finishDiagnosticSession() {
     const session = state.diagnosticSession;
     if (!session) return;
     session.active = false;
+    session.pendingCompletion = false;
+    if (state.pendingCompletion && state.pendingCompletion.type === 'diagnostic') state.pendingCompletion = null;
     const previousDiagnostic = state.assessment && state.assessment.diagnostic;
     const repeatedMistakes = Object.entries(session.mistakeCategories)
         .map(([label, count]) => ({ label, count }))
@@ -2220,11 +3117,25 @@ function finishDiagnosticSession() {
     openAssessmentModal();
 }
 
+function startDiagnosticFlow(targetHands = QUICK_DIAGNOSTIC_HANDS, quickStart = false) {
+    state.pendingCompletion = null;
+    state.diagnosticSession = createDiagnosticSession(targetHands, quickStart);
+    closeAssessmentModal();
+    setHiddenById('first-run-flow', true);
+    if (document.body && document.body.classList) document.body.classList.remove('is-first-run');
+    state.activeTab = 'practice';
+    if (typeof window.setActiveTab === 'function') {
+        window.setActiveTab('practice');
+    } else {
+        syncAppTabPanels();
+    }
+    scrollAppToTop();
+    startTurn();
+}
+
 window.startDiagnosticSession = function (targetHands = QUICK_DIAGNOSTIC_HANDS) {
     const parsedTarget = Number(targetHands) || QUICK_DIAGNOSTIC_HANDS;
-    state.diagnosticSession = createDiagnosticSession(Math.min(Math.max(parsedTarget, 12), QUICK_DIAGNOSTIC_HANDS), false);
-    closeAssessmentModal();
-    startTurn();
+    startDiagnosticFlow(Math.min(Math.max(parsedTarget, 12), QUICK_DIAGNOSTIC_HANDS), false);
 };
 
 window.startQuickDiagnostic = function () {
@@ -2234,9 +3145,7 @@ window.startQuickDiagnostic = function () {
         answers,
         recommendedPlan: getAssessmentPlan(answers)
     });
-    state.diagnosticSession = createDiagnosticSession(QUICK_DIAGNOSTIC_HANDS, true);
-    closeAssessmentModal();
-    startTurn();
+    startDiagnosticFlow(QUICK_DIAGNOSTIC_HANDS, true);
 };
 
 function getActiveCustomDrill() {
@@ -2565,11 +3474,287 @@ function getSpotTypeKeyForStat(mode, drill = null) {
     return mode;
 }
 
+function clampNumber(value, min, max) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return min;
+    return Math.min(max, Math.max(min, numeric));
+}
+
+function getPlanTargetForReviewItem(item) {
+    if (!item) return 'RFI';
+    const source = getReviewSourceMode(item);
+    if (source === DRILL_TYPES.FACING_3BET || source === 'FACING_3BET') return 'FACING_3BET';
+    if (source === DRILL_TYPES.DEFENSE_VS_OPEN) return 'DEFEND';
+    if (source === DRILL_TYPES.RFI_FOCUS) return 'RFI';
+    if (source === DRILL_TYPES.PUSH_FOLD) return 'PUSH_FOLD';
+    if (source === DRILL_TYPES.ALL_STREET || source === 'ALL_STREET') return 'ALL_STREET';
+    if (source === 'CUSTOM' && item.drillId && state.customDrills[item.drillId]) {
+        return getSpotTypeKeyForStat('CUSTOM', state.customDrills[item.drillId]);
+    }
+    return DAILY_PLAN_TARGETS.includes(source) ? source : 'RFI';
+}
+
+function isMistakeReviewDue(item, referenceDate = new Date()) {
+    if (!item) return false;
+    const dueAt = item.dueAt ? new Date(item.dueAt) : null;
+    return !dueAt || Number.isNaN(dueAt.getTime()) || dueAt.getTime() <= referenceDate.getTime();
+}
+
+function getDueMistakeReplayItems(referenceDate = new Date()) {
+    const queue = state.mistakeReplay && Array.isArray(state.mistakeReplay.queue)
+        ? state.mistakeReplay.queue
+        : [];
+    return sortMistakeReviewQueue(queue.map(item => normalizeMistakeReviewItem(item)), referenceDate)
+        .filter(item => isMistakeReviewDue(item, referenceDate));
+}
+
+function countReviewItemsForTarget(target, dueOnly = false, referenceDate = new Date()) {
+    const queue = state.mistakeReplay && Array.isArray(state.mistakeReplay.queue)
+        ? state.mistakeReplay.queue
+        : [];
+    return queue.filter(item => {
+        if (dueOnly && !isMistakeReviewDue(item, referenceDate)) return false;
+        return getPlanTargetForReviewItem(item) === target;
+    }).length;
+}
+
+function getRecentMistakeCountForTarget(target, limit = 30) {
+    return (state.handHistory || []).slice(0, limit).filter(item => {
+        if (!item || item.correct !== false) return false;
+        return getPlanTargetForReviewItem(item) === target;
+    }).length;
+}
+
+function getPlanTargetStats(target) {
+    const stats = state.stats || getDefaultStats();
+    if (target === 'FACING_3BET') {
+        return (stats.bySpotType && stats.bySpotType[DRILL_TYPES.FACING_3BET])
+            || (stats.bySpotType && stats.bySpotType.FACING_3BET)
+            || { hands: 0, correct: 0 };
+    }
+    if (target === 'ALL_STREET') {
+        return (stats.byMode && stats.byMode.ALL_STREET)
+            || (stats.bySpotType && stats.bySpotType.ALL_STREET)
+            || { hands: 0, correct: 0 };
+    }
+    return (stats.byMode && stats.byMode[target]) || { hands: 0, correct: 0 };
+}
+
+function getPriorityBoost(target, plan = {}) {
+    let boost = 0;
+    if (plan.dailyDrill === target) boost += 12;
+    const adaptiveIndex = Array.isArray(plan.adaptivePriorities) ? plan.adaptivePriorities.indexOf(target) : -1;
+    if (adaptiveIndex >= 0) boost += Math.max(4, 10 - adaptiveIndex * 2);
+    const recommendedIndex = Array.isArray(plan.recommendedModes) ? plan.recommendedModes.indexOf(target) : -1;
+    if (recommendedIndex >= 0) boost += Math.max(2, 6 - recommendedIndex);
+    return boost;
+}
+
+function getProfileBoost(target) {
+    const profile = state.assessment && state.assessment.skillDimensions ? state.assessment.skillDimensions : {};
+    if (!profile.weakestDimension) return 0;
+    const weakest = profile.weakestDimension === 'CUSTOM' ? 'FACING_3BET' : profile.weakestDimension;
+    return weakest === target ? 18 : 0;
+}
+
+function scoreDailyPlanTarget(target, plan = {}, referenceDate = new Date()) {
+    const stats = getPlanTargetStats(target);
+    const hands = Math.max(0, Number(stats.hands) || 0);
+    const correct = Math.max(0, Number(stats.correct) || 0);
+    const accuracy = pct(correct, hands);
+    const errorRate = hands ? (100 - accuracy) / 100 : 0.45;
+    const sampleConfidence = hands ? clampNumber(hands / 20, 0.35, 1) : 0.2;
+    const dueMistakes = countReviewItemsForTarget(target, true, referenceDate);
+    const queuedMistakes = countReviewItemsForTarget(target, false, referenceDate);
+    const recentMistakes = getRecentMistakeCountForTarget(target);
+    const priorityBoost = getPriorityBoost(target, plan);
+    const profileBoost = getProfileBoost(target);
+    const noDataPenalty = hands < 3 && dueMistakes === 0 && priorityBoost === 0 ? 8 : 0;
+    const score = (errorRate * 100 * sampleConfidence)
+        + (dueMistakes * 12)
+        + (queuedMistakes * 2)
+        + (recentMistakes * 5)
+        + priorityBoost
+        + profileBoost
+        - noDataPenalty;
+    return {
+        target,
+        hands,
+        correct,
+        accuracy,
+        errorRate,
+        dueMistakes,
+        queuedMistakes,
+        recentMistakes,
+        priorityBoost,
+        profileBoost,
+        score: Math.round(score * 10) / 10
+    };
+}
+
+function getReviewAllocationRatio(dueCount) {
+    if (dueCount >= DAILY_PLAN_REVIEW_HEAVY_BACKLOG_THRESHOLD) return DAILY_PLAN_REVIEW_HEAVY_BACKLOG_RATIO;
+    if (dueCount >= DAILY_PLAN_REVIEW_BACKLOG_THRESHOLD) return DAILY_PLAN_REVIEW_BACKLOG_RATIO;
+    return DAILY_PLAN_REVIEW_RATIO;
+}
+
+function getDailyPlanAllocation(targetHands, dueCount) {
+    const review = Math.round(targetHands * getReviewAllocationRatio(dueCount));
+    const maintenance = Math.max(0, Math.round(targetHands * DAILY_PLAN_MAINTENANCE_RATIO));
+    return {
+        focus: Math.max(1, targetHands - review - maintenance),
+        review,
+        maintenance
+    };
+}
+
+function getMaintenanceTargets(focusTarget, plan = {}) {
+    const ordered = [
+        ...(Array.isArray(plan.recommendedModes) ? plan.recommendedModes : []),
+        ...(Array.isArray(plan.adaptivePriorities) ? plan.adaptivePriorities : []),
+        'RFI',
+        'DEFEND',
+        'PUSH_FOLD',
+        'ALL_STREET'
+    ];
+    return [...new Set(ordered)]
+        .map(target => DAILY_PLAN_TARGETS.includes(target) ? resolvePlanTrainingTarget(target, true).target : target)
+        .filter(target => DAILY_PLAN_TARGETS.includes(target) && target !== focusTarget)
+        .filter((target, index, targets) => targets.indexOf(target) === index)
+        .slice(0, 3);
+}
+
+function getDominantWeakPosition() {
+    const rows = getStatRows(state.stats && state.stats.byPosition, key => key)
+        .filter(row => row.hands >= 3)
+        .sort((a, b) => a.accuracy - b.accuracy || b.hands - a.hands);
+    return rows[0] ? rows[0].key : null;
+}
+
+function getDominantWeakStackDepth(t = I18N[state.lang] || I18N.en) {
+    const rows = getStatRows(state.stats && state.stats.byStackDepth, key => getStackDepthLabel(key, t))
+        .filter(row => row.hands >= 3)
+        .sort((a, b) => a.accuracy - b.accuracy || b.hands - a.hands);
+    return rows[0] ? rows[0].label : null;
+}
+
+function getDrillTemplatesForTarget(target, score, t = I18N[state.lang] || I18N.en) {
+    const weakPosition = getDominantWeakPosition();
+    const weakStack = getDominantWeakStackDepth(t);
+    const templates = {
+        RFI: [
+            t.dailyTemplateRfiEdges || 'RFI edge combos',
+            weakPosition ? `${weakPosition} ${t.dailyTemplatePosition || 'position focus'}` : (t.dailyTemplateMixedFrequencies || 'mixed-frequency opens')
+        ],
+        DEFEND: [
+            t.dailyTemplateDefense || 'Defense versus opens',
+            t.dailyTemplateBroadwayPairs || 'broadways and middle pairs'
+        ],
+        PUSH_FOLD: [
+            t.dailyTemplatePushFold || 'Short-stack push/fold',
+            weakStack || (t.dailyTemplateStackBuckets || 'stack-depth buckets')
+        ],
+        FACING_3BET: [
+            t.dailyTemplateThreeBet || 'Facing 3-bets',
+            t.dailyTemplateContinueRange || 'continue-range discipline'
+        ],
+        ALL_STREET: [
+            t.dailyTemplatePostflop || 'Postflop texture and sizing',
+            t.dailyTemplateStreetMix || 'flop, turn, and river mix'
+        ]
+    };
+    return (templates[target] || templates.RFI).map((label, index) => ({
+        id: `${target.toLowerCase()}-${index + 1}`,
+        target,
+        label,
+        priority: index + 1,
+        sourceScore: score ? score.score : 0
+    }));
+}
+
+function buildDailyPlanReason(focusTarget, score, allocation, t = I18N[state.lang] || I18N.en, fallbackTarget = null) {
+    const label = getModeLabel(focusTarget, t);
+    const statsText = score && score.hands
+        ? `${score.accuracy}% / ${score.hands} ${t.statsHands || 'hands'}`
+        : (t.skillBaselineEmpty || 'Unrated');
+    const dueText = `${score ? score.dueMistakes : 0} ${t.dailyPlanDueReviews || 'due reviews'}`;
+    const recentText = `${score ? score.recentMistakes : 0} ${t.dailyPlanRecentMisses || 'recent misses'}`;
+    const fallbackText = fallbackTarget && fallbackTarget !== focusTarget
+        ? ` ${getModeLabel(fallbackTarget, t)} -> ${label}.`
+        : '';
+    return `${label}: ${statsText}, ${dueText}, ${recentText}. ${t.dailyPlanMixLabel || 'Plan'} ${allocation.focus}/${allocation.review}/${allocation.maintenance}.${fallbackText}`.trim();
+}
+
+function getDailyPlan(referenceDate = new Date()) {
+    const t = I18N[state.lang] || I18N.en;
+    const basePlan = getCurrentTrainingPlan();
+    const scores = DAILY_PLAN_TARGETS
+        .map(target => scoreDailyPlanTarget(target, basePlan, referenceDate))
+        .sort((a, b) => b.score - a.score || b.dueMistakes - a.dueMistakes || b.hands - a.hands);
+    const best = scores[0] || scoreDailyPlanTarget(basePlan.dailyDrill || 'RFI', basePlan, referenceDate);
+    const resolved = resolvePlanTrainingTarget(best.target, true);
+    const focusTarget = resolved.target || best.target || 'RFI';
+    const focusScore = focusTarget === best.target ? best : scoreDailyPlanTarget(focusTarget, basePlan, referenceDate);
+    const dueItems = getDueMistakeReplayItems(referenceDate);
+    const budgetAllocation = getDailyPlanAllocation(DAILY_HAND_GOAL, dueItems.length);
+    const reviewAllocation = Math.min(dueItems.length, budgetAllocation.review);
+    const maintenanceTargets = getMaintenanceTargets(focusTarget, basePlan);
+    const maintenanceAllocation = maintenanceTargets.length
+        ? Math.min(budgetAllocation.maintenance, Math.max(0, DAILY_HAND_GOAL - reviewAllocation - 1))
+        : 0;
+    const allocation = {
+        focus: Math.max(1, DAILY_HAND_GOAL - reviewAllocation - maintenanceAllocation),
+        review: reviewAllocation,
+        maintenance: maintenanceAllocation
+    };
+    return {
+        version: 1,
+        generatedFor: getDateKey(referenceDate),
+        generatedAt: new Date().toISOString(),
+        targetHands: DAILY_HAND_GOAL,
+        source: basePlan.source || 'daily-plan-engine',
+        requestedFocusTarget: best.target,
+        focusTarget,
+        focusMode: resolved.mode || focusTarget,
+        focusDrillId: resolved.drillId || null,
+        budgetAllocation,
+        allocation,
+        reviewDueCount: dueItems.length,
+        reviewItemIds: dueItems.map(item => item.id).filter(Boolean),
+        maintenanceTargets,
+        leakScores: scores,
+        topLeak: basePlan.topLeaks && basePlan.topLeaks[0] ? basePlan.topLeaks[0] : getModeLabel(focusTarget, t),
+        reason: buildDailyPlanReason(focusTarget, focusScore, allocation, t, best.target),
+        drillTemplates: getDrillTemplatesForTarget(focusTarget, focusScore, t)
+    };
+}
+
+function normalizeSkillLevelKey(level) {
+    const normalized = String(level || '').trim().toLowerCase().replace(/[\s_-]+/g, '');
+    if (!normalized) return '';
+    if (normalized === 'advanced') return 'advanced';
+    if (normalized === 'intermediate') return 'intermediate';
+    if (normalized === 'beginner+' || normalized === 'beginnerplus') return 'beginnerPlus';
+    if (normalized === 'beginner') return 'beginner';
+    return '';
+}
+
+function getSkillLevelLabel(level, t = I18N[state.lang] || I18N.en) {
+    const key = normalizeSkillLevelKey(level);
+    const labels = {
+        advanced: t.skillLevelAdvanced || 'Advanced',
+        intermediate: t.skillLevelIntermediate || 'Intermediate',
+        beginnerPlus: t.skillLevelBeginnerPlus || 'Beginner+',
+        beginner: t.skillLevelBeginner || 'Beginner'
+    };
+    return labels[key] || String(level || t.skillBaselineEmpty || 'Unrated');
+}
+
 function getBaselineLevel(accuracy, averageResponseMs) {
-    if (accuracy >= 90 && averageResponseMs <= 3500) return 'Advanced';
-    if (accuracy >= 78) return 'Intermediate';
-    if (accuracy >= 60) return 'Beginner+';
-    return 'Beginner';
+    if (accuracy >= 90 && averageResponseMs <= 3500) return 'advanced';
+    if (accuracy >= 78) return 'intermediate';
+    if (accuracy >= 60) return 'beginnerPlus';
+    return 'beginner';
 }
 
 function createDiagnosticSession(targetHands = QUICK_DIAGNOSTIC_HANDS, quickStart = false) {
@@ -3064,13 +4249,13 @@ function getWeeklySummary() {
     const previous = prevKey ? state.gamification.weeklyActivity[prevKey] : { hands: 0, correct: 0 };
     const currentAccuracy = pct(current.correct, current.hands);
     const previousAccuracy = pct(previous.correct, previous.hands);
-    const plan = state.assessment && state.assessment.recommendedPlan;
+    const plan = getDailyPlan();
     return {
         hands: current.hands,
         accuracy: currentAccuracy,
         trend: currentAccuracy - previousAccuracy,
         previousHands: previous.hands,
-        nextDrill: plan && plan.dailyDrill ? plan.dailyDrill : 'RFI'
+        nextDrill: plan && plan.focusTarget ? plan.focusTarget : 'RFI'
     };
 }
 
@@ -3109,7 +4294,8 @@ function getMistakeLabel(mode, position, correctAction) {
 
 function addMistakeReplayItem(entry) {
     if (!state.mistakeReplay) state.mistakeReplay = getDefaultMistakeReplay();
-    const item = {
+    const now = new Date();
+    const item = normalizeMistakeReviewItem({
         id: generateStableId('mistake'),
         combo: entry.combo,
         position: entry.position,
@@ -3127,30 +4313,72 @@ function addMistakeReplayItem(entry) {
         scenario: entry.scenario || '',
         userAction: entry.userAction,
         correctAction: entry.correctAction,
+        actionFrequencies: entry.actionFrequencies || null,
+        acceptableActions: Array.isArray(entry.acceptableActions) ? entry.acceptableActions : [],
         explanation: entry.explanation || '',
         attempts: 0,
-        addedAt: new Date().toISOString()
-    };
-    state.mistakeReplay.queue = [item, ...state.mistakeReplay.queue.filter(existing => existing.combo !== item.combo || existing.spot !== item.spot)]
+        intervalDays: 0,
+        ease: 2.5,
+        successStreak: 0,
+        lastResult: 'missed',
+        dueAt: now.toISOString(),
+        addedAt: now.toISOString()
+    }, now.toISOString());
+    state.mistakeReplay.queue = sortMistakeReviewQueue([item, ...state.mistakeReplay.queue.filter(existing => existing.combo !== item.combo || existing.spot !== item.spot)])
         .slice(0, MISTAKE_REPLAY_LIMIT);
     return item;
 }
 
-function getNextMistakeReplayItem() {
+function getNextMistakeReplayItem(options = {}) {
     if (!state.mistakeReplay || !state.mistakeReplay.queue.length) return null;
-    return state.mistakeReplay.queue[0];
+    const referenceDate = options.referenceDate || new Date();
+    const queue = sortMistakeReviewQueue(state.mistakeReplay.queue.map(item => normalizeMistakeReviewItem(item)), referenceDate);
+    state.mistakeReplay.queue = queue.slice(0, MISTAKE_REPLAY_LIMIT);
+    if (options.dueOnly !== false) {
+        return queue.find(item => isMistakeReviewDue(item, referenceDate)) || null;
+    }
+    return queue[0];
 }
 
-function completeMistakeReplayItem(item, isCorrect) {
+function getNextSpacedReviewInterval(currentIntervalDays) {
+    const current = Math.max(0, Math.floor(Number(currentIntervalDays) || 0));
+    return SPACED_REVIEW_INTERVALS.find(days => days > current) || 0;
+}
+
+function addDays(date, days) {
+    const copy = new Date(date);
+    copy.setDate(copy.getDate() + days);
+    return copy;
+}
+
+function completeMistakeReplayItem(item, isCorrect, referenceDate = new Date()) {
     if (!item || !state.mistakeReplay) return;
-    item.attempts = (item.attempts || 0) + 1;
+    const normalized = normalizeMistakeReviewItem(item, referenceDate.toISOString());
+    normalized.attempts = (normalized.attempts || 0) + 1;
+    normalized.lastReviewedAt = referenceDate.toISOString();
     if (isCorrect) {
-        state.mistakeReplay.queue = state.mistakeReplay.queue.filter(existing => existing.id !== item.id);
-        state.mistakeReplay.completed.unshift({ ...item, completedAt: new Date().toISOString() });
-        state.mistakeReplay.completed = state.mistakeReplay.completed.slice(0, MISTAKE_REPLAY_LIMIT);
-        unlockAchievement('leak_replayed', 'Mistake replay cleared');
+        const nextInterval = getNextSpacedReviewInterval(normalized.intervalDays);
+        normalized.successStreak = (normalized.successStreak || 0) + 1;
+        normalized.lastResult = 'correct';
+        if (!nextInterval) {
+            state.mistakeReplay.queue = state.mistakeReplay.queue.filter(existing => existing.id !== normalized.id);
+            state.mistakeReplay.completed.unshift({ ...normalized, completedAt: referenceDate.toISOString() });
+            state.mistakeReplay.completed = state.mistakeReplay.completed.slice(0, MISTAKE_REPLAY_LIMIT);
+            unlockAchievement('leak_replayed', 'Mistake replay cleared');
+        } else {
+            normalized.intervalDays = nextInterval;
+            normalized.dueAt = addDays(referenceDate, nextInterval).toISOString();
+            state.mistakeReplay.queue = sortMistakeReviewQueue([normalized, ...state.mistakeReplay.queue.filter(existing => existing.id !== normalized.id)], referenceDate)
+                .slice(0, MISTAKE_REPLAY_LIMIT);
+        }
     } else {
-        state.mistakeReplay.queue = [item, ...state.mistakeReplay.queue.filter(existing => existing.id !== item.id)].slice(0, MISTAKE_REPLAY_LIMIT);
+        normalized.successStreak = 0;
+        normalized.intervalDays = 0;
+        normalized.ease = Math.max(1.3, (Number(normalized.ease) || 2.5) - 0.2);
+        normalized.lastResult = 'missed';
+        normalized.dueAt = referenceDate.toISOString();
+        state.mistakeReplay.queue = sortMistakeReviewQueue([normalized, ...state.mistakeReplay.queue.filter(existing => existing.id !== normalized.id)], referenceDate)
+            .slice(0, MISTAKE_REPLAY_LIMIT);
     }
 }
 
@@ -3349,26 +4577,41 @@ function resolvePlanTrainingTarget(target, quiet = false) {
     return { mode: modeMap[planTarget] || planTarget || 'RFI', target: planTarget, drillId: null };
 }
 
-function createFocusSession(targetHands = TRAINING_SESSION_HANDS) {
-    const plan = getCurrentTrainingPlan();
-    const target = plan && (plan.dailyDrill || (plan.adaptivePriorities && plan.adaptivePriorities[0]) || (plan.recommendedModes && plan.recommendedModes[0])) || 'RFI';
-    const resolved = resolvePlanTrainingTarget(target, true);
-    const reviewCount = state.mistakeReplay && state.mistakeReplay.queue ? state.mistakeReplay.queue.length : 0;
-    const reviewHandsTarget = reviewCount > 0 ? Math.min(reviewCount, Math.max(1, Math.round(targetHands * 0.3))) : 0;
+function createFocusSession(targetHands = DAILY_HAND_GOAL) {
+    const dailyPlan = getDailyPlan();
+    const resolved = {
+        mode: dailyPlan.focusMode,
+        target: dailyPlan.focusTarget,
+        drillId: dailyPlan.focusDrillId
+    };
+    const sessionTargetHands = Math.max(1, Number(targetHands) || dailyPlan.targetHands || DAILY_HAND_GOAL);
+    const reviewHandsTarget = dailyPlan.reviewDueCount > 0
+        ? Math.min(dailyPlan.reviewDueCount, dailyPlan.allocation.review)
+        : 0;
+    const maintenanceHandsTarget = Math.min(
+        Math.max(0, sessionTargetHands - reviewHandsTarget - 1),
+        dailyPlan.maintenanceTargets.length ? dailyPlan.allocation.maintenance : 0
+    );
     return {
         id: generateStableId('focus'),
         active: true,
         mode: 'FOCUS',
-        targetHands,
+        targetHands: sessionTargetHands,
         hands: 0,
         correct: 0,
         mistakes: {},
         focusMode: resolved.mode,
         focusTarget: resolved.target,
         focusDrillId: resolved.drillId,
+        dailyPlan,
+        focusHandsTarget: Math.max(1, sessionTargetHands - reviewHandsTarget - maintenanceHandsTarget),
         focusHandsUsed: 0,
         reviewHandsTarget,
         reviewHandsUsed: 0,
+        maintenanceHandsTarget,
+        maintenanceHandsUsed: 0,
+        maintenanceTargets: dailyPlan.maintenanceTargets,
+        currentTurnPlan: null,
         startedAt: new Date().toISOString(),
         beforeAccuracy: pct(state.stats.totalCorrect || 0, state.stats.totalHands || 0),
         completed: false
@@ -3377,20 +4620,56 @@ function createFocusSession(targetHands = TRAINING_SESSION_HANDS) {
 
 function shouldUseFocusReviewTurn(session) {
     if (!session || !session.active || session.reviewHandsUsed >= session.reviewHandsTarget) return false;
-    if (!getNextMistakeReplayItem()) return false;
+    if (!getNextMistakeReplayItem({ dueOnly: true })) return false;
     const nextIndex = session.hands + 1;
     const slotsRemaining = session.targetHands - session.hands;
     const reviewRemaining = session.reviewHandsTarget - session.reviewHandsUsed;
-    return nextIndex % 3 === 0 || reviewRemaining >= slotsRemaining;
+    const maintenanceRemaining = Math.max(0, (session.maintenanceHandsTarget || 0) - (session.maintenanceHandsUsed || 0));
+    return nextIndex % 4 === 0 || reviewRemaining >= Math.max(1, slotsRemaining - maintenanceRemaining);
+}
+
+function shouldUseFocusMaintenanceTurn(session) {
+    if (!session || !session.active || !session.maintenanceTargets || !session.maintenanceTargets.length) return false;
+    if ((session.maintenanceHandsUsed || 0) >= (session.maintenanceHandsTarget || 0)) return false;
+    const nextIndex = session.hands + 1;
+    const slotsRemaining = session.targetHands - session.hands;
+    const reviewRemaining = Math.max(0, (session.reviewHandsTarget || 0) - (session.reviewHandsUsed || 0));
+    const maintenanceRemaining = (session.maintenanceHandsTarget || 0) - (session.maintenanceHandsUsed || 0);
+    return nextIndex % 6 === 0 || maintenanceRemaining >= Math.max(1, slotsRemaining - reviewRemaining);
+}
+
+function getNextMaintenanceTarget(session) {
+    const targets = Array.isArray(session.maintenanceTargets) && session.maintenanceTargets.length
+        ? session.maintenanceTargets
+        : ['RFI'];
+    return targets[(session.maintenanceHandsUsed || 0) % targets.length] || 'RFI';
 }
 
 function applyFocusSessionMode() {
     const session = state.focusSession;
     if (!session || !session.active) return false;
-    const useReview = shouldUseFocusReviewTurn(session);
-    const mode = useReview ? 'REVIEW' : session.focusMode;
-    state.currentCustomDrillId = mode === 'CUSTOM' ? session.focusDrillId : state.currentCustomDrillId;
-    state.currentCustomPracticeType = mode === 'CUSTOM' && session.focusDrillId ? 'drill' : state.currentCustomPracticeType;
+    let turnPlan = {
+        type: 'FOCUS',
+        target: session.focusTarget,
+        mode: session.focusMode,
+        drillId: session.focusDrillId || null
+    };
+    if (shouldUseFocusReviewTurn(session)) {
+        turnPlan = { type: 'REVIEW', target: 'REVIEW', mode: 'REVIEW', drillId: null };
+    } else if (shouldUseFocusMaintenanceTurn(session)) {
+        const target = getNextMaintenanceTarget(session);
+        const resolved = resolvePlanTrainingTarget(target, true);
+        turnPlan = {
+            type: 'MAINTENANCE',
+            target: resolved.target,
+            mode: resolved.mode,
+            drillId: resolved.drillId || null
+        };
+    }
+    session.currentTurnPlan = turnPlan;
+    const mode = turnPlan.mode;
+    state.currentCustomDrillId = mode === 'CUSTOM' ? turnPlan.drillId : state.currentCustomDrillId;
+    state.currentCustomPracticeType = mode === 'CUSTOM' && turnPlan.drillId ? 'drill' : state.currentCustomPracticeType;
     const selector = document.getElementById('mode-selector');
     if (selector) selector.value = mode;
     changeMode(mode, true);
@@ -3402,12 +4681,76 @@ function startFocusSessionTurn() {
     return applyFocusSessionMode();
 }
 
+function getPendingCompletionType() {
+    if (state.pendingCompletion && state.pendingCompletion.type) return state.pendingCompletion.type;
+    if (state.diagnosticSession && state.diagnosticSession.pendingCompletion) return 'diagnostic';
+    return null;
+}
+
+function getFeedbackNextButton() {
+    if (feedbackEl && typeof feedbackEl.querySelector === 'function') {
+        const scopedButton = feedbackEl.querySelector('.btn-next');
+        if (scopedButton) return scopedButton;
+    }
+    return typeof document.querySelector === 'function' ? document.querySelector('#feedback .btn-next, .btn-next') : null;
+}
+
+function getFeedbackNextButtonLabel() {
+    const t = I18N[state.lang] || I18N.en;
+    const type = getPendingCompletionType();
+    const hint = "<span class='btn-hint'>Enter</span>";
+    if (type === 'diagnostic') return `${t.feedbackViewAssessmentResult || 'View assessment result'} ${hint}`;
+    if (type === 'session-summary') return `${t.feedbackViewTrainingSummary || 'View training summary'} ${hint}`;
+    return t.nextHand || `Next Hand ${hint}`;
+}
+
+function setFeedbackNextButtonLabel() {
+    const button = getFeedbackNextButton();
+    if (button) button.innerHTML = getFeedbackNextButtonLabel();
+}
+
+function queueDiagnosticCompletion(session) {
+    if (!session) return;
+    session.pendingCompletion = true;
+    state.pendingCompletion = { type: 'diagnostic' };
+    setFeedbackNextButtonLabel();
+}
+
+function queueSessionSummary(session) {
+    if (!session) return;
+    state.pendingCompletion = { type: 'session-summary', session };
+    setFeedbackNextButtonLabel();
+}
+
+function showPendingCompletion() {
+    const pending = state.pendingCompletion;
+    const diagnosticPending = state.diagnosticSession && state.diagnosticSession.pendingCompletion;
+    if (!pending && !diagnosticPending) return false;
+
+    if (feedbackEl && feedbackEl.classList) feedbackEl.classList.add('hidden');
+
+    if (pending && pending.type === 'session-summary') {
+        state.pendingCompletion = null;
+        setFeedbackNextButtonLabel();
+        renderSessionSummary(pending.session);
+        return true;
+    }
+
+    state.pendingCompletion = null;
+    if (state.diagnosticSession) state.diagnosticSession.pendingCompletion = false;
+    setFeedbackNextButtonLabel();
+    finishDiagnosticSession();
+    return true;
+}
+
 function recordFocusSessionResult(mode, isCorrect, mistakeLabel) {
     const session = state.focusSession;
     if (!session || !session.active) return false;
+    const turnType = session.currentTurnPlan && session.currentTurnPlan.type ? session.currentTurnPlan.type : (mode === 'REVIEW' ? 'REVIEW' : 'FOCUS');
     session.hands++;
     if (isCorrect) session.correct++;
-    if (mode === 'REVIEW') session.reviewHandsUsed++;
+    if (turnType === 'REVIEW') session.reviewHandsUsed++;
+    else if (turnType === 'MAINTENANCE') session.maintenanceHandsUsed++;
     else session.focusHandsUsed++;
     if (!isCorrect && mistakeLabel) session.mistakes[mistakeLabel] = (session.mistakes[mistakeLabel] || 0) + 1;
 
@@ -3419,7 +4762,7 @@ function recordFocusSessionResult(mode, isCorrect, mistakeLabel) {
         session.active = false;
         state.monetization.completedSessionsSinceAd++;
         unlockAchievement('focus_session_complete', 'Focus session completed');
-        renderSessionSummary(session);
+        queueSessionSummary(session);
     }
     return true;
 }
@@ -3443,7 +4786,10 @@ function getSessionSummary(session) {
         afterAccuracy,
         improvement: afterAccuracy - (session.beforeAccuracy || 0),
         mistakes,
-        nextDrill: plan && plan.dailyDrill ? plan.dailyDrill : session.mode
+        nextDrill: session.dailyPlan && session.dailyPlan.focusTarget
+            ? session.dailyPlan.focusTarget
+            : plan && plan.dailyDrill ? plan.dailyDrill : session.mode,
+        dailyPlan: session.dailyPlan || getDailyPlan()
     };
 }
 
@@ -3457,11 +4803,18 @@ function renderSessionSummary(session) {
     const mistakeRows = summary.mistakes.length
         ? summary.mistakes.map(item => `<li>${escapeHtml(item.label)}: ${item.count}</li>`).join('')
         : `<li>${t.sessionNoLeaks || 'No repeated leak this session.'}</li>`;
+    const plan = summary.dailyPlan || getDailyPlan();
+    const allocation = plan.allocation || { focus: 0, review: 0, maintenance: 0 };
     content.innerHTML = `
         <div class="session-summary-grid">
             <div><span>${t.statsAccuracy || 'Accuracy'}</span><strong>${summary.accuracy}%</strong></div>
             <div><span>${t.sessionImprovement || 'Mode trend'}</span><strong>${summary.improvement >= 0 ? '+' : ''}${summary.improvement}%</strong></div>
             <div><span>${t.personalizedNextDrill || 'Next drill'}</span><strong>${getModeLabel(summary.nextDrill, t)}</strong></div>
+        </div>
+        <div class="session-plan-note">
+            <strong>${escapeHtml(t.dailyPlanMixLabel || 'Daily plan')}</strong>
+            <span>${escapeHtml(plan.reason || '')}</span>
+            <em>${allocation.focus}/${allocation.review}/${allocation.maintenance}</em>
         </div>
         <h3>${t.sessionTopLeaks || 'Focus next'}</h3>
         <ul>${mistakeRows}</ul>
@@ -3487,7 +4840,7 @@ function recordTrainingSessionResult(mode, isCorrect, mistakeLabel) {
         session.completed = true;
         state.monetization.completedSessionsSinceAd++;
         unlockAchievement('weekly_review_ready', 'Session review ready');
-        renderSessionSummary(session);
+        queueSessionSummary(session);
         state.trainingSession = createTrainingSession(sessionMode);
     }
 }
@@ -3501,22 +4854,26 @@ function isFocusSessionForDate(session, referenceDate = new Date()) {
 
 function canResumeFocusSession(session, referenceDate = new Date()) {
     if (!isFocusSessionForDate(session, referenceDate)) return false;
-    const targetHands = Math.max(1, Number(session.targetHands) || TRAINING_SESSION_HANDS || 10);
+    const targetHands = Math.max(1, Number(session.targetHands) || DAILY_HAND_GOAL || 20);
     const hands = Math.max(0, Number(session.hands) || 0);
     return !session.completed && hands < targetHands;
 }
 
 function getDailyTrainingProgress(referenceDate = new Date()) {
-    const fallbackTarget = Math.max(1, Number(TRAINING_SESSION_HANDS) || 10);
+    const plan = getDailyPlan(referenceDate);
+    const fallbackTarget = Math.max(1, Number(plan.targetHands) || DAILY_HAND_GOAL || 20);
     const session = state.focusSession;
     let target = fallbackTarget;
-    let completedHands = 0;
+    const todayActivity = state.gamification && state.gamification.dailyActivity
+        ? state.gamification.dailyActivity[getDateKey(referenceDate)] || null
+        : null;
+    let completedHands = todayActivity ? Math.max(0, Math.floor(Number(todayActivity.hands) || 0)) : 0;
     let active = false;
     let completed = false;
 
     if (isFocusSessionForDate(session, referenceDate)) {
         target = Math.max(1, Number(session.targetHands) || fallbackTarget);
-        completedHands = Math.min(target, Math.max(0, Math.floor(Number(session.hands) || 0)));
+        completedHands = Math.min(target, Math.max(completedHands, Math.floor(Number(session.hands) || 0)));
         active = !!session.active;
         completed = !!session.completed || completedHands >= target;
     }
@@ -3526,7 +4883,7 @@ function getDailyTrainingProgress(referenceDate = new Date()) {
         target,
         completedHands,
         remaining,
-        progress: Math.min(100, Math.max(0, Math.round((remaining / target) * 100))),
+        progress: Math.min(100, Math.max(0, Math.round((completedHands / target) * 100))),
         active,
         completed,
         started: active || completed || completedHands > 0
@@ -3536,18 +4893,20 @@ function getDailyTrainingProgress(referenceDate = new Date()) {
 function getPersonalizedDashboardModel() {
     const t = I18N[state.lang] || I18N.en;
     const plan = getCurrentTrainingPlan();
+    const dailyPlan = getDailyPlan();
     const profile = state.assessment && state.assessment.skillDimensions ? state.assessment.skillDimensions : {};
     const weekly = getWeeklySummary();
-    const reviewCount = state.mistakeReplay && state.mistakeReplay.queue ? state.mistakeReplay.queue.length : 0;
-    const focusTarget = plan.dailyDrill || (plan.adaptivePriorities && plan.adaptivePriorities[0]) || 'RFI';
+    const reviewCount = dailyPlan.reviewDueCount;
+    const focusTarget = dailyPlan.focusTarget || plan.dailyDrill || (plan.adaptivePriorities && plan.adaptivePriorities[0]) || 'RFI';
     return {
         firstRun: !state.assessment && !state.assessmentSkipped && state.stats.totalHands === 0,
         dailyDrill: focusTarget,
         dailyLabel: getModeLabel(focusTarget, t),
         reviewCount,
-        topLeak: plan.topLeaks && plan.topLeaks[0] ? plan.topLeaks[0] : (t.assessmentLeakRfi || 'Opening range discipline'),
-        baselineLevel: profile.baselineLevel || (state.assessmentSkipped ? (t.assessmentSkipped || 'Assessment skipped') : (t.skillBaselineEmpty || 'Unrated')),
-        weakestDimension: profile.weakestDimension ? getModeLabel(profile.weakestDimension, t) : getModeLabel(plan.dailyDrill || 'RFI', t),
+        topLeak: dailyPlan.reason || (plan.topLeaks && plan.topLeaks[0]) || (t.assessmentLeakRfi || 'Opening range discipline'),
+        dailyPlan,
+        baselineLevel: profile.baselineLevel ? getSkillLevelLabel(profile.baselineLevel, t) : (state.assessmentSkipped ? (t.assessmentSkipped || 'Assessment skipped') : (t.skillBaselineEmpty || 'Unrated')),
+        weakestDimension: profile.weakestDimension ? getModeLabel(profile.weakestDimension, t) : getModeLabel(focusTarget || 'RFI', t),
         weekly,
         dailyProgress: getDailyTrainingProgress()
     };
@@ -3593,7 +4952,19 @@ function isSameLocalDate(a, b) {
         && a.getDate() === b.getDate();
 }
 
-function renderHomeTrend(activeAccuracy = 0, referenceDate = new Date()) {
+function getDailyActivitySummary(referenceDate = new Date()) {
+    const dailyActivity = state.gamification && state.gamification.dailyActivity ? state.gamification.dailyActivity : {};
+    const activity = dailyActivity[getDateKey(referenceDate)] || { hands: 0, correct: 0 };
+    const hands = Math.max(0, Number(activity.hands) || 0);
+    const correct = Math.max(0, Number(activity.correct) || 0);
+    return {
+        hands,
+        correct,
+        accuracy: hands > 0 ? pct(correct, hands) : 0
+    };
+}
+
+function renderHomeTrend(referenceDate = new Date()) {
     const today = referenceDate;
     const weekStart = getStartOfLocalWeek(today);
     const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -3603,7 +4974,7 @@ function renderHomeTrend(activeAccuracy = 0, referenceDate = new Date()) {
         day.setDate(weekStart.getDate() + index);
         const activity = dailyActivity[getDateKey(day)] || { hands: 0, correct: 0 };
         const isToday = isSameLocalDate(day, today);
-        const accuracy = activity.hands > 0 ? pct(activity.correct, activity.hands) : (isToday ? activeAccuracy : 0);
+        const accuracy = activity.hands > 0 ? pct(activity.correct, activity.hands) : 0;
         return {
             label,
             active: isToday,
@@ -3630,8 +5001,13 @@ window.renderPersonalizedDashboard = function () {
     const dailyCountdown = model.dailyProgress || getDailyTrainingProgress();
     const dailyGoal = dailyCountdown.target;
     const dailyRemaining = dailyCountdown.remaining;
+    const dailyCompleted = dailyCountdown.completedHands;
     const dailyProgress = dailyCountdown.progress;
-    const overallAccuracy = pct(state.stats.totalCorrect || 0, state.stats.totalHands || 0);
+    const todayActivity = getDailyActivitySummary();
+    const todayAccuracy = todayActivity.hands ? `${todayActivity.accuracy}%` : '--';
+    const todayMeta = todayActivity.hands
+        ? `${todayActivity.hands} ${t.statsHands || 'hands'}`
+        : (t.handAccuracyNoData || 'No data');
     const startAction = model.firstRun ? 'startQuickDiagnostic()' : 'startFocusSession()';
     const startLabel = model.firstRun
         ? (t.quickStartCta || 'Start Quick Diagnostic')
@@ -3639,8 +5015,10 @@ window.renderPersonalizedDashboard = function () {
             ? (t.homeContinue || 'Continue')
             : (t.focusSessionCta || 'Start Drill');
     const reviewLabel = (t.reviewMistakesCta || 'Review Mistakes ({count})').replace('{count}', model.reviewCount);
-    const drillsCompleted = Math.floor((state.stats.totalHands || 0) / Math.max(1, TRAINING_SESSION_HANDS || 10));
+    const drillsCompleted = Math.floor((state.stats.totalHands || 0) / Math.max(1, DAILY_HAND_GOAL || 20));
     const bestStreak = getBestStreak();
+    const allocation = model.dailyPlan && model.dailyPlan.allocation ? model.dailyPlan.allocation : { focus: dailyGoal, review: 0, maintenance: 0 };
+    const templates = model.dailyPlan && Array.isArray(model.dailyPlan.drillTemplates) ? model.dailyPlan.drillTemplates : [];
     el.className = `personalized-dashboard glassmorphism${firstRunClass}`;
     el.innerHTML = `
         <div class="home-shell">
@@ -3665,24 +5043,34 @@ window.renderPersonalizedDashboard = function () {
                     </div>
                 </div>
                 <div class="home-daily-progress-row">
-                    <div class="home-ring" aria-label="${dailyRemaining} of ${dailyGoal}">
-                        <strong>${dailyRemaining}/${dailyGoal}</strong>
+                    <div class="home-ring" aria-label="${dailyCompleted} of ${dailyGoal}">
+                        <strong>${dailyCompleted}/${dailyGoal}</strong>
                     </div>
                     <div class="home-focus-lines">
                         <span>${t.homeFocus || 'Focus'}: ${escapeHtml(model.dailyLabel)}</span>
                         <span>${escapeHtml(model.topLeak)}</span>
                     </div>
                 </div>
+                <div class="home-daily-plan-grid" aria-label="${escapeHtml(t.dailyPlanMixLabel || 'Daily plan mix')}">
+                    <span><b>${allocation.focus}</b>${escapeHtml(t.dailyPlanFocus || 'focus')}</span>
+                    <span><b>${allocation.review}</b>${escapeHtml(t.dailyPlanReview || 'review')}</span>
+                    <span><b>${allocation.maintenance}</b>${escapeHtml(t.dailyPlanMaintenance || 'maintain')}</span>
+                </div>
+                ${templates.length ? `
+                    <div class="home-template-row">
+                        ${templates.slice(0, 2).map(item => `<span>${escapeHtml(item.label)}</span>`).join('')}
+                    </div>
+                ` : ''}
                 <button class="home-continue" type="button" onclick="${startAction}">${startLabel}</button>
             </section>
 
             <section class="home-progress-card">
                 <div>
                     <h3>${t.homeTodayProgress || "Today's Progress"}</h3>
-                    <strong>${overallAccuracy || 0}%</strong>
-                    <p>${t.statsOverallAccuracy || 'Avg Accuracy'}</p>
+                    <strong>${todayAccuracy}</strong>
+                    <p>${t.statsDailyAccuracyHint || t.statsAccuracy || 'Daily accuracy'} · ${todayMeta}</p>
                 </div>
-                ${renderHomeTrend(overallAccuracy)}
+                ${renderHomeTrend()}
             </section>
 
             <div class="home-mini-grid">
@@ -3755,6 +5143,18 @@ window.renderPersonalizedDashboard = function () {
 function setHiddenById(id, hidden = true) {
     const el = document.getElementById(id);
     if (el && el.classList) el.classList.toggle('hidden', !!hidden);
+}
+
+function scrollAppToTop() {
+    const scroll = () => {
+        if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        }
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+    };
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(scroll);
+    else scroll();
 }
 
 function isPlanTrainingActive() {
@@ -3854,9 +5254,7 @@ window.setFeedbackPreference = function (key, value) {
 };
 
 function shouldShowFirstRunFlow() {
-    return !state.firstRunCompleted
-        && !state.assessmentSkipped
-        && (state.firstRunStage === 'profile' || (!state.assessment && state.stats.totalHands === 0));
+    return false;
 }
 
 function renderFirstRunFlow() {
@@ -3880,7 +5278,7 @@ function renderFirstRunFlow() {
                     </div>
                 </div>
                 <div class="assessment-profile-grid">
-                    <div><span>${t.skillBaseline || 'Baseline'}</span><strong>${escapeHtml(profile.baselineLevel || 'Unrated')}</strong></div>
+                    <div><span>${t.skillBaseline || 'Baseline'}</span><strong>${escapeHtml(getSkillLevelLabel(profile.baselineLevel, t))}</strong></div>
                     <div><span>${t.skillWeakest || 'Weakest'}</span><strong>${escapeHtml(getModeLabel(profile.weakestDimension || plan.dailyDrill || 'RFI', t))}</strong></div>
                     <div><span>${t.personalizedNextDrill || 'Next drill'}</span><strong>${escapeHtml(getModeLabel(plan.dailyDrill || 'RFI', t))}</strong></div>
                 </div>
@@ -4358,11 +5756,7 @@ window.startFirstRunDiagnostic = function () {
     });
     state.firstRunCompleted = false;
     state.firstRunStage = 'diagnostic';
-    state.activeTab = 'practice';
-    state.diagnosticSession = createDiagnosticSession(QUICK_DIAGNOSTIC_HANDS, true);
-    closeAssessmentModal();
-    window.renderAppShell();
-    startTurn();
+    startDiagnosticFlow(QUICK_DIAGNOSTIC_HANDS, true);
 };
 
 window.skipFirstRunFlow = function () {
@@ -4390,8 +5784,9 @@ window.startFirstTrainingFromProfile = function () {
 };
 
 window.startFocusSession = function (options = {}) {
+    state.pendingCompletion = null;
     if (!canResumeFocusSession(state.focusSession) || options.reset) {
-        state.focusSession = createFocusSession(TRAINING_SESSION_HANDS);
+        state.focusSession = createFocusSession(DAILY_HAND_GOAL);
     } else {
         state.focusSession.active = true;
     }
@@ -4541,6 +5936,8 @@ function evaluateAction(hand, position) {
     if (state.currentMode === 'REVIEW' && state.currentReviewItem) {
         return {
             action: state.currentReviewItem.correctAction,
+            actionFrequencies: state.currentReviewItem.actionFrequencies || null,
+            acceptableActions: Array.isArray(state.currentReviewItem.acceptableActions) ? state.currentReviewItem.acceptableActions : [],
             explanation: state.currentReviewItem.explanation || `${state.currentReviewItem.combo}: ${state.currentReviewItem.correctAction}`
         };
     }
@@ -4559,14 +5956,18 @@ function evaluateCustom(hand, rangeName) {
     const combo = getComboName(hand);
     const range = state.customRanges[rangeName];
     if (!range) return { action: 'Fold', explanation: 'No range selected.' };
+    const raiseRange = new Set(range.raise || []);
+    const callRange = new Set(range.call || []);
+    const actionFrequencies = getActionRangeFrequencies(combo, raiseRange, callRange);
+    const acceptableActions = getPositiveFrequencyActions(actionFrequencies);
 
-    if (range.raise && range.raise.includes(combo)) {
-        return { action: 'Raise', explanation: `Custom Range [${rangeName}]: ${combo} is a Raise.` };
+    if (raiseRange.has(combo)) {
+        return { action: 'Raise', actionFrequencies, acceptableActions, explanation: `Custom Range [${rangeName}]: ${combo} is a Raise.` };
     }
-    if (range.call && range.call.includes(combo)) {
-        return { action: 'Call', explanation: `Custom Range [${rangeName}]: ${combo} is a Call.` };
+    if (callRange.has(combo)) {
+        return { action: 'Call', actionFrequencies, acceptableActions, explanation: `Custom Range [${rangeName}]: ${combo} is a Call.` };
     }
-    return { action: 'Fold', explanation: `Custom Range [${rangeName}]: ${combo} is a Fold.` };
+    return { action: 'Fold', actionFrequencies, acceptableActions, explanation: `Custom Range [${rangeName}]: ${combo} is a Fold.` };
 }
 
 function evaluateCustomDrill(hand, drill) {
@@ -4574,34 +5975,62 @@ function evaluateCustomDrill(hand, drill) {
     const t = I18N[state.lang] || I18N.en;
 
     let action = 'Fold';
+    let actionFrequencies = null;
+    let acceptableActions = [];
     if (drill.type === DRILL_TYPES.RFI_FOCUS) {
         const openRange = getDrillRangeCode(drill, 'open') || getDrillRangeCode(drill, 'raise');
         const builtIn = RFI_RANGES[state.currentPosition] || new Set();
-        const shouldRaise = openRange ? rangeCodeHasPlayableCombo(openRange, combo) : builtIn.has(combo);
-        action = shouldRaise ? 'Raise' : 'Fold';
+        if (openRange) {
+            const shouldRaise = rangeCodeHasPlayableCombo(openRange, combo);
+            action = shouldRaise ? 'Raise' : 'Fold';
+            actionFrequencies = normalizeActionFrequencies({ [action]: 100 }, action);
+        } else {
+            actionFrequencies = getRfiActionFrequencies(state.currentPosition, combo);
+            action = getDominantFrequencyAction(actionFrequencies, builtIn.has(combo) ? 'Raise' : 'Fold');
+        }
+        acceptableActions = getPositiveFrequencyActions(actionFrequencies);
     } else if (drill.type === DRILL_TYPES.DEFENSE_VS_OPEN || drill.type === DRILL_TYPES.FACING_3BET) {
         const raiseRange = getDrillRangeCode(drill, 'raise');
         const callRange = getDrillRangeCode(drill, 'call');
         if (raiseRange || callRange) {
+            const raiseSet = rangeCodeToPlayableSet(raiseRange);
+            const callSet = rangeCodeToPlayableSet(callRange);
             if (rangeCodeHasPlayableCombo(raiseRange, combo)) {
                 action = drill.allowedActions && drill.allowedActions.includes('All-In') && !drill.allowedActions.includes('Raise') ? 'All-In' : 'Raise';
             } else if (rangeCodeHasPlayableCombo(callRange, combo)) {
                 action = 'Call';
             }
+            actionFrequencies = action === 'All-In'
+                ? normalizeActionFrequencies({ 'All-In': 100 }, 'All-In')
+                : getActionRangeFrequencies(combo, raiseSet, callSet);
         } else if (drill.type === DRILL_TYPES.DEFENSE_VS_OPEN) {
             const ctx = getCurrentCustomDrillContext(drill) || {};
             const sc = getDefenseScenarioForPositions(ctx.heroPosition || drill.heroPosition, ctx.openerPosition || drill.openerPosition);
             if (sc.THREE_BET && sc.THREE_BET.has(combo)) action = 'Raise';
             else if (sc.CALL && sc.CALL.has(combo)) action = 'Call';
+            const scenarioId = getDefenseScenarioId(sc);
+            actionFrequencies = getDefenseActionFrequencies(scenarioId, combo, sc);
+            action = getDominantFrequencyAction(actionFrequencies, action);
         } else {
-            action = getDefaultFacingThreeBetAction(combo);
+            const ctx = getCurrentCustomDrillContext(drill) || {};
+            actionFrequencies = getFacingThreeBetActionFrequencies(
+                ctx.heroPosition || drill.heroPosition || 'CO',
+                ctx.villainPosition || drill.villainPosition || 'BTN',
+                combo
+            );
+            action = getDominantFrequencyAction(actionFrequencies, getDefaultFacingThreeBetAction(combo));
         }
+        acceptableActions = getPositiveFrequencyActions(actionFrequencies);
     } else if (drill.type === DRILL_TYPES.PUSH_FOLD) {
         const shoveRange = getDrillRangeCode(drill, 'shove') || getDrillRangeCode(drill, 'raise');
         const stackRanges = PUSH_RANGES_BY_STACK[String(drill.stackBb)] || PUSH_RANGES_BY_STACK[state.currentStack] || PUSH_10BB;
         const builtIn = stackRanges[state.currentPosition] || new Set();
         const shouldShove = shoveRange ? rangeCodeHasPlayableCombo(shoveRange, combo) : builtIn.has(combo);
         action = shouldShove ? 'All-In' : 'Fold';
+        actionFrequencies = shoveRange
+            ? normalizeActionFrequencies({ [action]: 100 }, action)
+            : getPushFoldActionFrequencies(state.currentPosition, drill.stackBb || state.currentStack, combo);
+        acceptableActions = getPositiveFrequencyActions(actionFrequencies);
     } else if (drill.type === DRILL_TYPES.ALL_STREET) {
         return evaluateAllStreet(hand, getActiveAllStreetScenario());
     } else {
@@ -4613,8 +6042,8 @@ function evaluateCustomDrill(hand, drill) {
         .replace('{name}', drill.name)
         .replace('{combo}', combo)
         .replace('{action}', action)
-        .replace('{note}', note);
-    return { action, explanation };
+        .replace('{note}', note) + getMixedFrequencyExplanationSuffix(actionFrequencies);
+    return { action, explanation, actionFrequencies, acceptableActions };
 }
 
 function evaluateAllStreet(hand, scenario = getCurrentAllStreetScenario()) {
@@ -4655,37 +6084,50 @@ function evaluateAllStreet(hand, scenario = getCurrentAllStreetScenario()) {
 
 function evaluateRFI(hand, position) {
     const combo = getComboName(hand);
-    const range = RFI_RANGES[position];
-    const isRaise = range && range.has(combo);
-    if (isRaise) {
+    const frequencies = getRfiActionFrequencies(position, combo);
+    const action = getDominantFrequencyAction(frequencies);
+    const acceptableActions = getPositiveFrequencyActions(frequencies);
+    const frequencySuffix = getMixedFrequencyExplanationSuffix(frequencies);
+
+    if (action === 'Raise') {
         return {
-            action: 'Raise', explanation: position === 'UTG'
+            action,
+            actionFrequencies: frequencies,
+            acceptableActions,
+            explanation: (position === 'UTG'
                 ? I18N[state.lang].evalRfiUtgRaise(combo)
-                : I18N[state.lang].evalRfiRaise(position, combo)
+                : I18N[state.lang].evalRfiRaise(position, combo)) + frequencySuffix
         };
     }
     return {
-        action: 'Fold', explanation: position === 'UTG'
+        action,
+        actionFrequencies: frequencies,
+        acceptableActions,
+        explanation: (position === 'UTG'
             ? I18N[state.lang].evalRfiUtgFold(combo)
-            : I18N[state.lang].evalRfiFold(position, combo)
+            : I18N[state.lang].evalRfiFold(position, combo)) + frequencySuffix
     };
 }
 
 function evaluatePushFold(hand, position) {
     const combo = getComboName(hand);
-    const ranges = PUSH_RANGES_BY_STACK[state.currentStack] || PUSH_10BB;
-    const range = ranges[position];
-    if (range && range.has(combo)) return { action: 'All-In', explanation: I18N[state.lang].evalPush(position, combo, state.currentStack) };
-    return { action: 'Fold', explanation: I18N[state.lang].evalPushFold(position, combo, state.currentStack) };
+    const frequencies = getPushFoldActionFrequencies(position, state.currentStack, combo);
+    const action = getDominantFrequencyAction(frequencies, 'Fold');
+    const acceptableActions = getPositiveFrequencyActions(frequencies);
+    if (action === 'All-In') return { action, actionFrequencies: frequencies, acceptableActions, explanation: I18N[state.lang].evalPush(position, combo, state.currentStack) };
+    return { action, actionFrequencies: frequencies, acceptableActions, explanation: I18N[state.lang].evalPushFold(position, combo, state.currentStack) };
 }
 
 function evaluateDefend(hand) {
     const combo = getComboName(hand);
     const sc = DEFEND_SCENARIOS[state.currentDefendScenario];
     if (!sc) return { action: 'Fold', explanation: '' };
-    if (sc.THREE_BET.has(combo)) return { action: 'Raise', explanation: I18N[state.lang].evalDefendRaise(combo, sc.villain, sc.hero) };
-    if (sc.CALL && sc.CALL.has(combo)) return { action: 'Call', explanation: I18N[state.lang].evalDefendCall(combo, sc.villain, sc.hero) };
-    return { action: 'Fold', explanation: I18N[state.lang].evalDefendFold(combo, sc.villain, sc.hero) };
+    const frequencies = getDefenseActionFrequencies(state.currentDefendScenario, combo, sc);
+    const action = getDominantFrequencyAction(frequencies, 'Fold');
+    const acceptableActions = getPositiveFrequencyActions(frequencies);
+    if (action === 'Raise') return { action, actionFrequencies: frequencies, acceptableActions, explanation: I18N[state.lang].evalDefendRaise(combo, sc.villain, sc.hero) };
+    if (action === 'Call') return { action, actionFrequencies: frequencies, acceptableActions, explanation: I18N[state.lang].evalDefendCall(combo, sc.villain, sc.hero) };
+    return { action, actionFrequencies: frequencies, acceptableActions, explanation: I18N[state.lang].evalDefendFold(combo, sc.villain, sc.hero) };
 }
 
 // ============================================================
@@ -4820,7 +6262,10 @@ function updateScenarioUI() {
 
 function startTurn() {
     feedbackEl.classList.add('hidden');
+    setFeedbackNextButtonLabel();
     setDecisionControlsLocked(false);
+    state.currentActionFrequencies = null;
+    state.currentAcceptableActions = [];
 
     // pick position
     const activeCustomDrill = state.currentMode === 'CUSTOM' ? getActiveCustomDrill() : null;
@@ -4828,7 +6273,7 @@ function startTurn() {
     if (state.diagnosticSession && state.diagnosticSession.active) {
         prepareDiagnosticTurn();
     } else if (state.currentMode === 'REVIEW') {
-        const item = getNextMistakeReplayItem();
+        const item = getNextMistakeReplayItem({ dueOnly: true });
         state.currentReviewItem = item;
         if (!item) {
             state.currentHand = null;
@@ -4889,6 +6334,8 @@ function startTurn() {
 
     const result = evaluateAction(hand, state.currentPosition);
     state.correctAction = result.action;
+    state.currentActionFrequencies = result.actionFrequencies || null;
+    state.currentAcceptableActions = Array.isArray(result.acceptableActions) ? result.acceptableActions : [];
     state.explanation = result.explanation;
     updateReviewActionButtons();
 }
@@ -4900,7 +6347,7 @@ window.handleAction = function (action) {
         && !feedbackEl.classList.contains('hidden');
     if (!state.currentHand || feedbackIsOpen) return;
     const wasDiagnosticActive = !!(state.diagnosticSession && state.diagnosticSession.active);
-    const isCorrect = action === state.correctAction;
+    const isCorrect = isActionCorrectForCurrentSpot(action);
     const combo = getComboName(state.currentHand);
 
     if (isCorrect) {
@@ -4918,7 +6365,7 @@ window.handleAction = function (action) {
         if (feedbackIconEl) feedbackIconEl.innerText = '❌';
     }
 
-    feedbackMsgEl.innerHTML = `${I18N[state.lang].feedbackDetail(getFeedbackActionLabel(action), getFeedbackActionLabel(state.correctAction))}<br><br>${state.explanation}`;
+    feedbackMsgEl.innerHTML = `${I18N[state.lang].feedbackDetail(getFeedbackActionLabel(action), getFeedbackCorrectActionLabelForSpot())}<br><br>${state.explanation}`;
     linkGlossaryTerms(feedbackMsgEl);
     if (scoreEl) scoreEl.innerText = state.score;
     streakEl.innerText = state.streak;
@@ -4959,6 +6406,8 @@ window.handleAction = function (action) {
             scenario: scenarioTextEl ? scenarioTextEl.innerText : '',
             userAction: action,
             correctAction: state.correctAction,
+            actionFrequencies: state.currentActionFrequencies,
+            acceptableActions: state.currentAcceptableActions,
             explanation: state.explanation
         });
     }
@@ -4999,6 +6448,7 @@ window.handleAction = function (action) {
 };
 
 window.nextHand = function () {
+    if (showPendingCompletion()) return;
     if (startFocusSessionTurn()) return;
     startTurn();
 };
@@ -5613,18 +7063,22 @@ function getDefenseScenarioForPositions(heroPosition, openerPosition) {
         || DEFEND_SCENARIOS.BTN_VS_CO;
 }
 
+function getDefenseScenarioId(scenario) {
+    if (!scenario) return '';
+    const entry = Object.entries(DEFEND_SCENARIOS).find(([, candidate]) => candidate === scenario);
+    if (entry) return entry[0];
+    const matching = Object.entries(DEFEND_SCENARIOS).find(([, candidate]) => (
+        candidate.hero === scenario.hero && candidate.villain === scenario.villain
+    ));
+    return matching ? matching[0] : '';
+}
+
 function getDefaultFacingThreeBetRanges() {
-    return {
-        raise: new Set(['AA', 'KK', 'QQ', 'AKs', 'AKo']),
-        call: new Set(['JJ', 'TT', '99', 'AQs', 'AJs', 'KQs', 'AQo'])
-    };
+    return getFacingThreeBetRanges('CO', 'BTN');
 }
 
 function getDefaultFacingThreeBetAction(combo) {
-    const ranges = getDefaultFacingThreeBetRanges();
-    if (ranges.raise.has(combo)) return 'Raise';
-    if (ranges.call.has(combo)) return 'Call';
-    return 'Fold';
+    return getDominantFrequencyAction(getFacingThreeBetActionFrequencies('CO', 'BTN', combo), 'Fold');
 }
 
 function getCompactRangeCodeFromEditor() {
@@ -6337,10 +7791,250 @@ function syncChartPositionToCurrentContext() {
     state.chartPosition = getCurrentChartContextPosition();
 }
 
-function buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges = false) {
-    const currentCombo = state.currentHand ? getComboName(state.currentHand) : null;
+let activeChartGridOptions = null;
+
+function getChartContextCombo() {
+    if (state.currentMode === 'REVIEW' && state.currentReviewItem && state.currentReviewItem.combo) {
+        return state.currentReviewItem.combo;
+    }
+    return state.currentHand ? getComboName(state.currentHand) : 'AA';
+}
+
+function ensureChartSelectedCombo() {
+    if (!state.selectedChartCombo) {
+        state.selectedChartCombo = getChartContextCombo();
+    }
+    return state.selectedChartCombo;
+}
+
+function getChartGridOptionsForRfi(position) {
+    const chartPosition = normalizeChartPosition(position, 'UTG');
+    return {
+        frequencyProvider: combo => getRfiActionFrequencies(chartPosition, combo),
+        sourceProvider: () => getRfiRangeSource(chartPosition),
+        detailActions: ['Raise', 'Fold']
+    };
+}
+
+function getChartGridOptionsForPushFold(position, stack) {
+    const chartPosition = normalizeChartPosition(position, 'UTG');
+    const chartStack = String(stack || state.currentStack || '10');
+    return {
+        frequencyProvider: combo => getPushFoldActionFrequencies(chartPosition, chartStack, combo),
+        sourceProvider: combo => getPushFoldRangeSource(chartPosition, chartStack, combo),
+        shortLabels: { 'All-In': 'AI', Fold: 'F' },
+        actionLabels: { 'All-In': 'All-In' },
+        detailActions: ['All-In', 'Fold']
+    };
+}
+
+function getChartGridOptionsForActionRanges(raiseRange, callRange, labels = {}) {
+    return {
+        frequencyProvider: combo => getActionRangeFrequencies(combo, raiseRange, callRange),
+        sourceProvider: labels.sourceProvider || (() => getInternalBaselineSource('Action-range table is the app built-in binary training baseline; mixed frequencies require a licensed export.')),
+        shortLabels: labels.shortLabels || { Raise: 'R', Call: 'C', Fold: 'F' },
+        actionLabels: labels.actionLabels || {},
+        detailActions: labels.detailActions || ['Raise', 'Call', 'Fold']
+    };
+}
+
+function getChartGridOptionsForDefenseScenario(scenarioId, scenario, labels = {}) {
+    const sc = scenario || DEFEND_SCENARIOS[scenarioId] || DEFEND_SCENARIOS.BTN_VS_CO;
+    return {
+        ...getChartGridOptionsForActionRanges(sc.THREE_BET, sc.CALL || new Set(), labels),
+        frequencyProvider: combo => getDefenseActionFrequencies(scenarioId, combo, sc),
+        sourceProvider: () => getDefenseRangeSource(scenarioId, sc)
+    };
+}
+
+function getChartGridOptionsForFacingThreeBet(heroPosition, villainPosition, labels = {}) {
+    const hero = normalizeChartPosition(heroPosition, 'CO');
+    const villain = normalizeChartPosition(villainPosition, 'BTN');
+    return {
+        frequencyProvider: combo => getFacingThreeBetActionFrequencies(hero, villain, combo),
+        sourceProvider: () => getFacingThreeBetRangeSource(hero, villain),
+        shortLabels: labels.shortLabels || { Raise: '4B', Call: 'C', Fold: 'F' },
+        actionLabels: labels.actionLabels || { Raise: '4-Bet' },
+        detailActions: labels.detailActions || ['Raise', 'Call', 'Fold']
+    };
+}
+
+function getChartClassForActionFrequencies(frequencies, fallbackClass) {
+    if (!frequencies) return fallbackClass;
+    if (isMixedActionFrequency(frequencies)) {
+        const hasAggressive = (frequencies.Raise || 0) > 0 || (frequencies['All-In'] || 0) > 0;
+        const hasCall = (frequencies.Call || 0) > 0;
+        const hasFold = (frequencies.Fold || 0) > 0;
+        if (hasAggressive && hasCall && hasFold) return 'mixed-raise-call-fold';
+        if (hasAggressive && hasCall) return 'mixed-raise-call';
+        if (hasAggressive && hasFold) return 'mixed-raise-fold';
+        if (hasCall && hasFold) return 'mixed-call-fold';
+    }
+    if ((frequencies.Raise || 0) > 0 || (frequencies['All-In'] || 0) > 0) return 'raise';
+    if ((frequencies.Call || 0) > 0) return 'defend-call';
+    return 'fold';
+}
+
+function getChartFrequencyStyle(frequencies) {
+    if (!frequencies || !isMixedActionFrequency(frequencies)) return '';
+    const aggressive = (Number(frequencies.Raise) || 0) + (Number(frequencies['All-In']) || 0);
+    const call = Number(frequencies.Call) || 0;
+    return ` style="--raise-frequency: ${aggressive}%; --call-frequency: ${call}%; --call-stop: ${aggressive + call}%;"`;
+}
+
+function getChartActionCssClass(action) {
+    if (action === 'Fold') return 'fold';
+    if (action === 'Call') return 'call';
+    return 'raise';
+}
+
+function getChartActionLabel(action, options = {}, t = I18N[state.lang] || I18N.en) {
+    const label = (options.actionLabels && options.actionLabels[action]) || getCoreActionLabel(action, t);
+    return String(label).replace(/\s*\([^)]*\)/g, '');
+}
+
+function getChartActionShortLabel(action, options = {}) {
+    return (options.shortLabels && options.shortLabels[action]) || ACTION_FREQUENCY_SHORT_LABELS[action] || action[0];
+}
+
+function getChartDetailActions(frequencies, options = {}) {
+    if (Array.isArray(options.detailActions) && options.detailActions.length) return options.detailActions;
+    const positiveActions = getPositiveFrequencyActions(frequencies);
+    return positiveActions.length ? positiveActions : ['Fold'];
+}
+
+function getRangeDataSource(sourceId) {
+    return RANGE_DATA_SOURCES[sourceId] || RANGE_DATA_SOURCES[INTERNAL_BASELINE_SOURCE_ID];
+}
+
+function getRfiRangeSource(position) {
+    const chartPosition = normalizeChartPosition(position, 'UTG');
+    const note = chartPosition === 'HJ'
+        ? 'HJ uses the MIT source MP row; 6-max RFI, rounded practical frequencies.'
+        : 'MIT source 6-max RFI row; rounded practical frequencies.';
+    return { id: RFI_FREQUENCY_SOURCE_ID, note };
+}
+
+function getPushFoldRangeSource(position, stack, combo) {
+    const chartPosition = normalizeChartPosition(position, 'UTG');
+    const numericStack = Number(stack);
+    const headsUpSbThreshold = CANDY_POKER_HU_SB_PUSH_THRESHOLDS[combo];
+    if (chartPosition === 'SB' && Number.isFinite(numericStack) && Number.isFinite(headsUpSbThreshold)) {
+        return {
+            id: CANDY_POKER_HU_PUSH_FOLD_SOURCE_ID,
+            note: `Heads-up SB first-in push/fold threshold ${headsUpSbThreshold}bb; shown as all-in when stack is at or below threshold.`
+        };
+    }
+    return getInternalBaselineSource(`${stack}bb push/fold table is the app's built-in binary training baseline for ${chartPosition}; no licensed multi-position solver export is attached.`);
+}
+
+function getDefenseRangeSource(scenarioId, scenario = null) {
+    const sourceId = DEFENSE_FREQUENCY_SOURCE_IDS[scenarioId];
+    if (sourceId) {
+        const sc = scenario || DEFEND_SCENARIOS[scenarioId] || {};
+        const sourceKey = scenarioId === 'BTN_VS_HJ'
+            ? 'BTN-vs-open-MP'
+            : scenarioId === 'BTN_VS_CO'
+                ? 'BTN-vs-open-CO'
+                : scenarioId === 'BB_VS_SB'
+                    ? 'BB-vs-open-SB'
+                    : scenarioId === 'SB_VS_BTN'
+                        ? 'SB-vs-open-BTN'
+                        : '';
+        const sourceSuffix = sourceId === GREENLINE_SOURCE_ID && sourceKey
+            ? ` Source chart: ${sourceKey}.`
+            : '';
+        return {
+            id: sourceId,
+            note: `${sc.hero || 'Hero'} defense versus ${sc.villain || 'opener'} open; rounded practical frequencies.${sourceSuffix}`
+        };
+    }
+    return getInternalBaselineSource('Defense table is the app built-in binary training baseline; mixed frequencies require a licensed export.');
+}
+
+function getFacingThreeBetRangeSource(heroPosition, villainPosition) {
+    const scenarioId = getFacingThreeBetScenarioId(heroPosition, villainPosition);
+    if (GREENLINE_FACING_THREE_BET_ACTION_FREQUENCIES[scenarioId]) {
+        const sourceHero = normalizeChartPosition(heroPosition, 'CO') === 'HJ' ? 'MP' : normalizeChartPosition(heroPosition, 'CO');
+        const sourceVillain = normalizeChartPosition(villainPosition, 'BTN') === 'HJ' ? 'MP' : normalizeChartPosition(villainPosition, 'BTN');
+        return {
+            id: FACING_THREE_BET_FREQUENCY_SOURCE_ID,
+            note: `${normalizeChartPosition(heroPosition, 'CO')} facing ${normalizeChartPosition(villainPosition, 'BTN')} 3-bet; source chart: ${sourceHero}-vs-3bet-${sourceVillain}.`
+        };
+    }
+    return getInternalBaselineSource('Facing 3-bet table is the app built-in binary fallback because no matching licensed Greenline source chart is available.');
+}
+
+function getInternalBaselineSource(note) {
+    return { id: INTERNAL_BASELINE_SOURCE_ID, note };
+}
+
+function getChartSourceNote(combo, options = {}) {
+    const source = options && typeof options.sourceProvider === 'function'
+        ? options.sourceProvider(combo)
+        : options.source;
+    if (!source) return '';
+    const sourceId = typeof source === 'string' ? source : source.id;
+    const meta = getRangeDataSource(sourceId);
+    const note = typeof source === 'object' && source.note ? source.note : meta.detail;
+    return `${meta.label}: ${note}`;
+}
+
+function buildChartDetailHtml(combo, options = {}) {
+    const t = I18N[state.lang] || I18N.en;
+    const selectedCombo = combo || getChartContextCombo();
+    const frequencies = options && typeof options.frequencyProvider === 'function'
+        ? options.frequencyProvider(selectedCombo)
+        : normalizeActionFrequencies({ Fold: 100 }, 'Fold');
+    const dominantAction = getDominantFrequencyAction(frequencies, 'Fold');
+    const dominantPercent = Number(frequencies[dominantAction]) || 0;
+    const dominantClass = getChartActionCssClass(dominantAction);
+    const dominantLabel = getChartActionShortLabel(dominantAction, options);
+    const summary = getActionFrequencySummary(frequencies, t, options.actionLabels || {});
+    const sourceNote = getChartSourceNote(selectedCombo, options);
+    const rowsHTML = getChartDetailActions(frequencies, options).map(action => {
+        const percent = Number(frequencies[action]) || 0;
+        const actionClass = getChartActionCssClass(action);
+        const label = getChartActionLabel(action, options, t);
+        return `
+            <div class="chart-detail-row ${actionClass}">
+                <span>${escapeHtml(label)}</span>
+                <div class="chart-detail-bar"><i style="width:${percent}%"></i></div>
+                <strong>${percent}%</strong>
+            </div>`;
+    }).join('');
+
+    return `
+        <section id="chart-detail" class="chart-detail-sheet" aria-live="polite">
+            <div class="chart-detail-handle"></div>
+            <div class="chart-detail-top">
+                <div class="chart-detail-hand">${escapeHtml(selectedCombo)}</div>
+                <div class="chart-detail-summary">${escapeHtml(summary)}</div>
+                <div class="chart-detail-decision ${dominantClass}">${escapeHtml(dominantLabel)} ${dominantPercent}%</div>
+            </div>
+            <div class="chart-detail-rows">${rowsHTML}</div>
+            ${sourceNote ? `<div class="chart-detail-source">${escapeHtml(sourceNote)}</div>` : ''}
+        </section>`;
+}
+
+function updateSelectedChartCell(combo) {
+    const grid = document.getElementById('chart-grid');
+    if (!grid) return;
+    grid.querySelectorAll('.chart-cell').forEach(cell => {
+        const selected = cell.dataset.combo === combo;
+        cell.classList.toggle('selected', selected);
+        cell.classList.toggle('highlight', selected);
+        cell.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    });
+}
+
+function buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges = false, options = {}) {
+    const selectedCombo = ensureChartSelectedCombo();
     const raiseRange = range3Bet || new Set();
     const callRange = rangeCall || new Set();
+    const frequencyProvider = options && typeof options.frequencyProvider === 'function'
+        ? options.frequencyProvider
+        : null;
     let gridHTML = '';
     for (let r1 of CHART_RANKS) {
         for (let r2 of CHART_RANKS) {
@@ -6348,14 +8042,34 @@ function buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges = false
             const isPair = i1 === i2, isSuited = i2 > i1;
             const high = i1 <= i2 ? r1 : r2, low = i1 <= i2 ? r2 : r1;
             const name = isPair ? `${high}${low}` : `${high}${low}${isSuited ? 's' : 'o'}`;
-            const isCurrent = name === currentCombo;
-            const bg = useActionRanges
+            const isSelected = name === selectedCombo;
+            const fallbackBg = useActionRanges
                 ? (raiseRange.has(name) ? 'raise' : (callRange.has(name) ? 'defend-call' : 'fold'))
                 : (range && range.has(name) ? 'raise' : 'fold');
-            gridHTML += `<div class="chart-cell ${bg}${isCurrent ? ' highlight' : ''}">${name}</div>`;
+            const frequencies = frequencyProvider ? frequencyProvider(name) : null;
+            const frequencyLabel = frequencies ? getCompactActionFrequencySummary(frequencies, options.shortLabels) : '';
+            const frequencySummary = frequencies ? getActionFrequencySummary(frequencies, I18N[state.lang] || I18N.en, options.actionLabels) : '';
+            const bg = getChartClassForActionFrequencies(frequencies, fallbackBg);
+            const classes = ['chart-cell', bg];
+            if (frequencyLabel) classes.push('has-frequency');
+            if (isSelected) classes.push('selected', 'highlight');
+            const titleAttr = frequencySummary ? ` title="${escapeHtml(`${name}: ${frequencySummary}`)}"` : '';
+            const styleAttr = getChartFrequencyStyle(frequencies);
+            const cellContent = frequencyLabel
+                ? `<span class="chart-combo">${escapeHtml(name)}</span><small>${escapeHtml(frequencyLabel)}</small>`
+                : escapeHtml(name);
+            const ariaLabel = frequencySummary ? `${name}: ${frequencySummary}` : name;
+            gridHTML += `<button type="button" role="button" class="${classes.join(' ')}" data-combo="${escapeHtml(name)}" aria-label="${escapeHtml(ariaLabel)}" aria-pressed="${isSelected ? 'true' : 'false'}" onclick="selectChartCombo('${name}')"${titleAttr}${styleAttr}>${cellContent}</button>`;
         }
     }
     return gridHTML;
+}
+
+function renderChartRangeContent(wrapper, titleHTML, posSelector, gridHTML, legendHTML, chartGridOptions) {
+    if (!wrapper) return;
+    activeChartGridOptions = chartGridOptions || {};
+    const detailHTML = buildChartDetailHtml(ensureChartSelectedCombo(), activeChartGridOptions);
+    wrapper.innerHTML = `${titleHTML}<div class="modal-body chart-modal-body">${posSelector || ''}<div class="chart-range-shell"><div id="chart-grid" class="chart-grid">${gridHTML}</div>${legendHTML}</div>${detailHTML}</div>`;
 }
 
 function getReviewChartTitle(label, t = I18N[state.lang] || I18N.en) {
@@ -6427,6 +8141,7 @@ function renderReviewChartGrid() {
     let useActionRanges = false;
     let titleLabel = getModeLabel(sourceMode, t);
     let legendHTML = '';
+    let chartGridOptions = {};
 
     if (sourceMode === 'ALL_STREET') {
         renderChartModalAllStreetSummary(getReviewAllStreetScenario(item), t);
@@ -6435,25 +8150,42 @@ function renderReviewChartGrid() {
 
     if (sourceMode === 'RFI') {
         range = RFI_RANGES[position] || RFI_RANGES.UTG;
+        chartGridOptions = getChartGridOptionsForRfi(position);
         titleLabel = (t.chartRfiTitle || '{position} RFI open range').replace('{position}', position);
         legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendRaise}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
     } else if (sourceMode === 'PUSH_FOLD') {
         const stack = String(item.stack || state.currentStack || '10');
         const pRanges = PUSH_RANGES_BY_STACK[stack] || PUSH_10BB;
         range = pRanges[position] || pRanges.UTG || PUSH_10BB.UTG;
+        chartGridOptions = getChartGridOptionsForPushFold(position, stack);
         titleLabel = (t.chartPushTitle || '{position} {stack}bb push range')
             .replace('{position}', position)
             .replace('{stack}', stack);
         legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendPush || 'Push'}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
     } else if (sourceMode === 'DEFEND') {
         const sc = getReviewDefendScenario(item);
+        const scenarioId = item.defendScenarioId || getDefenseScenarioId(sc);
         range3Bet = sc.THREE_BET;
         rangeCall = sc.CALL || new Set();
+        chartGridOptions = getChartGridOptionsForDefenseScenario(scenarioId, sc, {
+            shortLabels: { Raise: '3B', Call: 'C', Fold: 'F' },
+            actionLabels: { Raise: '3-Bet' }
+        });
         useActionRanges = true;
         titleLabel = (t.chartDefenseTitle || '{hero} vs {villain} defense')
             .replace('{hero}', sc.hero)
             .replace('{villain}', sc.villain);
         legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>3-Bet</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${t.legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+    } else if (sourceMode === 'FACING_3BET') {
+        const hero = normalizeChartPosition(item.heroPosition || item.position || 'CO', 'CO');
+        const villain = normalizeChartPosition(item.villainPosition || 'BTN', 'BTN');
+        const ranges = getFacingThreeBetRanges(hero, villain);
+        range3Bet = ranges.raise;
+        rangeCall = ranges.call;
+        chartGridOptions = getChartGridOptionsForFacingThreeBet(hero, villain);
+        useActionRanges = true;
+        titleLabel = `${hero} vs ${villain} 3-Bet`;
+        legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>4-Bet</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${t.legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
     } else if (sourceMode === 'CUSTOM') {
         const drill = getReviewCustomDrill(item);
         if (drill && drill.type === DRILL_TYPES.ALL_STREET) {
@@ -6465,6 +8197,7 @@ function renderReviewChartGrid() {
         if (drill && drill.type === DRILL_TYPES.RFI_FOCUS) {
             const openRange = getDrillRangeCode(drill, 'open') || getDrillRangeCode(drill, 'raise');
             range = openRange ? rangeCodeToPlayableSet(openRange) : (RFI_RANGES[position] || RFI_RANGES.UTG);
+            chartGridOptions = openRange ? getChartGridOptionsForActionRanges(range, null) : getChartGridOptionsForRfi(position);
             titleLabel = `${titleLabel} · ${position}`;
             legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendRaise}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
         } else if (drill && drill.type === DRILL_TYPES.PUSH_FOLD) {
@@ -6472,16 +8205,44 @@ function renderReviewChartGrid() {
             const shoveRange = getDrillRangeCode(drill, 'shove') || getDrillRangeCode(drill, 'raise');
             const stackRanges = PUSH_RANGES_BY_STACK[stack] || PUSH_10BB;
             range = shoveRange ? rangeCodeToPlayableSet(shoveRange) : (stackRanges[position] || stackRanges.UTG || PUSH_10BB.UTG);
+            chartGridOptions = shoveRange
+                ? getChartGridOptionsForActionRanges(range, null, { shortLabels: { Raise: 'AI', Fold: 'F' }, actionLabels: { Raise: 'All-In' } })
+                : getChartGridOptionsForPushFold(position, stack);
             titleLabel = `${titleLabel} · ${position} ${stack}bb`;
             legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendPush || 'Push'}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+        } else if (drill && drill.type === DRILL_TYPES.FACING_3BET) {
+            const hero = normalizeChartPosition(item.heroPosition || position || drill.heroPosition, 'CO');
+            const villain = normalizeChartPosition(item.villainPosition || drill.villainPosition, 'BTN');
+            const raiseCode = getDrillRangeCode(drill, 'raise');
+            const callCode = getDrillRangeCode(drill, 'call');
+            if (raiseCode || callCode) {
+                range3Bet = rangeCodeToPlayableSet(raiseCode);
+                rangeCall = rangeCodeToPlayableSet(callCode);
+                chartGridOptions = getChartGridOptionsForActionRanges(range3Bet, rangeCall, {
+                    shortLabels: { Raise: '4B', Call: 'C', Fold: 'F' },
+                    actionLabels: { Raise: '4-Bet' }
+                });
+            } else {
+                const ranges = getFacingThreeBetRanges(hero, villain);
+                range3Bet = ranges.raise;
+                rangeCall = ranges.call;
+                chartGridOptions = getChartGridOptionsForFacingThreeBet(hero, villain);
+            }
+            useActionRanges = true;
+            titleLabel = `${titleLabel} 繚 ${hero} vs ${villain} 3-Bet`;
+            legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>4-Bet</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${t.legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
         } else {
             const raiseCode = drill ? getDrillRangeCode(drill, 'raise') : '';
             const callCode = drill ? getDrillRangeCode(drill, 'call') : '';
+            let builtInDefenseScenario = null;
+            let builtInDefenseScenarioId = '';
             if (raiseCode || callCode) {
                 range3Bet = rangeCodeToPlayableSet(raiseCode);
                 rangeCall = rangeCodeToPlayableSet(callCode);
             } else if (drill && drill.type === DRILL_TYPES.DEFENSE_VS_OPEN) {
                 const sc = getDefenseScenarioForPositions(item.heroPosition || position, item.openerPosition || drill.openerPosition);
+                builtInDefenseScenario = sc;
+                builtInDefenseScenarioId = getDefenseScenarioId(sc);
                 range3Bet = sc.THREE_BET;
                 rangeCall = sc.CALL || new Set();
                 titleLabel = (t.chartDefenseTitle || '{hero} vs {villain} defense')
@@ -6491,18 +8252,26 @@ function renderReviewChartGrid() {
                 range3Bet = new Set(['AA', 'KK', 'QQ', 'AKs', 'AKo']);
                 rangeCall = new Set(['JJ', 'TT', '99', 'AQs', 'AJs', 'KQs', 'AQo']);
             }
+            const defenseLabels = drill && drill.type === DRILL_TYPES.DEFENSE_VS_OPEN
+                ? { shortLabels: { Raise: '3B', Call: 'C', Fold: 'F' }, actionLabels: { Raise: '3-Bet' } }
+                : {};
+            chartGridOptions = builtInDefenseScenario
+                ? getChartGridOptionsForDefenseScenario(builtInDefenseScenarioId, builtInDefenseScenario, defenseLabels)
+                : getChartGridOptionsForActionRanges(range3Bet, rangeCall, defenseLabels);
             useActionRanges = true;
             legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendRaise}</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${t.legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
         }
     } else {
         range = RFI_RANGES[position] || RFI_RANGES.UTG;
+        chartGridOptions = getChartGridOptionsForRfi(position);
         titleLabel = (t.chartRfiTitle || '{position} RFI open range').replace('{position}', position);
         legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.legendRaise}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
     }
 
     const titleHTML = `<div class="modal-header"><h2>${escapeHtml(getReviewChartTitle(titleLabel, t))}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
-    const gridHTML = buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges);
-    wrapper.innerHTML = `${titleHTML}<div class="modal-body chart-modal-body"><div id="chart-grid" class="chart-grid">${gridHTML}</div>${legendHTML}</div>`;
+    ensureChartSelectedCombo();
+    const gridHTML = buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges, chartGridOptions);
+    renderChartRangeContent(wrapper, titleHTML, '', gridHTML, legendHTML, chartGridOptions);
 }
 
 window.renderChartGrid = function () {
@@ -6515,6 +8284,7 @@ window.renderChartGrid = function () {
     let range, range3Bet, rangeCall;
     let useActionRanges = false;
     let titleHTML = '', legendHTML = '', gridHTML = '';
+    let chartGridOptions = {};
 
     if (state.currentMode === 'ALL_STREET') {
         const scenario = getCurrentAllStreetScenario();
@@ -6524,6 +8294,7 @@ window.renderChartGrid = function () {
 
     if (state.currentMode === 'RFI') {
         range = RFI_RANGES[chartPos] || RFI_RANGES.UTG;
+        chartGridOptions = getChartGridOptionsForRfi(chartPos);
         const t = I18N[state.lang] || I18N.en;
         const posLabel = (t.chartRfiTitle || '{position} RFI open range').replace('{position}', chartPos);
         titleHTML = `<div class="modal-header"><h2>${posLabel}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
@@ -6532,6 +8303,7 @@ window.renderChartGrid = function () {
         const t = I18N[state.lang] || I18N.en;
         const pRanges = PUSH_RANGES_BY_STACK[state.currentStack] || PUSH_10BB;
         range = pRanges[chartPos] || pRanges.UTG;
+        chartGridOptions = getChartGridOptionsForPushFold(chartPos, state.currentStack);
         const posLabel = (t.chartPushTitle || '{position} {stack}bb push range')
             .replace('{position}', chartPos)
             .replace('{stack}', state.currentStack);
@@ -6541,6 +8313,10 @@ window.renderChartGrid = function () {
         const t = I18N[state.lang] || I18N.en;
         const sc = DEFEND_SCENARIOS[state.currentDefendScenario] || DEFEND_SCENARIOS.BTN_VS_CO;
         range3Bet = sc.THREE_BET; rangeCall = sc.CALL || new Set();
+        chartGridOptions = getChartGridOptionsForDefenseScenario(state.currentDefendScenario, sc, {
+            shortLabels: { Raise: '3B', Call: 'C', Fold: 'F' },
+            actionLabels: { Raise: '3-Bet' }
+        });
         useActionRanges = true;
         const posLabel = (t.chartDefenseTitle || '{hero} vs {villain} defense')
             .replace('{hero}', sc.hero)
@@ -6549,7 +8325,19 @@ window.renderChartGrid = function () {
         legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>3-Bet</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${I18N[state.lang].legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
     } else if (state.currentMode === 'CUSTOM') {
         const drill = getActiveCustomDrill();
-        if (drill && drill.type === DRILL_TYPES.ALL_STREET) {
+        if (!drill && state.diagnosticSession && state.diagnosticSession.active
+            && state.diagnosticSession.currentSpot && state.diagnosticSession.currentSpot.type === 'FACING_3BET') {
+            const t = I18N[state.lang] || I18N.en;
+            const hero = 'CO';
+            const villain = 'BTN';
+            const ranges = getFacingThreeBetRanges(hero, villain);
+            range3Bet = ranges.raise;
+            rangeCall = ranges.call;
+            chartGridOptions = getChartGridOptionsForFacingThreeBet(hero, villain);
+            useActionRanges = true;
+            titleHTML = `<div class="modal-header"><h2>${escapeHtml(`${hero} vs ${villain} 3-Bet`)}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
+            legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>4-Bet</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${t.legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
+        } else if (drill && drill.type === DRILL_TYPES.ALL_STREET) {
             const scenario = buildCustomAllStreetScenario(drill);
             renderChartModalAllStreetSummary(scenario);
             return;
@@ -6558,6 +8346,7 @@ window.renderChartGrid = function () {
             const position = normalizeChartPosition(state.currentPosition || (Array.isArray(drill.heroPositions) && drill.heroPositions[0]), 'BTN');
             const openRange = getDrillRangeCode(drill, 'open') || getDrillRangeCode(drill, 'raise');
             range = openRange ? rangeCodeToPlayableSet(openRange) : (RFI_RANGES[position] || RFI_RANGES.BTN || RFI_RANGES.UTG);
+            chartGridOptions = openRange ? getChartGridOptionsForActionRanges(range, null) : getChartGridOptionsForRfi(position);
             const posLabel = (t.chartRfiTitle || '{position} RFI open range').replace('{position}', position);
             titleHTML = `<div class="modal-header"><h2>${escapeHtml(drill.name ? `${drill.name} - ${posLabel}` : posLabel)}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
             legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${I18N[state.lang].legendRaise}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
@@ -6568,6 +8357,9 @@ window.renderChartGrid = function () {
             const shoveRange = getDrillRangeCode(drill, 'shove') || getDrillRangeCode(drill, 'raise');
             const stackRanges = PUSH_RANGES_BY_STACK[stack] || PUSH_RANGES_BY_STACK[state.currentStack] || PUSH_10BB;
             range = shoveRange ? rangeCodeToPlayableSet(shoveRange) : (stackRanges[position] || stackRanges.UTG || PUSH_10BB.UTG);
+            chartGridOptions = shoveRange
+                ? getChartGridOptionsForActionRanges(range, null, { shortLabels: { Raise: 'AI', Fold: 'F' }, actionLabels: { Raise: 'All-In' } })
+                : getChartGridOptionsForPushFold(position, stack);
             const posLabel = (t.chartPushTitle || '{position} {stack}bb push range')
                 .replace('{position}', position)
                 .replace('{stack}', stack);
@@ -6576,18 +8368,25 @@ window.renderChartGrid = function () {
         } else if (drill && drill.type === DRILL_TYPES.DEFENSE_VS_OPEN) {
             const t = I18N[state.lang] || I18N.en;
             const ctx = getCurrentCustomDrillContext(drill) || {};
+            const sc = getDefenseScenarioForPositions(ctx.heroPosition || drill.heroPosition, ctx.openerPosition || drill.openerPosition);
             const raiseCode = getDrillRangeCode(drill, 'raise');
             const callCode = getDrillRangeCode(drill, 'call');
             if (raiseCode || callCode) {
                 range3Bet = rangeCodeToPlayableSet(raiseCode);
                 rangeCall = rangeCodeToPlayableSet(callCode);
+                chartGridOptions = getChartGridOptionsForActionRanges(range3Bet, rangeCall, {
+                    shortLabels: { Raise: '3B', Call: 'C', Fold: 'F' },
+                    actionLabels: { Raise: '3-Bet' }
+                });
             } else {
-                const sc = getDefenseScenarioForPositions(ctx.heroPosition || drill.heroPosition, ctx.openerPosition || drill.openerPosition);
                 range3Bet = sc.THREE_BET;
                 rangeCall = sc.CALL || new Set();
+                chartGridOptions = getChartGridOptionsForDefenseScenario(getDefenseScenarioId(sc), sc, {
+                    shortLabels: { Raise: '3B', Call: 'C', Fold: 'F' },
+                    actionLabels: { Raise: '3-Bet' }
+                });
             }
             useActionRanges = true;
-            const sc = getDefenseScenarioForPositions(ctx.heroPosition || drill.heroPosition, ctx.openerPosition || drill.openerPosition);
             const posLabel = (t.chartDefenseTitle || '{hero} vs {villain} defense')
                 .replace('{hero}', sc.hero)
                 .replace('{villain}', sc.villain);
@@ -6595,15 +8394,23 @@ window.renderChartGrid = function () {
             legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>3-Bet</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${I18N[state.lang].legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
         } else if (drill && drill.type === DRILL_TYPES.FACING_3BET) {
             const t = I18N[state.lang] || I18N.en;
+            const ctx = getCurrentCustomDrillContext(drill) || {};
+            const hero = normalizeChartPosition(ctx.heroPosition || drill.heroPosition || state.currentPosition, 'CO');
+            const villain = normalizeChartPosition(ctx.villainPosition || drill.villainPosition, 'BTN');
             const raiseCode = getDrillRangeCode(drill, 'raise');
             const callCode = getDrillRangeCode(drill, 'call');
             if (raiseCode || callCode) {
                 range3Bet = rangeCodeToPlayableSet(raiseCode);
                 rangeCall = rangeCodeToPlayableSet(callCode);
+                chartGridOptions = getChartGridOptionsForActionRanges(range3Bet, rangeCall, {
+                    shortLabels: { Raise: '4B', Call: 'C', Fold: 'F' },
+                    actionLabels: { Raise: '4-Bet' }
+                });
             } else {
-                const defaults = getDefaultFacingThreeBetRanges();
-                range3Bet = defaults.raise;
-                rangeCall = defaults.call;
+                const ranges = getFacingThreeBetRanges(hero, villain);
+                range3Bet = ranges.raise;
+                rangeCall = ranges.call;
+                chartGridOptions = getChartGridOptionsForFacingThreeBet(hero, villain);
             }
             useActionRanges = true;
             const previewTitle = (t.chartRangePreviewTitle || '{name} range preview').replace('{name}', drill.name);
@@ -6614,13 +8421,15 @@ window.renderChartGrid = function () {
             const custom = state.customRanges[state.currentCustomRangeName];
             range3Bet = new Set(custom ? custom.raise || [] : []);
             rangeCall = new Set(custom ? custom.call || [] : []);
+            chartGridOptions = getChartGridOptionsForActionRanges(range3Bet, rangeCall);
             useActionRanges = true;
             titleHTML = `<div class="modal-header"><h2>${escapeHtml(state.currentCustomRangeName || t.chartCustomRangeTitle || 'Custom range')}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
             legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${I18N[state.lang].legendRaise}</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${I18N[state.lang].legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
         }
     }
 
-    gridHTML = buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges);
+    ensureChartSelectedCombo();
+    gridHTML = buildChartGridHtml(range, range3Bet, rangeCall, useActionRanges, chartGridOptions);
 
     // Position selector tabs for non-defend modes
     let posSelector = '';
@@ -6631,7 +8440,7 @@ window.renderChartGrid = function () {
     }
 
     const wrapper = document.querySelector('#chart-modal .modal-content');
-    wrapper.innerHTML = `${titleHTML}<div class="modal-body chart-modal-body">${posSelector}<div id="chart-grid" class="chart-grid">${gridHTML}</div>${legendHTML}</div>`;
+    renderChartRangeContent(wrapper, titleHTML, posSelector, gridHTML, legendHTML, chartGridOptions);
 };
 
 window.setChartPosition = function (pos) {
@@ -6639,9 +8448,17 @@ window.setChartPosition = function (pos) {
     renderChartGrid();
 };
 
+window.selectChartCombo = function (combo) {
+    state.selectedChartCombo = combo || getChartContextCombo();
+    updateSelectedChartCell(state.selectedChartCombo);
+    const detailEl = document.getElementById('chart-detail');
+    if (detailEl) detailEl.outerHTML = buildChartDetailHtml(state.selectedChartCombo, activeChartGridOptions || {});
+};
+
 window.toggleChartModal = function () {
     if (chartModalEl.classList.contains('hidden')) {
         syncChartPositionToCurrentContext();
+        state.selectedChartCombo = getChartContextCombo();
         renderChartGrid();
         chartModalEl.classList.remove('hidden');
     } else {
@@ -6728,7 +8545,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Start first hand
     changeMode('RFI');
+    state.activeTab = 'plan';
     renderAppShell();
+    scrollAppToTop();
 
     // 5. Update stats
     if (lifetimeHandsEl) lifetimeHandsEl.innerText = state.stats.totalHands;

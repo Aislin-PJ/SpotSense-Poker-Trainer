@@ -6389,3 +6389,138 @@ Object.assign(I18N.ko, {
 Object.assign(I18N.es, {
     reviewMistakesTitle: "Repasar errores"
 });
+
+Object.assign(I18N.en, {
+    skillLevelAdvanced: "Advanced",
+    skillLevelIntermediate: "Intermediate",
+    skillLevelBeginnerPlus: "Beginner+",
+    skillLevelBeginner: "Beginner"
+});
+
+Object.assign(I18N["zh-TW"], {
+    skillLevelAdvanced: "進階",
+    skillLevelIntermediate: "中階",
+    skillLevelBeginnerPlus: "初階+",
+    skillLevelBeginner: "初階"
+});
+
+Object.assign(I18N["zh-CN"], {
+    skillLevelAdvanced: "进阶",
+    skillLevelIntermediate: "中阶",
+    skillLevelBeginnerPlus: "初阶+",
+    skillLevelBeginner: "初阶"
+});
+
+Object.assign(I18N.ja, {
+    skillLevelAdvanced: "上級",
+    skillLevelIntermediate: "中級",
+    skillLevelBeginnerPlus: "初級+",
+    skillLevelBeginner: "初級"
+});
+
+Object.assign(I18N.ko, {
+    skillLevelAdvanced: "고급",
+    skillLevelIntermediate: "중급",
+    skillLevelBeginnerPlus: "초급+",
+    skillLevelBeginner: "초급"
+});
+
+Object.assign(I18N.es, {
+    skillLevelAdvanced: "Avanzado",
+    skillLevelIntermediate: "Intermedio",
+    skillLevelBeginnerPlus: "Principiante+",
+    skillLevelBeginner: "Principiante"
+});
+
+Object.assign(I18N.en, {
+    dailyPlanMixLabel: "Daily plan",
+    dailyPlanFocus: "focus",
+    dailyPlanReview: "review",
+    dailyPlanMaintenance: "maintain",
+    dailyPlanDueReviews: "due reviews",
+    dailyPlanRecentMisses: "recent misses",
+    dailyTemplateRfiEdges: "RFI edge combos",
+    dailyTemplatePosition: "position focus",
+    dailyTemplateMixedFrequencies: "mixed-frequency opens",
+    dailyTemplateDefense: "Defense versus opens",
+    dailyTemplateBroadwayPairs: "broadways and middle pairs",
+    dailyTemplatePushFold: "Short-stack push/fold",
+    dailyTemplateStackBuckets: "stack-depth buckets",
+    dailyTemplateThreeBet: "Facing 3-bets",
+    dailyTemplateContinueRange: "continue-range discipline",
+    dailyTemplatePostflop: "Postflop texture and sizing",
+    dailyTemplateStreetMix: "flop, turn, and river mix"
+});
+
+Object.assign(I18N["zh-TW"], {
+    dailyPlanMixLabel: "\u4eca\u65e5\u8a08\u756b",
+    dailyPlanFocus: "\u4e3b\u984c",
+    dailyPlanReview: "\u8907\u7fd2",
+    dailyPlanMaintenance: "\u7dad\u6301",
+    dailyPlanDueReviews: "\u5230\u671f\u8907\u7fd2",
+    dailyPlanRecentMisses: "\u8fd1\u671f\u932f\u984c",
+    dailyTemplateRfiEdges: "RFI \u908a\u7de3\u724c\u578b",
+    dailyTemplatePosition: "\u4f4d\u7f6e\u5c08\u6ce8",
+    dailyTemplateMixedFrequencies: "\u6df7\u5408\u983b\u7387\u958b\u6c60",
+    dailyTemplateDefense: "\u9762\u5c0d\u958b\u6c60\u9632\u5b88",
+    dailyTemplateBroadwayPairs: "\u9ad8\u5f35\u8207\u4e2d\u5c0d",
+    dailyTemplatePushFold: "\u77ed\u78bc push/fold",
+    dailyTemplateStackBuckets: "\u78bc\u91cf\u5340\u9593",
+    dailyTemplateThreeBet: "\u9762\u5c0d 3-bet",
+    dailyTemplateContinueRange: "\u7e7c\u7e8c\u7bc4\u570d\u7d00\u5f8b",
+    dailyTemplatePostflop: "\u7ffb\u724c\u5f8c\u724c\u9762\u8207\u5c3a\u5bf8",
+    dailyTemplateStreetMix: "flop / turn / river \u6df7\u5408"
+});
+
+I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
+
+Object.assign(I18N.ja, {
+    dailyPlanMixLabel: "Daily plan",
+    dailyPlanFocus: "focus",
+    dailyPlanReview: "review",
+    dailyPlanMaintenance: "maintain"
+});
+
+Object.assign(I18N.ko, {
+    dailyPlanMixLabel: "Daily plan",
+    dailyPlanFocus: "focus",
+    dailyPlanReview: "review",
+    dailyPlanMaintenance: "maintain"
+});
+
+Object.assign(I18N.es, {
+    dailyPlanMixLabel: "Plan diario",
+    dailyPlanFocus: "foco",
+    dailyPlanReview: "repaso",
+    dailyPlanMaintenance: "mantener"
+});
+
+Object.assign(I18N.en, {
+    feedbackViewTrainingSummary: "View training summary",
+    feedbackViewAssessmentResult: "View assessment result"
+});
+
+Object.assign(I18N["zh-TW"], {
+    feedbackViewTrainingSummary: "\u67e5\u770b\u8a13\u7df4\u7e3d\u7d50",
+    feedbackViewAssessmentResult: "\u67e5\u770b\u8a55\u4f30\u7d50\u679c"
+});
+
+Object.assign(I18N["zh-CN"], {
+    feedbackViewTrainingSummary: "\u67e5\u770b\u8bad\u7ec3\u603b\u7ed3",
+    feedbackViewAssessmentResult: "\u67e5\u770b\u8bc4\u4f30\u7ed3\u679c"
+});
+
+Object.assign(I18N.ja, {
+    feedbackViewTrainingSummary: "\u30c8\u30ec\u30fc\u30cb\u30f3\u30b0\u7d50\u679c\u3092\u898b\u308b",
+    feedbackViewAssessmentResult: "\u8a55\u4fa1\u7d50\u679c\u3092\u898b\u308b"
+});
+
+Object.assign(I18N.ko, {
+    feedbackViewTrainingSummary: "\ud6c8\ub828 \uc694\uc57d \ubcf4\uae30",
+    feedbackViewAssessmentResult: "\ud3c9\uac00 \uacb0\uacfc \ubcf4\uae30"
+});
+
+Object.assign(I18N.es, {
+    feedbackViewTrainingSummary: "Ver resumen del entrenamiento",
+    feedbackViewAssessmentResult: "Ver resultado de evaluacion"
+});

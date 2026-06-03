@@ -308,54 +308,6 @@
             </section>
         </section>
 
-        <nav id="app-bottom-nav" class="app-bottom-nav" aria-label="Primary sections">
-            <button class="app-nav-item active" type="button" onclick="setActiveTab('plan')" data-app-tab="plan">
-                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 11l9-8 9 8" />
-                    <path d="M5 10v10h14V10" />
-                    <path d="M9 20v-6h6v6" />
-                </svg>
-                <span data-i18n="appTabPlan">Home</span>
-            </button>
-            <button class="app-nav-item" type="button" onclick="setActiveTab('practice')"
-                data-app-tab="practice">
-                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="5" y="3" width="10" height="14" rx="2" transform="rotate(-8 10 10)" />
-                    <rect x="9" y="7" width="10" height="14" rx="2" transform="rotate(8 14 14)" />
-                    <path d="M12 11h4" />
-                    <path d="M12 15h4" />
-                </svg>
-                <span data-i18n="appTabPractice">Drills</span>
-            </button>
-            <button class="app-nav-item" type="button" onclick="setActiveTab('review')" data-app-tab="review">
-                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 6h2" />
-                    <path d="M4 12h2" />
-                    <path d="M4 18h2" />
-                    <path d="m9 6 2 2 4-4" />
-                    <path d="m9 12 2 2 4-4" />
-                    <path d="m9 18 2 2 4-4" />
-                    <path d="M17 6h3" />
-                    <path d="M17 12h3" />
-                    <path d="M17 18h3" />
-                </svg>
-                <span data-i18n="appTabReview">Review</span>
-            </button>
-            <button class="app-nav-item" type="button" onclick="setActiveTab('progress')" data-app-tab="progress">
-                <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 19h16" />
-                    <path d="M7 16V9" />
-                    <path d="M12 16V5" />
-                    <path d="M17 16v-4" />
-                </svg>
-                <span data-i18n="appTabProgress">Stats</span>
-            </button>
-        </nav>
-
         <!-- ===================== CHART MODAL ===================== -->
         <div id="chart-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Range chart">
             <div class="modal-content glassmorphism">
@@ -1001,6 +953,53 @@
         </div>
 
     </div><!-- /app-container -->
+
+    <nav id="app-bottom-nav" class="app-bottom-nav" aria-label="Primary sections">
+        <button class="app-nav-item active" type="button" onclick="setActiveTab('plan')" data-app-tab="plan">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 11l9-8 9 8" />
+                <path d="M5 10v10h14V10" />
+                <path d="M9 20v-6h6v6" />
+            </svg>
+            <span data-i18n="appTabPlan">Home</span>
+        </button>
+        <button class="app-nav-item" type="button" onclick="setActiveTab('practice')" data-app-tab="practice">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="3" width="10" height="14" rx="2" transform="rotate(-8 10 10)" />
+                <rect x="9" y="7" width="10" height="14" rx="2" transform="rotate(8 14 14)" />
+                <path d="M12 11h4" />
+                <path d="M12 15h4" />
+            </svg>
+            <span data-i18n="appTabPractice">Drills</span>
+        </button>
+        <button class="app-nav-item" type="button" onclick="setActiveTab('review')" data-app-tab="review">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h2" />
+                <path d="M4 12h2" />
+                <path d="M4 18h2" />
+                <path d="m9 6 2 2 4-4" />
+                <path d="m9 12 2 2 4-4" />
+                <path d="m9 18 2 2 4-4" />
+                <path d="M17 6h3" />
+                <path d="M17 12h3" />
+                <path d="M17 18h3" />
+            </svg>
+            <span data-i18n="appTabReview">Review</span>
+        </button>
+        <button class="app-nav-item" type="button" onclick="setActiveTab('progress')" data-app-tab="progress">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19h16" />
+                <path d="M7 16V9" />
+                <path d="M12 16V5" />
+                <path d="M17 16v-4" />
+            </svg>
+            <span data-i18n="appTabProgress">Stats</span>
+        </button>
+    </nav>
 
     <div id="toast-container"></div>
 

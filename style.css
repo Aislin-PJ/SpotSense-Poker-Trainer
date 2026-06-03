@@ -557,6 +557,29 @@ body.is-first-run #progress-panel {
     overflow-wrap: anywhere;
 }
 
+.session-plan-note {
+    display: grid;
+    gap: 6px;
+    margin: 12px 0;
+    padding: 10px 12px;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.045);
+}
+
+.session-plan-note strong,
+.session-plan-note em {
+    color: var(--text-primary);
+    font-style: normal;
+}
+
+.session-plan-note span {
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
 .btn-range-action:disabled {
     opacity: 0.45;
     cursor: not-allowed;
@@ -2116,14 +2139,49 @@ body.is-first-run #progress-panel {
 
 .chart-cell {
     aspect-ratio: 1;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    appearance: none;
+    -webkit-appearance: none;
     display: flex;
     justify-content: center;
     align-items: center;
+    font: inherit;
     font-size: clamp(0.42rem, 1.4vw, 0.68rem);
     font-weight: 600;
     color: #fff;
     border-radius: 2px;
     user-select: none;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.chart-cell.has-frequency {
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+    overflow: hidden;
+    padding: 2px 1px;
+    line-height: 1;
+}
+
+.chart-cell.has-frequency .chart-combo {
+    display: block;
+    line-height: 1;
+}
+
+.chart-cell.has-frequency small {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+    font-size: clamp(0.32rem, 0.85vw, 0.44rem);
+    font-weight: 800;
+    line-height: 1;
 }
 
 .chart-cell.fold {
@@ -2134,12 +2192,25 @@ body.is-first-run #progress-panel {
     background: var(--color-raise);
 }
 
+.chart-cell.mixed-raise-fold {
+    background: linear-gradient(135deg,
+        var(--color-raise) 0 var(--raise-frequency, 50%),
+        var(--color-fold) var(--raise-frequency, 50%) 100%);
+    color: #fff;
+}
+
 .chart-cell.defend-call,
 .chart-cell.call {
     background: var(--color-call);
 }
 
 .chart-cell.highlight {
+    border: 2px solid yellow;
+    box-shadow: 0 0 10px yellow;
+    z-index: 2;
+}
+
+.chart-cell.selected {
     border: 2px solid yellow;
     box-shadow: 0 0 10px yellow;
     z-index: 2;
@@ -4289,15 +4360,17 @@ body {
 
 .app-bottom-nav {
     position: fixed;
-    z-index: 120;
-    left: max(10px, env(safe-area-inset-left, 10px));
-    right: max(10px, env(safe-area-inset-right, 10px));
-    bottom: max(10px, env(safe-area-inset-bottom, 10px));
+    z-index: 1000;
+    left: 50%;
+    right: auto;
+    bottom: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
     width: min(560px, calc(100vw - 20px));
     min-height: 64px;
     margin-inline: auto;
+    transform: translateX(-50%);
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 4px;
     padding: 6px;
     border: 1px solid var(--border-strong);
@@ -4328,6 +4401,14 @@ body {
 .app-nav-item svg {
     width: 21px;
     height: 21px;
+}
+
+.app-nav-item span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .app-nav-item.active {
@@ -5267,6 +5348,56 @@ body[data-active-tab="practice"] .header-top-center {
     align-content: center;
     color: rgba(247,244,237,0.78);
     font-size: 0.86rem;
+}
+
+.home-focus-lines span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.home-daily-plan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.home-daily-plan-grid span {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.11);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    color: rgba(247,244,237,0.78);
+    font-size: 0.72rem;
+    line-height: 1.25;
+    text-transform: uppercase;
+}
+
+.home-daily-plan-grid b {
+    color: var(--mint);
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.home-template-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: -4px;
+}
+
+.home-template-row span {
+    max-width: 100%;
+    padding: 5px 8px;
+    border: 1px solid rgba(134,232,184,0.22);
+    border-radius: 999px;
+    background: rgba(16, 32, 25, 0.35);
+    color: rgba(247,244,237,0.82);
+    font-size: 0.74rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
 }
 
 .home-ring {
@@ -6827,7 +6958,8 @@ body[data-active-tab="plan"] #header-mode-control {
 
 #chart-modal .modal-content {
     width: min(430px, calc(100vw - 24px));
-    max-height: min(88dvh, 720px);
+    max-height: min(96dvh, 820px);
+    overflow-y: auto;
     scrollbar-gutter: auto;
 }
 
@@ -6992,8 +7124,15 @@ body[data-active-tab="plan"] #header-mode-control {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 12px;
     overflow-x: hidden;
     scrollbar-gutter: auto;
+}
+
+#chart-modal .chart-range-shell {
+    width: 100%;
+    display: grid;
+    justify-items: center;
 }
 
 #chart-modal .all-street-chart-body {
@@ -7049,11 +7188,15 @@ body[data-active-tab="plan"] #header-mode-control {
     width: min(100%, 382px);
     margin-inline: auto;
     grid-template-columns: repeat(13, minmax(0, 1fr));
+    align-items: stretch;
     gap: 3px;
 }
 
 #chart-modal .chart-cell {
     min-width: 0;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 0;
     border-radius: 5px;
     border: 1px solid rgba(255,255,255,0.065);
     font-size: clamp(0.5rem, 2.05vw, 0.68rem);
@@ -7071,6 +7214,39 @@ body[data-active-tab="plan"] #header-mode-control {
     color: rgba(255, 220, 216, 0.9);
 }
 
+#chart-modal .chart-cell.mixed-raise-fold {
+    background: linear-gradient(135deg,
+        #69ca93 0 var(--raise-frequency, 50%),
+        rgba(216, 78, 72, 0.72) var(--raise-frequency, 50%) 100%);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+#chart-modal .chart-cell.mixed-raise-call {
+    background: linear-gradient(135deg,
+        #69ca93 0 var(--raise-frequency, 50%),
+        #3472ac var(--raise-frequency, 50%) 100%);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+#chart-modal .chart-cell.mixed-call-fold {
+    background: linear-gradient(135deg,
+        #3472ac 0 var(--call-frequency, 50%),
+        rgba(216, 78, 72, 0.72) var(--call-frequency, 50%) 100%);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+#chart-modal .chart-cell.mixed-raise-call-fold {
+    background: linear-gradient(135deg,
+        #69ca93 0 var(--raise-frequency, 34%),
+        #3472ac var(--raise-frequency, 34%) var(--call-stop, 67%),
+        rgba(216, 78, 72, 0.72) var(--call-stop, 67%) 100%);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
 #chart-modal .chart-cell.call,
 #chart-modal .chart-cell.defend-call {
     background: linear-gradient(180deg, #3472ac, #245783);
@@ -7080,6 +7256,129 @@ body[data-active-tab="plan"] #header-mode-control {
 #chart-modal .chart-cell.highlight {
     border-color: #f0c75e;
     box-shadow: 0 0 0 2px rgba(240, 199, 94, 0.34), 0 0 18px rgba(240, 199, 94, 0.28);
+}
+
+#chart-modal .chart-cell.selected {
+    border-color: #f0c75e;
+    box-shadow: 0 0 0 2px rgba(240, 199, 94, 0.34), 0 0 18px rgba(240, 199, 94, 0.28);
+}
+
+#chart-modal .chart-detail-sheet {
+    width: 100%;
+    margin-top: 2px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.045)),
+        rgba(12, 17, 25, 0.92);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+    padding: 12px 14px 14px;
+}
+
+#chart-modal .chart-detail-handle {
+    width: 40px;
+    height: 4px;
+    margin: 0 auto 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+#chart-modal .chart-detail-top {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#chart-modal .chart-detail-hand {
+    color: var(--ink);
+    font-size: clamp(2.2rem, 12vw, 3rem);
+    font-weight: 950;
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+#chart-modal .chart-detail-summary {
+    min-width: 0;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 760;
+    line-height: 1.25;
+}
+
+#chart-modal .chart-detail-decision {
+    min-width: 86px;
+    min-height: 38px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 12px;
+    padding: 8px 12px;
+    color: #102019;
+    background: linear-gradient(180deg, #69ca93, #45a773);
+    font-size: 0.98rem;
+    font-weight: 950;
+    white-space: nowrap;
+}
+
+#chart-modal .chart-detail-decision.call {
+    background: linear-gradient(180deg, #3472ac, #245783);
+    color: #f7f4ed;
+}
+
+#chart-modal .chart-detail-decision.fold {
+    background: rgba(216, 78, 72, 0.80);
+    color: #fff;
+}
+
+#chart-modal .chart-detail-rows {
+    display: grid;
+    gap: 8px;
+}
+
+#chart-modal .chart-detail-row {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) 42px;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+#chart-modal .chart-detail-row strong {
+    color: var(--muted);
+    text-align: right;
+}
+
+#chart-modal .chart-detail-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.085);
+    overflow: hidden;
+}
+
+#chart-modal .chart-detail-bar i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: #69ca93;
+}
+
+#chart-modal .chart-detail-row.call .chart-detail-bar i {
+    background: #3472ac;
+}
+
+#chart-modal .chart-detail-row.fold .chart-detail-bar i {
+    background: #d84e48;
+}
+
+#chart-modal .chart-detail-source {
+    margin-top: 9px;
+    color: rgba(232, 238, 247, 0.54);
+    font-size: 0.66rem;
+    font-weight: 650;
+    line-height: 1.3;
 }
 
 #chart-modal .chart-legend {
@@ -7112,6 +7411,92 @@ body[data-active-tab="plan"] #header-mode-control {
 
     #chart-modal .chart-grid {
         gap: 2px;
+    }
+}
+
+@media (max-width: 430px) {
+    #chart-modal.modal {
+        padding: max(8px, env(safe-area-inset-top, 8px)) max(6px, env(safe-area-inset-right, 6px)) max(8px, env(safe-area-inset-bottom, 8px)) max(6px, env(safe-area-inset-left, 6px));
+    }
+
+    #chart-modal .modal-content {
+        width: min(390px, calc(100vw - 12px));
+        max-height: calc(100dvh - 16px);
+    }
+
+    #chart-modal .modal-header {
+        min-height: 58px;
+        padding: 10px 14px;
+    }
+
+    #chart-modal .chart-modal-body {
+        gap: 9px;
+        padding: 11px 14px 14px;
+    }
+
+    #chart-modal .chart-grid {
+        width: min(100%, 342px);
+        gap: 3px;
+    }
+
+    #chart-modal .chart-cell {
+        font-size: 0.62rem;
+    }
+
+    #chart-modal .chart-cell.has-frequency {
+        padding: 1px;
+    }
+
+    #chart-modal .chart-cell.has-frequency small {
+        font-size: 0.36rem;
+    }
+
+    #chart-modal .chart-legend {
+        margin-top: 10px;
+        gap: 12px;
+    }
+
+    #chart-modal .chart-detail-sheet {
+        border-radius: 20px;
+        padding: 10px 12px 12px;
+    }
+
+    #chart-modal .chart-detail-handle {
+        margin-bottom: 8px;
+    }
+
+    #chart-modal .chart-detail-top {
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    #chart-modal .chart-detail-hand {
+        font-size: 2.65rem;
+    }
+
+    #chart-modal .chart-detail-summary {
+        font-size: 0.74rem;
+    }
+
+    #chart-modal .chart-detail-decision {
+        min-width: 82px;
+        min-height: 34px;
+        padding: 7px 10px;
+        font-size: 0.9rem;
+    }
+
+    #chart-modal .chart-detail-rows {
+        gap: 6px;
+    }
+
+    #chart-modal .chart-detail-row {
+        grid-template-columns: 50px minmax(0, 1fr) 38px;
+        gap: 7px;
+        font-size: 0.74rem;
+    }
+
+    #chart-modal .chart-detail-bar {
+        height: 7px;
     }
 }
 
@@ -8130,4 +8515,152 @@ body[data-active-tab="practice"] .strategy-coach {
     .stats-reset-card .btn-reset-stats {
         width: 100%;
     }
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--bottom-nav-height);
+    height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+    background:
+        linear-gradient(180deg, rgba(18, 22, 20, 0), rgba(18, 22, 20, 0.72) 36%, rgba(18, 22, 20, 0.88)),
+        rgba(31, 35, 33, 0.38);
+    backdrop-filter: blur(28px) saturate(175%) brightness(1.02);
+    -webkit-backdrop-filter: blur(28px) saturate(175%) brightness(1.02);
+    z-index: 900;
+    pointer-events: none;
+}
+
+body[data-active-tab="practice"] #app-header {
+    position: sticky;
+    top: 0;
+    z-index: 115;
+    margin: calc(-1 * max(16px, env(safe-area-inset-top, 16px))) -14px 2px;
+    padding: max(10px, env(safe-area-inset-top, 10px)) 14px 8px;
+    background: linear-gradient(180deg, rgba(23, 26, 25, 0.98) 78%, rgba(23, 26, 25, 0));
+    border-radius: 0 0 18px 18px;
+}
+
+.app-bottom-nav {
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    right: auto;
+    bottom: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    width: min(430px, calc(100vw - 22px));
+    max-width: calc(100vw - 22px);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 8px;
+    transform: translateX(-50%);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-top-color: rgba(255, 255, 255, 0.42);
+    border-radius: 30px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.07) 34%, rgba(255, 255, 255, 0.045)),
+        rgba(31, 35, 33, 0.48);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+        0 18px 44px rgba(0, 0, 0, 0.42),
+        0 2px 12px rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(30px) saturate(185%) contrast(1.06) brightness(1.08);
+    -webkit-backdrop-filter: blur(30px) saturate(185%) contrast(1.06) brightness(1.08);
+}
+
+.app-bottom-nav::before,
+.app-bottom-nav::after {
+    display: none;
+    content: none;
+}
+
+.app-bottom-nav::before {
+    inset: 1px;
+    z-index: 0;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.08) 26%, transparent 48%),
+        linear-gradient(315deg, rgba(134, 232, 184, 0.12), transparent 38%);
+    opacity: 0.78;
+}
+
+.app-bottom-nav::after {
+    left: 14%;
+    right: 14%;
+    top: 5px;
+    height: 1px;
+    z-index: 2;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.68), transparent);
+    opacity: 0.8;
+}
+
+.app-nav-item {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-rows: 24px auto;
+    align-content: center;
+    justify-items: center;
+    gap: 2px;
+    min-width: 0;
+    min-height: 58px;
+    border: 1px solid transparent;
+    border-radius: 22px;
+    color: rgba(247, 244, 237, 0.7);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.14s ease,
+        box-shadow 0.18s ease;
+}
+
+.app-nav-item svg {
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.32));
+}
+
+.app-nav-item.active {
+    color: var(--mint);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.10)),
+        rgba(134, 232, 184, 0.10);
+    border-color: rgba(134, 232, 184, 0.30);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.38),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+        0 10px 24px rgba(0, 0, 0, 0.22),
+        0 0 0 1px rgba(134, 232, 184, 0.14);
+    backdrop-filter: blur(18px) saturate(165%);
+    -webkit-backdrop-filter: blur(18px) saturate(165%);
+}
+
+.app-nav-item.active svg,
+.app-nav-item.active span {
+    color: var(--mint);
+}
+
+.app-bottom-nav .app-nav-item.active,
+.app-bottom-nav .app-nav-item.active svg,
+.app-bottom-nav .app-nav-item.active span {
+    color: rgb(134, 232, 184);
+}
+
+.app-nav-item:focus-visible {
+    outline: none;
+    border-color: rgba(134, 232, 184, 0.42);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.38),
+        0 0 0 2px rgba(134, 232, 184, 0.24),
+        0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
+.app-nav-item:active {
+    transform: scale(0.97);
 }
