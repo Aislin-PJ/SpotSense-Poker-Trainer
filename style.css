@@ -8634,3 +8634,56 @@ body::before,
 #confirm-modal.modal {
     z-index: var(--z-confirm-modal-layer);
 }
+
+/* iPhone practice layout: avoid double safe-area offset and keep seat chips clear of the header. */
+@media (max-width: 520px) {
+    body[data-active-tab="practice"] .app-container {
+        padding-top: max(8px, env(safe-area-inset-top, 0px));
+        gap: 8px;
+    }
+
+    body[data-active-tab="practice"] #app-header {
+        position: relative;
+        top: auto;
+        margin: 0 0 8px;
+        padding: 0 0 8px;
+        background: linear-gradient(180deg, rgba(23, 26, 25, 0.96), rgba(23, 26, 25, 0.72));
+        border-radius: 0 0 16px 16px;
+    }
+
+    body[data-active-tab="practice"] .header-row-bottom {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 8px;
+        padding: 0;
+    }
+
+    body[data-active-tab="practice"] .header-mode-control {
+        min-width: 0;
+        justify-content: stretch;
+    }
+
+    body[data-active-tab="practice"] .header-mode-control .mode-select {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+    }
+
+    body[data-active-tab="practice"] .main-layout {
+        gap: 10px;
+        padding-top: 0;
+    }
+
+    body[data-active-tab="practice"] .table {
+        padding-top: 14px;
+    }
+
+    body[data-active-tab="practice"] .table-seat-chip.seat-co {
+        top: 7%;
+    }
+
+    body[data-active-tab="practice"] .table-seat-chip.seat-bb {
+        top: 93%;
+    }
+}
