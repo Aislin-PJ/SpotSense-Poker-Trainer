@@ -1375,16 +1375,6 @@ function buildAllCombos() {
 }
 const ALL_COMBOS = buildAllCombos();
 
-const DEFAULT_STATS_PERIOD = '7d';
-const STATS_PERIOD_OPTIONS = Object.freeze([
-    { key: '1d', days: 1, labelKey: 'statsPeriod1Day', fallback: '1 day' },
-    { key: '3d', days: 3, labelKey: 'statsPeriod3Days', fallback: '3 days' },
-    { key: '7d', days: 7, labelKey: 'statsPeriod7Days', fallback: '7 days' },
-    { key: '30d', days: 30, labelKey: 'statsPeriod30Days', fallback: '1 month' },
-    { key: 'all', days: null, labelKey: 'statsPeriodAll', fallback: 'All' }
-]);
-const STAT_COLLECTION_KEYS = Object.freeze(['byPosition', 'byMode', 'byCombo', 'byCustomDrill', 'byStackDepth', 'bySpotType']);
-
 // ============================================================
 // STATE
 // ============================================================
@@ -1409,7 +1399,6 @@ let state = {
     currentAllStreetScenarioIndex: -1,
     currentReviewItem: null,
     activeTab: 'plan',
-    progressStatsPeriod: DEFAULT_STATS_PERIOD,
     firstRunCompleted: false,
     firstRunStage: 'preferences',
     focusSession: null,
@@ -1460,82 +1449,16 @@ let state = {
         byPosition: {},
         byMode: {},
         byCombo: {},
-        byCustomDrill: {},
         byStackDepth: {},
-        bySpotType: {},
-        byDate: {}
+        bySpotType: {}
     }
 };
 
 // ============================================================
 // LOCAL STORAGE
 // ============================================================
-function getEmptyStatsBucket() {
-    return { totalHands: 0, totalCorrect: 0, byPosition: {}, byMode: {}, byCombo: {}, byCustomDrill: {}, byStackDepth: {}, bySpotType: {} };
-}
-
 function getDefaultStats() {
-    return { ...getEmptyStatsBucket(), byDate: {} };
-}
-
-function isStatsPlainObject(value) {
-    return !!value && typeof value === 'object' && !Array.isArray(value);
-}
-
-function normalizeStatCounter(value = {}) {
-    const hands = Math.max(0, Math.floor(Number(value.hands) || 0));
-    const correct = Math.min(hands, Math.max(0, Math.floor(Number(value.correct) || 0)));
-    return { hands, correct };
-}
-
-function normalizeStatCollection(collection = {}) {
-    if (!isStatsPlainObject(collection)) return {};
-    return Object.fromEntries(Object.entries(collection).map(([key, value]) => [key, normalizeStatCounter(value)]));
-}
-
-function normalizeStatsBucket(source = {}) {
-    const bucket = getEmptyStatsBucket();
-    const raw = isStatsPlainObject(source) ? source : {};
-    bucket.totalHands = Math.max(0, Math.floor(Number(raw.totalHands) || 0));
-    bucket.totalCorrect = Math.min(bucket.totalHands, Math.max(0, Math.floor(Number(raw.totalCorrect) || 0)));
-    STAT_COLLECTION_KEYS.forEach(key => {
-        bucket[key] = normalizeStatCollection(raw[key]);
-    });
-    return bucket;
-}
-
-function normalizeStats(source = {}) {
-    const raw = isStatsPlainObject(source) ? source : {};
-    const stats = normalizeStatsBucket(raw);
-    stats.byDate = {};
-    if (isStatsPlainObject(raw.byDate)) {
-        Object.entries(raw.byDate).forEach(([dateKey, bucket]) => {
-            if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return;
-            stats.byDate[dateKey] = normalizeStatsBucket(bucket);
-        });
-    }
-    return stats;
-}
-
-function ensureStatsBucketShape(bucket = {}) {
-    const target = isStatsPlainObject(bucket) ? bucket : getEmptyStatsBucket();
-    target.totalHands = Math.max(0, Math.floor(Number(target.totalHands) || 0));
-    target.totalCorrect = Math.min(target.totalHands, Math.max(0, Math.floor(Number(target.totalCorrect) || 0)));
-    STAT_COLLECTION_KEYS.forEach(key => {
-        if (!isStatsPlainObject(target[key])) target[key] = {};
-    });
-    return target;
-}
-
-function ensureStatsRootShape(stats = state.stats) {
-    const target = ensureStatsBucketShape(stats);
-    if (!isStatsPlainObject(target.byDate)) target.byDate = {};
-    return target;
-}
-
-function normalizeStatsPeriod(period) {
-    const value = String(period || '').trim();
-    return STATS_PERIOD_OPTIONS.some(option => option.key === value) ? value : DEFAULT_STATS_PERIOD;
+    return { totalHands: 0, totalCorrect: 0, byPosition: {}, byMode: {}, byCombo: {}, byCustomDrill: {}, byStackDepth: {}, bySpotType: {} };
 }
 
 function getDefaultGamification(source = {}) {
@@ -1625,7 +1548,7 @@ function normalizeStoragePayload(saved) {
     const source = saved && typeof saved === 'object' ? saved : {};
     return {
         version: STORAGE_VERSION,
-        stats: normalizeStats(source.stats || {}),
+        stats: { ...getDefaultStats(), ...(source.stats || {}), byCustomDrill: (source.stats && source.stats.byCustomDrill) || {} },
         comboWeights: source.comboWeights || {},
         handHistory: Array.isArray(source.handHistory) ? source.handHistory : [],
         mistakeReplay: getDefaultMistakeReplay(source.mistakeReplay || {}),
@@ -1638,7 +1561,6 @@ function normalizeStoragePayload(saved) {
         assessmentSkipped: !!source.assessmentSkipped,
         lang: normalizeLanguage(source.lang) || detectPreferredLanguage(),
         activeTab: source.activeTab || 'plan',
-        progressStatsPeriod: normalizeStatsPeriod(source.progressStatsPeriod || DEFAULT_STATS_PERIOD),
         firstRunCompleted: !!source.firstRunCompleted,
         firstRunStage: source.firstRunStage || 'preferences',
         gamification: getDefaultGamification(source.gamification || {}),
@@ -1665,7 +1587,6 @@ function loadFromStorage() {
         state.assessmentSkipped = saved.assessmentSkipped;
         state.lang = saved.lang;
         state.activeTab = saved.activeTab;
-        state.progressStatsPeriod = saved.progressStatsPeriod;
         state.firstRunCompleted = saved.firstRunCompleted;
         state.firstRunStage = saved.firstRunStage;
         state.gamification = saved.gamification;
@@ -1697,7 +1618,6 @@ function saveToStorage() {
             assessmentSkipped: state.assessmentSkipped,
             lang: state.lang,
             activeTab: state.activeTab,
-            progressStatsPeriod: normalizeStatsPeriod(state.progressStatsPeriod),
             firstRunCompleted: state.firstRunCompleted,
             firstRunStage: state.firstRunStage,
             gamification: state.gamification,
@@ -3898,27 +3818,28 @@ function incrementStatBucket(collection, key, isCorrect) {
     if (isCorrect) collection[key].correct++;
 }
 
-function incrementStatsBucketForHand(bucket, position, mode, isCorrect, drillId, combo, drill) {
-    const target = ensureStatsBucketShape(bucket);
-    target.totalHands++;
-    if (isCorrect) target.totalCorrect++;
-    incrementStatBucket(target.byPosition, position, isCorrect);
-    incrementStatBucket(target.byMode, mode, isCorrect);
-    if (drillId) incrementStatBucket(target.byCustomDrill, drillId, isCorrect);
-    incrementStatBucket(target.byCombo, combo, isCorrect);
-    incrementStatBucket(target.byStackDepth, getStackDepthKeyFromBb(getEffectiveStackBbForStat(mode, drill)), isCorrect);
-    incrementStatBucket(target.bySpotType, getSpotTypeKeyForStat(mode, drill), isCorrect);
-    return target;
-}
-
 function recordStat(position, mode, isCorrect, drillId, combo) {
+    state.stats.totalHands++;
+    if (isCorrect) state.stats.totalCorrect++;
+    if (!state.stats.byPosition[position]) state.stats.byPosition[position] = { hands: 0, correct: 0 };
+    state.stats.byPosition[position].hands++;
+    if (isCorrect) state.stats.byPosition[position].correct++;
+    if (!state.stats.byMode[mode]) state.stats.byMode[mode] = { hands: 0, correct: 0 };
+    state.stats.byMode[mode].hands++;
+    if (isCorrect) state.stats.byMode[mode].correct++;
+    if (drillId) {
+        if (!state.stats.byCustomDrill) state.stats.byCustomDrill = {};
+        if (!state.stats.byCustomDrill[drillId]) state.stats.byCustomDrill[drillId] = { hands: 0, correct: 0 };
+        state.stats.byCustomDrill[drillId].hands++;
+        if (isCorrect) state.stats.byCustomDrill[drillId].correct++;
+    }
+    if (!state.stats.byStackDepth) state.stats.byStackDepth = {};
+    if (!state.stats.bySpotType) state.stats.bySpotType = {};
+    if (!state.stats.byCombo) state.stats.byCombo = {};
     const drill = drillId ? state.customDrills[drillId] : null;
-    state.stats = ensureStatsRootShape(state.stats);
-    incrementStatsBucketForHand(state.stats, position, mode, isCorrect, drillId, combo, drill);
-
-    const today = getDateKey();
-    if (!state.stats.byDate[today]) state.stats.byDate[today] = getEmptyStatsBucket();
-    state.stats.byDate[today] = incrementStatsBucketForHand(state.stats.byDate[today], position, mode, isCorrect, drillId, combo, drill);
+    incrementStatBucket(state.stats.byCombo, combo, isCorrect);
+    incrementStatBucket(state.stats.byStackDepth, getStackDepthKeyFromBb(getEffectiveStackBbForStat(mode, drill)), isCorrect);
+    incrementStatBucket(state.stats.bySpotType, getSpotTypeKeyForStat(mode, drill), isCorrect);
 }
 
 function updateComboWeight(combo, isCorrect) {
@@ -5018,6 +4939,59 @@ function renderHomeIcon(name, extraClass = '') {
     return `<span class="${className}" data-home-icon="${name}" aria-hidden="true">${icon}</span>`;
 }
 
+function getStartOfLocalWeek(date = new Date()) {
+    const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const daysSinceMonday = (start.getDay() + 6) % 7;
+    start.setDate(start.getDate() - daysSinceMonday);
+    return start;
+}
+
+function isSameLocalDate(a, b) {
+    return a.getFullYear() === b.getFullYear()
+        && a.getMonth() === b.getMonth()
+        && a.getDate() === b.getDate();
+}
+
+function getDailyActivitySummary(referenceDate = new Date()) {
+    const dailyActivity = state.gamification && state.gamification.dailyActivity ? state.gamification.dailyActivity : {};
+    const activity = dailyActivity[getDateKey(referenceDate)] || { hands: 0, correct: 0 };
+    const hands = Math.max(0, Number(activity.hands) || 0);
+    const correct = Math.max(0, Number(activity.correct) || 0);
+    return {
+        hands,
+        correct,
+        accuracy: hands > 0 ? pct(correct, hands) : 0
+    };
+}
+
+function renderHomeTrend(referenceDate = new Date()) {
+    const today = referenceDate;
+    const weekStart = getStartOfLocalWeek(today);
+    const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const dailyActivity = state.gamification && state.gamification.dailyActivity ? state.gamification.dailyActivity : {};
+    const days = dayLabels.map((label, index) => {
+        const day = new Date(weekStart);
+        day.setDate(weekStart.getDate() + index);
+        const activity = dailyActivity[getDateKey(day)] || { hands: 0, correct: 0 };
+        const isToday = isSameLocalDate(day, today);
+        const accuracy = activity.hands > 0 ? pct(activity.correct, activity.hands) : 0;
+        return {
+            label,
+            active: isToday,
+            value: Math.max(8, accuracy || 0)
+        };
+    });
+    return `
+        <div class="home-trend" aria-hidden="true">
+            ${days.map(day => `
+                <span class="${day.active ? 'active' : ''}" style="--trend-value: ${day.value}%">
+                    <i></i><b>${day.label}</b>
+                </span>
+            `).join('')}
+        </div>
+    `;
+}
+
 window.renderPersonalizedDashboard = function () {
     const el = document.getElementById('personalized-dashboard');
     if (!el) return;
@@ -5026,14 +5000,21 @@ window.renderPersonalizedDashboard = function () {
     const firstRunClass = model.firstRun ? ' is-first-run' : '';
     const dailyCountdown = model.dailyProgress || getDailyTrainingProgress();
     const dailyGoal = dailyCountdown.target;
+    const dailyRemaining = dailyCountdown.remaining;
     const dailyCompleted = dailyCountdown.completedHands;
     const dailyProgress = dailyCountdown.progress;
+    const todayActivity = getDailyActivitySummary();
+    const todayAccuracy = todayActivity.hands ? `${todayActivity.accuracy}%` : '--';
+    const todayMeta = todayActivity.hands
+        ? `${todayActivity.hands} ${t.statsHands || 'hands'}`
+        : (t.handAccuracyNoData || 'No data');
     const startAction = model.firstRun ? 'startQuickDiagnostic()' : 'startFocusSession()';
     const startLabel = model.firstRun
         ? (t.quickStartCta || 'Start Quick Diagnostic')
         : dailyCountdown.started && !dailyCountdown.completed
             ? (t.homeContinue || 'Continue')
             : (t.focusSessionCta || 'Start Drill');
+    const reviewLabel = (t.reviewMistakesCta || 'Review Mistakes ({count})').replace('{count}', model.reviewCount);
     const drillsCompleted = Math.floor((state.stats.totalHands || 0) / Math.max(1, DAILY_HAND_GOAL || 20));
     const bestStreak = getBestStreak();
     const allocation = model.dailyPlan && model.dailyPlan.allocation ? model.dailyPlan.allocation : { focus: dailyGoal, review: 0, maintenance: 0 };
@@ -5081,6 +5062,15 @@ window.renderPersonalizedDashboard = function () {
                     </div>
                 ` : ''}
                 <button class="home-continue" type="button" onclick="${startAction}">${startLabel}</button>
+            </section>
+
+            <section class="home-progress-card">
+                <div>
+                    <h3>${t.homeTodayProgress || "Today's Progress"}</h3>
+                    <strong>${todayAccuracy}</strong>
+                    <p>${t.statsDailyAccuracyHint || t.statsAccuracy || 'Daily accuracy'} · ${todayMeta}</p>
+                </div>
+                ${renderHomeTrend()}
             </section>
 
             <div class="home-mini-grid">
@@ -5340,93 +5330,6 @@ function getStatRows(collection, labelForKey, order = null) {
         .sort((a, b) => b.hands - a.hands || a.accuracy - b.accuracy);
 }
 
-function getStatsPeriodOption(period = state.progressStatsPeriod) {
-    const key = normalizeStatsPeriod(period);
-    return STATS_PERIOD_OPTIONS.find(option => option.key === key) || STATS_PERIOD_OPTIONS.find(option => option.key === DEFAULT_STATS_PERIOD);
-}
-
-function getStatsPeriodLabel(period = state.progressStatsPeriod, t = I18N[state.lang] || I18N.en) {
-    const option = getStatsPeriodOption(period);
-    return t[option.labelKey] || option.fallback;
-}
-
-function renderStatsPeriodOptions(t = I18N[state.lang] || I18N.en) {
-    const selected = normalizeStatsPeriod(state.progressStatsPeriod);
-    return STATS_PERIOD_OPTIONS.map(option => `
-        <option value="${option.key}" ${option.key === selected ? 'selected' : ''}>${escapeHtml(t[option.labelKey] || option.fallback)}</option>
-    `).join('');
-}
-
-function getStatsPeriodTrainingLabel(period = state.progressStatsPeriod, t = I18N[state.lang] || I18N.en) {
-    const key = normalizeStatsPeriod(period);
-    if (key === 'all') return t.statsAllTrainingLabel || 'All training hands';
-    return (t.statsPeriodTrainingLabel || 'Training hands in {period}')
-        .replace('{period}', getStatsPeriodLabel(key, t));
-}
-
-function getStatsPeriodHandsLabel(hands, period = state.progressStatsPeriod, t = I18N[state.lang] || I18N.en) {
-    return (t.statsPeriodHands || '{period}: {hands} hands')
-        .replace('{period}', getStatsPeriodLabel(period, t))
-        .replace('{hands}', hands || 0)
-        .replace('{unit}', t.statsHands || 'hands');
-}
-
-function getDateOnly(date = new Date()) {
-    const source = date instanceof Date ? date : new Date(date);
-    const safe = Number.isNaN(source.getTime()) ? new Date() : source;
-    return new Date(safe.getFullYear(), safe.getMonth(), safe.getDate());
-}
-
-function getStatsDateKeysForPeriod(period = state.progressStatsPeriod, referenceDate = new Date()) {
-    const key = normalizeStatsPeriod(period);
-    const option = getStatsPeriodOption(key);
-    const byDate = state.stats && isStatsPlainObject(state.stats.byDate) ? state.stats.byDate : {};
-    if (key === 'all') {
-        return Object.keys(byDate).filter(dateKey => /^\d{4}-\d{2}-\d{2}$/.test(dateKey)).sort();
-    }
-    const today = getDateOnly(referenceDate);
-    return Array.from({ length: option.days }, (_, index) => {
-        const cursor = new Date(today);
-        cursor.setDate(today.getDate() - (option.days - 1 - index));
-        return getDateKey(cursor);
-    });
-}
-
-function mergeStatCollection(target, source) {
-    Object.entries(source || {}).forEach(([key, value]) => {
-        const counter = normalizeStatCounter(value);
-        if (!target[key]) target[key] = { hands: 0, correct: 0 };
-        target[key].hands += counter.hands;
-        target[key].correct += counter.correct;
-    });
-}
-
-function mergeStatsBucket(target, source) {
-    const normalized = normalizeStatsBucket(source || {});
-    target.totalHands += normalized.totalHands;
-    target.totalCorrect += normalized.totalCorrect;
-    STAT_COLLECTION_KEYS.forEach(key => mergeStatCollection(target[key], normalized[key]));
-    return target;
-}
-
-function getStatsForPeriod(period = state.progressStatsPeriod, referenceDate = new Date()) {
-    const key = normalizeStatsPeriod(period);
-    state.stats = ensureStatsRootShape(state.stats);
-    if (key === 'all') return normalizeStatsBucket(state.stats);
-
-    const byDate = state.stats.byDate || {};
-    return getStatsDateKeysForPeriod(key, referenceDate).reduce((bucket, dateKey) => {
-        if (byDate[dateKey]) mergeStatsBucket(bucket, byDate[dateKey]);
-        return bucket;
-    }, getEmptyStatsBucket());
-}
-
-window.setStatsPeriod = function (period) {
-    state.progressStatsPeriod = normalizeStatsPeriod(period);
-    saveToStorage();
-    if (state.activeTab === 'progress') renderProgressDashboard();
-};
-
 function renderReviewTable(rows, t) {
     if (!rows.length) return `<p class="review-empty">${t.reviewNoBreakdownData || 'No data yet.'}</p>`;
     return `
@@ -5543,39 +5446,29 @@ function getStatsTrendDeltaLabel(weekly, t) {
     return `${weekly.trend > 0 ? '+' : ''}${weekly.trend}%`;
 }
 
-function getStatsTrendPoints(period = state.progressStatsPeriod, referenceDate = new Date()) {
-    const byDate = state.stats && isStatsPlainObject(state.stats.byDate) ? state.stats.byDate : {};
-    let dateKeys = getStatsDateKeysForPeriod(period, referenceDate);
-    if (normalizeStatsPeriod(period) === 'all' && dateKeys.length === 0) {
-        dateKeys = getStatsDateKeysForPeriod(DEFAULT_STATS_PERIOD, referenceDate);
-    }
-    const todayKey = getDateKey(referenceDate);
-    return dateKeys.map(dateKey => {
-        const bucket = normalizeStatsBucket(byDate[dateKey] || {});
-        const accuracy = bucket.totalHands ? pct(bucket.totalCorrect || 0, bucket.totalHands || 0) : 0;
-        const [, rawMonth, rawDay] = dateKey.split('-').map(Number);
+function renderStatsTrendPanel(t = I18N[state.lang] || I18N.en) {
+    const dailyActivity = state.gamification && state.gamification.dailyActivity ? state.gamification.dailyActivity : {};
+    const today = new Date();
+    const points = Array.from({ length: 7 }, (_, index) => {
+        const date = new Date(today);
+        date.setDate(today.getDate() - (6 - index));
+        const activity = dailyActivity[getDateKey(date)] || { hands: 0, correct: 0 };
+        const accuracy = activity.hands ? pct(activity.correct || 0, activity.hands || 0) : 0;
         return {
-            active: dateKey === todayKey,
+            active: index === 6,
             accuracy,
-            hands: bucket.totalHands || 0,
-            value: bucket.totalHands ? Math.max(10, accuracy) : 6,
-            label: `${rawMonth}/${rawDay}`
+            hands: activity.hands || 0,
+            value: activity.hands ? Math.max(10, accuracy) : 6,
+            label: `${date.getMonth() + 1}/${date.getDate()}`
         };
     });
-}
-
-function renderStatsTrendPanel(t = I18N[state.lang] || I18N.en, period = state.progressStatsPeriod) {
-    const points = getStatsTrendPoints(period);
-    const periodLabel = getStatsPeriodLabel(period, t);
-    const trendLabel = (t.statsTrendPeriod || '{period} accuracy trend').replace('{period}', periodLabel);
-    const chartColumns = Math.max(1, points.length);
     return `
-        <div class="stats-trend-panel" aria-label="${escapeHtml(trendLabel)}">
+        <div class="stats-trend-panel" aria-label="${escapeHtml(t.statsSevenDayTrend || 'Seven day accuracy trend')}">
             <div class="stats-trend-header">
-                <span>${escapeHtml(periodLabel)}</span>
+                <span>${t.statsLastSevenDays || 'Last 7 days'}</span>
                 <small>${t.statsDailyAccuracyHint || 'Daily accuracy'}</small>
             </div>
-            <div class="stats-day-chart" role="list" style="--day-count: ${chartColumns}">
+            <div class="stats-day-chart" role="list">
             ${points.map(point => {
                 const title = point.hands
                     ? `${point.label}: ${point.accuracy}% / ${point.hands} ${t.statsHands || 'hands'}`
@@ -5600,11 +5493,9 @@ function getComboForChartCell(row, col) {
     return col > row ? `${r1}${r2}s` : `${r2}${r1}o`;
 }
 
-function getComboStatsSource(statsSource = state.stats, allowHistoryFallback = true) {
-    const byCombo = statsSource && statsSource.byCombo ? statsSource.byCombo : {};
+function getComboStatsSource() {
+    const byCombo = state.stats && state.stats.byCombo ? state.stats.byCombo : {};
     if (Object.keys(byCombo).length) return byCombo;
-
-    if (!allowHistoryFallback) return {};
 
     const fallback = {};
     (state.handHistory || []).forEach(item => {
@@ -5616,8 +5507,8 @@ function getComboStatsSource(statsSource = state.stats, allowHistoryFallback = t
     return fallback;
 }
 
-function getHandAccuracySummary(t = I18N[state.lang] || I18N.en, statsSource = state.stats, allowHistoryFallback = true) {
-    const rows = Object.entries(getComboStatsSource(statsSource, allowHistoryFallback))
+function getHandAccuracySummary(t = I18N[state.lang] || I18N.en) {
+    const rows = Object.entries(getComboStatsSource())
         .filter(([, data]) => data && data.hands)
         .map(([combo, data]) => ({
             combo,
@@ -5649,8 +5540,8 @@ function getHandAccuracyClass(data) {
     return 'leak';
 }
 
-function renderMiniRangeGrid(t = I18N[state.lang] || I18N.en, statsSource = state.stats, allowHistoryFallback = true) {
-    const statsByCombo = getComboStatsSource(statsSource, allowHistoryFallback);
+function renderMiniRangeGrid(t = I18N[state.lang] || I18N.en) {
+    const statsByCombo = getComboStatsSource();
     const cells = [];
     for (let row = 0; row < CHART_RANKS.length; row++) {
         for (let col = 0; col < CHART_RANKS.length; col++) {
@@ -5709,10 +5600,14 @@ function renderProgressDashboard() {
     const el = document.getElementById('progress-dashboard');
     if (!el) return;
     const t = I18N[state.lang] || I18N.en;
+    const profile = state.assessment && state.assessment.skillDimensions ? state.assessment.skillDimensions : {};
     const weekly = getWeeklySummary();
     const mistakeSpots = getRankedMistakeSpots(t);
     const weakness = getReviewWeaknessModel(t, mistakeSpots);
-    const lifetimePositionRows = getStatRows(state.stats.byPosition, key => key, POSITIONS);
+    const trend = getReviewTrendModel(weekly, t);
+    const positionRows = getStatRows(state.stats.byPosition, key => key, POSITIONS);
+    const overallAccuracy = profile.overallAccuracy || pct(state.stats.totalCorrect, state.stats.totalHands);
+    const handSummary = getHandAccuracySummary(t);
     const mistakeItems = renderMistakeQueueList(mistakeSpots, t);
 
     if (state.activeTab === 'review') {
@@ -5744,44 +5639,37 @@ function renderProgressDashboard() {
                     <h3>${t.reviewPositionPerformance || 'By position'}</h3>
                     <button type="button" onclick="setActiveTab('progress')">${t.appTabProgress || 'Stats'}</button>
                 </div>
-                <div class="position-leak-grid">${renderPositionLeakCards(lifetimePositionRows, t)}</div>
+                <div class="position-leak-grid">${renderPositionLeakCards(positionRows, t)}</div>
             </section>
         `;
         return;
     }
 
-    const selectedPeriod = normalizeStatsPeriod(state.progressStatsPeriod);
-    const selectedStats = getStatsForPeriod(selectedPeriod);
-    const allowHistoryFallback = selectedPeriod === 'all';
-    const positionRows = getStatRows(selectedStats.byPosition, key => key, POSITIONS);
-    const overallAccuracy = pct(selectedStats.totalCorrect, selectedStats.totalHands);
-    const handSummary = getHandAccuracySummary(t, selectedStats, allowHistoryFallback);
-    const periodAria = t.statsPeriodAria || 'Training stats period';
     el.className = 'progress-dashboard glassmorphism stats-studio';
     el.innerHTML = `
         <div class="stats-topbar">
             <h2>${t.statsStudioTitle || 'Training Stats'}</h2>
-            <select class="stats-filter stats-period-select" aria-label="${escapeHtml(periodAria)}" onchange="setStatsPeriod(this.value)">
-                ${renderStatsPeriodOptions(t)}
-            </select>
+            <button class="stats-filter" type="button">${t.statsLifetimeFilter || 'All'}</button>
         </div>
         <section class="stats-card stats-accuracy-card">
             <div class="stats-accuracy-header">
                 <div>
                     <h3>${t.statsOverallAccuracy || 'Overall Accuracy'}</h3>
-                    <p>${escapeHtml(getStatsPeriodTrainingLabel(selectedPeriod, t))}</p>
+                    <p>${t.statsAllTrainingLabel || 'All training hands'}</p>
                 </div>
-                <span class="stats-week-pill">${escapeHtml(getStatsPeriodHandsLabel(selectedStats.totalHands, selectedPeriod, t))}</span>
+                <span class="stats-week-pill">${escapeHtml((t.statsThisWeekHands || '{hands} this week')
+                    .replace('{hands}', weekly.hands || 0)
+                    .replace('{unit}', t.statsHands || 'hands'))}</span>
             </div>
             <div class="stats-accuracy-main">
                 <strong>${overallAccuracy || 0}%</strong>
                 <div class="stats-kpi-list" aria-label="${escapeHtml(t.statsOverallAccuracy || 'Overall Accuracy')}">
                     <span>
-                        <b>${selectedStats.totalCorrect || 0}</b>
+                        <b>${state.stats.totalCorrect || 0}</b>
                         <em>${t.statsCorrectHands || 'Correct'}</em>
                     </span>
                     <span>
-                        <b>${selectedStats.totalHands || 0}</b>
+                        <b>${state.stats.totalHands || 0}</b>
                         <em>${t.statsTotalHandsLabel || 'Total hands'}</em>
                     </span>
                     <span>
@@ -5790,7 +5678,7 @@ function renderProgressDashboard() {
                     </span>
                 </div>
             </div>
-            ${renderStatsTrendPanel(t, selectedPeriod)}
+            ${renderStatsTrendPanel(t)}
         </section>
         <section class="stats-card range-coverage-card hand-accuracy-card">
             <div class="stats-card-header">
@@ -5800,7 +5688,7 @@ function renderProgressDashboard() {
                 <strong>${handSummary.totalHands ? `${handSummary.averageAccuracy}%` : '--'}</strong>
             </div>
             <div class="range-coverage-body hand-accuracy-body">
-                ${renderMiniRangeGrid(t, selectedStats, allowHistoryFallback)}
+                ${renderMiniRangeGrid(t)}
                 <div class="range-legend">
                     <span><i class="mastered"></i>${t.handAccuracyMastered || '80%+'}</span>
                     <span><i class="review"></i>${t.handAccuracyReview || '60-79%'}</span>
@@ -6879,7 +6767,6 @@ window.resetStats = function () {
         }),
         () => {
             state.stats = getDefaultStats();
-            state.progressStatsPeriod = DEFAULT_STATS_PERIOD;
             state.comboWeights = {};
             state.handHistory = [];
             state.mistakeReplay = getDefaultMistakeReplay();
@@ -8646,17 +8533,7 @@ window.setLanguage = function (lang) {
 // ============================================================
 // INIT
 // ============================================================
-function promoteOverlaysToRoot() {
-    document.querySelectorAll('.modal, .first-run-flow').forEach(overlay => {
-        if (overlay.parentElement !== document.body) {
-            document.body.appendChild(overlay);
-        }
-    });
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    promoteOverlaysToRoot();
-
     // 1. Initialise element references
     initElements();
 
