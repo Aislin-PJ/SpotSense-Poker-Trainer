@@ -5244,6 +5244,7 @@ body[data-active-tab="practice"] .header-top-center {
 
 .home-greeting p,
 .home-daily-card p,
+.home-progress-card p,
 .home-review-card p,
 .home-mini-card p {
     margin: 0;
@@ -5427,12 +5428,70 @@ body[data-active-tab="practice"] .header-top-center {
     cursor: pointer;
 }
 
+.home-progress-card,
 .home-review-card,
 .home-mini-card,
 .stats-card {
     border: 1px solid var(--line);
     border-radius: var(--radius-xl);
     background: linear-gradient(180deg, rgba(255,255,255,0.058), rgba(255,255,255,0.028));
+}
+
+.home-progress-card {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 10px;
+    align-items: end;
+    padding: 16px;
+}
+
+.home-progress-card h3 {
+    margin: 0 0 22px;
+    font-size: 0.95rem;
+}
+
+.home-progress-card strong {
+    color: var(--mint);
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.home-trend {
+    height: 86px;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    align-items: end;
+    gap: 8px;
+}
+
+.home-trend span {
+    min-width: 0;
+    display: grid;
+    justify-items: center;
+    gap: 7px;
+}
+
+.home-trend i {
+    width: 8px;
+    height: var(--trend-value);
+    min-height: 10px;
+    border-radius: 999px;
+    background: var(--mint-2);
+}
+
+.home-trend b {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--faint);
+    font-size: 0.72rem;
+}
+
+.home-trend .active b {
+    background: var(--mint);
+    color: #102019;
 }
 
 .home-review-card {
@@ -5703,22 +5762,6 @@ body[data-active-tab="practice"] .header-top-center {
     cursor: pointer;
 }
 
-.stats-period-select {
-    min-width: 82px;
-    max-width: 128px;
-    padding-right: 26px;
-    border-color: rgba(245, 185, 66, 0.85);
-    box-shadow: inset 0 0 0 1px rgba(245, 185, 66, 0.35);
-    font-weight: 850;
-    text-align: center;
-    text-align-last: center;
-}
-
-.stats-period-select option {
-    color: #111;
-    background: #fff;
-}
-
 .stats-card {
     padding: 16px;
 }
@@ -5845,11 +5888,9 @@ body[data-active-tab="practice"] .header-top-center {
 .stats-day-chart {
     min-height: 118px;
     display: grid;
-    grid-template-columns: repeat(var(--day-count, 7), minmax(34px, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 8px;
     align-items: end;
-    overflow-x: auto;
-    padding-bottom: 2px;
 }
 
 .stats-day {
@@ -6372,6 +6413,10 @@ body[data-active-tab="practice"] {
         grid-template-columns: 1fr;
     }
 
+    .home-progress-card h3 {
+        margin-bottom: 12px;
+    }
+
     .btn {
         min-height: 66px;
         font-size: 1rem;
@@ -6383,6 +6428,12 @@ body[data-active-tab="practice"] {
 
     .table-surface {
         min-height: 328px;
+    }
+}
+
+@media (max-width: 360px) {
+    .home-progress-card {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -8485,10 +8536,10 @@ body::before {
 
 body[data-active-tab="practice"] #app-header {
     position: sticky;
-    top: env(safe-area-inset-top, 0px);
+    top: 0;
     z-index: 115;
-    margin: 0 -14px 10px;
-    padding: 0 14px 8px;
+    margin: calc(-1 * max(16px, env(safe-area-inset-top, 16px))) -14px 2px;
+    padding: max(10px, env(safe-area-inset-top, 10px)) 14px 8px;
     background: linear-gradient(180deg, rgba(23, 26, 25, 0.98) 78%, rgba(23, 26, 25, 0));
     border-radius: 0 0 18px 18px;
 }
@@ -8612,25 +8663,4 @@ body[data-active-tab="practice"] #app-header {
 
 .app-nav-item:active {
     transform: scale(0.97);
-}
-
-/* Root overlay stacking: modals must cover the bottom nav and its backdrop as one layer. */
-:root {
-    --z-bottom-nav-layer: 1000;
-    --z-modal-layer: 1800;
-    --z-confirm-modal-layer: 2400;
-}
-
-body::before,
-.app-bottom-nav {
-    z-index: var(--z-bottom-nav-layer);
-}
-
-.modal,
-.first-run-flow {
-    z-index: var(--z-modal-layer);
-}
-
-#confirm-modal.modal {
-    z-index: var(--z-confirm-modal-layer);
 }
