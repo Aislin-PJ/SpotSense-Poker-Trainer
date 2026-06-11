@@ -4,62 +4,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0b1121">
+    <meta name="theme-color" content="#151817">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PokerTrainer">
-    <link rel="apple-touch-icon" href="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2660.svg">
+    <meta name="apple-mobile-web-app-title" content="SpotSense">
+    <link rel="apple-touch-icon" href="logo-pure.png">
+    <link rel="icon" href="logo-pure.png">
     <link rel="manifest" href="manifest.json">
-    <title>Poker Preflop Trainer — Free iOS App for Improving Preflop Strategy</title>
+    <title>SpotSense - Free Forever, Full-Featured Poker Trainer</title>
     <meta name="description"
-        content="A free, premium Poker Preflop Trainer with RFI, Push/Fold, and Defense modes. Train with adaptive difficulty, track your stats, and install as a native iOS app.">
-    <meta name="keywords" content="poker trainer, preflop, RFI, push fold, GTO, range chart, strategy, poker study app">
+        content="SpotSense is a free-forever, full-featured poker trainer with preflop and postflop drills, RFI, Defense, Push/Fold, custom ranges, adaptive review, and offline-first PWA support.">
+    <meta name="keywords"
+        content="spotsense, poker trainer, preflop, RFI, push fold, GTO, range chart, preflop strategy, poker study app">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Poker Preflop Trainer">
+    <meta property="og:title" content="SpotSense - Free Forever, Full-Featured Poker Trainer">
     <meta property="og:description"
-        content="Master poker preflop strategy with adaptive difficulty and range editor. Free, offline-first PWA.">
-    <meta property="og:image" content="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2660.svg">
+        content="A free-forever, full-featured SpotSense poker trainer for preflop and postflop study, custom ranges, adaptive review, and offline-first practice.">
+    <meta property="og:image" content="logo.png">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Poker Preflop Trainer">
+    <meta name="twitter:title" content="SpotSense - Free Forever, Full-Featured Poker Trainer">
     <meta name="twitter:description"
-        content="Master poker preflop strategy with adaptive difficulty and range editor. Free, offline-first PWA.">
+        content="A free-forever, full-featured SpotSense poker trainer for preflop and postflop study, custom ranges, adaptive review, and offline-first practice.">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css?family=Inter:300,400,600,700" rel="stylesheet">
 </head>
 
 <body>
+
+    <!-- ===================== SPLASH SCREEN ===================== -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-logo" aria-label="SpotSense">
+            <img class="brand-logo-img splash-brand-logo" src="logo-transparent.png" alt="SpotSense logo">
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- Header / Stats -->
-        <header class="header glassmorphism">
+        <header id="app-header" class="header glassmorphism">
             <div class="header-row-top">
                 <div class="header-top-left">
-                    <h1 data-i18n="appTitle">Poker Preflop Trainer</h1>
+                    <div class="header-logo-mark" title="SpotSense Poker Trainer" role="img"
+                        aria-label="SpotSense Poker Trainer">
+                        <img class="brand-logo-img header-brand-logo" src="logo-transparent.png" alt="">
+                    </div>
                 </div>
                 <div class="header-top-center">
-                    <select id="mode-selector" class="mode-select" onchange="changeMode(this.value)">
-                        <option value="RFI" data-i18n="modeRFI">Mode: RFI (Open)</option>
-                        <option value="DEFEND" data-i18n="modeDefend">Mode: Defense</option>
-                        <option value="PUSH_FOLD" data-i18n="modePushFold">Mode: Push / Fold</option>
-                        <option value="CUSTOM" data-i18n="modeCustom">Mode: Custom Practice</option>
-                    </select>
+                    <nav id="top-level-tabs" class="top-level-tabs" aria-label="Training sections">
+                        <button id="tab-plan" class="top-level-tab" type="button" onclick="setActiveTab('plan')"
+                            data-app-tab="plan" data-i18n="appTabPlan">Home</button>
+                        <button id="tab-practice" class="top-level-tab active" type="button"
+                            onclick="setActiveTab('practice')" data-app-tab="practice"
+                            data-i18n="appTabPractice">Drills</button>
+                        <button id="tab-review" class="top-level-tab" type="button" onclick="setActiveTab('review')"
+                            data-app-tab="review" data-i18n="appTabReview">Review</button>
+                        <button id="tab-progress" class="top-level-tab" type="button"
+                            onclick="setActiveTab('progress')" data-app-tab="progress"
+                            data-i18n="appTabProgress">Stats</button>
+                    </nav>
                 </div>
                 <div class="header-top-right">
-                    <button class="btn-icon lang-toggle-btn" onclick="toggleLanguage()" id="lang-toggle"
-                        style="font-weight:bold; width: 44px;">繁</button>
-                </div>
-            </div>
-
-            <div class="header-row-bottom">
-                <div class="header-tools">
-                    <button class="btn-icon" onclick="toggleInfoModal()" title="Poker Rules & Info">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <button class="btn-icon" onclick="toggleInfoModal()" title="Poker Rules &amp; Info"
+                        aria-label="Poker Rules and Info">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10" />
                             <line x1="12" y1="16" x2="12" y2="12" />
                             <line x1="12" y1="8" x2="12.01" y2="8" />
                         </svg>
                     </button>
-                    <button class="btn-icon" onclick="toggleChartModal()" title="View Range Chart">
+                    <div class="language-picker">
+                        <select id="language-select" class="language-select" onchange="setLanguage(this.value)"
+                            aria-label="Language">
+                            <option value="en">EN</option>
+                            <option value="zh-TW">TW</option>
+                            <option value="zh-CN">CN</option>
+                            <option value="ja">JA</option>
+                            <option value="ko">KO</option>
+                            <option value="es">ES</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-row-bottom">
+                <div id="header-mode-control" class="header-mode-control">
+                    <select id="mode-selector" class="mode-select" onchange="changeMode(this.value)"
+                        aria-label="Practice mode">
+                        <option value="RFI" data-i18n="modeRFI">Mode: RFI (Open)</option>
+                        <option value="DEFEND" data-i18n="modeDefend">Mode: Defense</option>
+                        <option value="ALL_STREET" data-i18n="modeAllStreet">Mode: Postflop</option>
+                        <option value="PUSH_FOLD" data-i18n="modePushFold">Mode: Push / Fold</option>
+                        <option value="CUSTOM" data-i18n="modeCustom">Mode: Custom Practice</option>
+                        <option value="REVIEW" data-i18n="modeReviewMistakes" hidden>Mode: Review Mistakes</option>
+                    </select>
+                </div>
+                <div class="header-tools">
+                    <button class="btn-icon" onclick="toggleChartModal()" title="View Range Chart"
+                        aria-label="View Range Chart">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -67,15 +108,8 @@
                             <path d="M9 21V9" />
                         </svg>
                     </button>
-                    <button class="btn-icon" onclick="openStatsModal()" title="Progress & Accuracy">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="20" x2="18" y2="10" />
-                            <line x1="12" y1="20" x2="12" y2="4" />
-                            <line x1="6" y1="20" x2="6" y2="14" />
-                        </svg>
-                    </button>
-                    <button id="btn-range-editor" class="btn-icon" onclick="openRangeEditor()" title="Range Editor">
+                    <button id="btn-range-editor" class="btn-icon" onclick="openRangeEditor()" title="Range Editor"
+                        aria-label="Range Editor">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="3" width="5" height="5" rx="1" />
@@ -88,40 +122,85 @@
                             <rect x="10" y="17" width="5" height="4" rx="1" />
                         </svg>
                     </button>
+                    <button id="btn-assessment" class="btn-icon" onclick="openAssessmentModal()"
+                        title="Ability Assessment" aria-label="Ability Assessment">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 11l3 3L22 4" />
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        </svg>
+                    </button>
+                    <button id="btn-support" class="btn-icon" onclick="openSupportModal()" title="Support"
+                        aria-label="Support">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
+                        </svg>
+                    </button>
                 </div>
                 <div class="stats hud-stats">
                     <div class="stat-box pill">
-                        <span class="stat-icon pulse-blue">🎯</span>
+                        <span class="stat-icon pulse-teal">S</span>
                         <div class="stat-info">
                             <span class="label" data-i18n="score">Score</span>
                             <span class="value" id="score">0</span>
                         </div>
                     </div>
                     <div class="stat-box pill">
-                        <span class="stat-icon pulse-orange">🔥</span>
+                        <span class="stat-icon pulse-orange">ST</span>
                         <div class="stat-info">
                             <span class="label" data-i18n="streak">Streak</span>
                             <span class="value" id="streak">0</span>
                         </div>
                     </div>
                     <div class="stat-box pill">
-                        <span class="stat-icon pulse-green">🃏</span>
+                        <span class="stat-icon pulse-green">H</span>
                         <div class="stat-info">
                             <span class="label" data-i18n="lifetimeHands">Hands</span>
                             <span class="value" id="lifetime-hands">0</span>
                         </div>
                     </div>
                     <div class="stat-box pill">
-                        <span class="stat-icon pulse-teal">📊</span>
+                        <span class="stat-icon pulse-teal">%</span>
                         <div class="stat-info">
-                            <span class="label">Accuracy</span>
-                            <span class="value" id="accuracy-hud">—</span>
+                            <span class="label" data-i18n="statsAccuracy">Accuracy</span>
+                            <span class="value" id="accuracy-hud">--</span>
                         </div>
                     </div>
                 </div>
             </div>
         </header>
 
+        <section id="first-run-flow" class="first-run-flow hidden" role="dialog" aria-modal="true"
+            aria-labelledby="first-run-title" aria-live="polite">
+            <!-- First-run onboarding is injected by JS. -->
+        </section>
+
+        <section id="plan-panel" class="tab-panel plan-panel hidden" data-tab-panel="plan">
+            <section id="personalized-dashboard" class="personalized-dashboard glassmorphism hidden" aria-live="polite">
+                <div class="personalized-main">
+                    <div>
+                        <span class="panel-kicker" data-i18n="todayDrillKicker">Today's Drill</span>
+                        <h2 data-i18n="quickStartTitle">Quick Diagnostic</h2>
+                        <p data-i18n="quickStartBody">Start with a short diagnostic to build your first training plan.</p>
+                    </div>
+                    <div class="personalized-actions">
+                        <button class="btn-range-action" type="button" onclick="startTodayDrill()"
+                            data-i18n="todayDrillCta">Start Today</button>
+                        <button class="btn-range-action btn-range-clear" type="button" onclick="startMistakeReplay()"
+                            data-i18n="reviewMistakesEmpty">Review Mistakes (0)</button>
+                    </div>
+                </div>
+                <div class="personalized-metrics">
+                    <div><span data-i18n="skillBaseline">Baseline</span><strong data-i18n="skillBaselineEmpty">Unrated</strong></div>
+                    <div><span data-i18n="skillWeakest">Weakest</span><strong>RFI</strong></div>
+                    <div><span data-i18n="dailyGoal">Daily goal</span><strong>0/20</strong></div>
+                    <div><span data-i18n="weeklyHands">This week</span><strong>0</strong></div>
+                </div>
+            </section>
+        </section>
+
+        <section id="practice-panel" class="tab-panel practice-panel hidden" data-tab-panel="practice">
         <!-- Stack Size Selector (Push/Fold only) -->
         <div id="stack-selector" class="stack-selector glassmorphism hidden">
             <span class="stack-label" data-i18n="stackLabel">Stack:</span>
@@ -136,9 +215,21 @@
 
         <!-- Custom Mode Range Selector -->
         <div id="custom-mode-controls" class="stack-selector glassmorphism hidden">
-            <span class="stack-label">Range:</span>
-            <div class="stack-btns" id="custom-range-picker-list">
-                <!-- Dynamically populated -->
+            <div class="custom-practice-panel">
+                <div class="custom-practice-header">
+                    <span class="stack-label" data-i18n="customRangePracticeLabel">Range Practice:</span>
+                    <button class="btn-range-action" onclick="openDrillManager()"
+                        data-i18n="customDrillManagerOpen">Manage Drills</button>
+                </div>
+                <div class="stack-btns" id="custom-range-picker-list">
+                    <!-- Dynamically populated -->
+                </div>
+                <div class="custom-drill-strip">
+                    <span class="stack-label" data-i18n="customDrillsLabel">Drills:</span>
+                    <div id="custom-drill-picker-list" class="stack-btns">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -152,10 +243,15 @@
                     <p id="scenario-text" data-i18n="waitingHand">Waiting for next hand...</p>
                     <div class="position-badge" id="hero-position">UTG</div>
                 </div>
+                <div id="postflop-control-panel" class="postflop-control-panel glassmorphism hidden" aria-live="polite">
+                    <!-- Postflop decision context is injected by JS. -->
+                </div>
 
                 <!-- Poker Table Visualization -->
                 <div class="table">
                     <div class="table-surface">
+                        <div id="table-context-overlay" class="table-context-overlay" aria-label="Table context"></div>
+                        <div class="board-cards hidden" id="board-cards" aria-label="Board cards"></div>
                         <div class="cards-container" id="hole-cards">
                             <div class="card empty"></div>
                             <div class="card empty"></div>
@@ -174,14 +270,12 @@
                     <button class="btn btn-raise hidden" id="btn-allin" onclick="handleAction('All-In')"
                         data-i18n="btnAllIn">All-In</button>
                 </div>
-                <div class="kbd-hint" data-i18n="kbdHint">F · C · R · A keys</div>
-
                 <!-- Feedback Overlay -->
                 <div id="feedback" class="feedback hidden">
                     <span class="feedback-icon" id="feedback-icon"></span>
                     <h3 id="feedback-title">Correct!</h3>
                     <p id="feedback-message">UTG with AA is a mandatory raise.</p>
-                    <button class="btn btn-next" onclick="nextHand()" data-i18n="nextHand">Next Hand ·Space·</button>
+                    <button class="btn btn-next" onclick="nextHand()" data-i18n="nextHand">Next Hand ·Enter·</button>
                 </div>
             </div>
 
@@ -192,6 +286,7 @@
                 <div id="coach-content" class="coach-content">
                     <p data-i18n="coachSelect">Select a mode to begin.</p>
                 </div>
+                <div id="kbd-hint" class="kbd-hint" data-i18n="kbdHint">C Check · Space Fold · M Call · Enter Raise</div>
 
                 <!-- Hand History -->
                 <div class="hand-history-section">
@@ -205,22 +300,30 @@
                 </div>
             </aside>
         </main>
+        </section>
+
+        <section id="progress-panel" class="tab-panel progress-panel hidden" data-tab-panel="progress">
+            <section id="progress-dashboard" class="progress-dashboard glassmorphism" aria-live="polite">
+                <!-- Progress profile is injected by JS. -->
+            </section>
+        </section>
 
         <!-- ===================== CHART MODAL ===================== -->
-        <div id="chart-modal" class="modal hidden">
+        <div id="chart-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Range chart">
             <div class="modal-content glassmorphism">
                 <!-- Injected by JS: header + pos tabs + grid + legend -->
             </div>
         </div>
 
         <!-- ===================== INFO / RULES MODAL ===================== -->
-        <div id="info-modal" class="modal hidden">
-            <div class="modal-content glassmorphism modal-large">
+        <div id="info-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
+            <div class="modal-content glassmorphism modal-large rules-modal-content">
                 <div class="modal-header">
-                    <h2 data-i18n="rulesTitle">Poker Rules & Strategy</h2>
-                    <button class="btn-close" onclick="toggleInfoModal()">&times;</button>
+                    <h2 id="info-modal-title" data-i18n="rulesTitle">Poker Rules & Strategy</h2>
+                    <button class="btn-close" onclick="toggleInfoModal()" aria-label="Close rules modal">&times;</button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body rules-modal-body">
+                    <section id="info-rules-page" class="info-modal-page" aria-labelledby="info-modal-title">
                     <h3 data-i18n="positionTitle">Position (Who acts when)</h3>
                     <p data-i18n="positionDesc">In poker, the order of action rotates clockwise every hand. The later
                         you act, the more information you have about what your opponents will do.</p>
@@ -279,7 +382,6 @@
                         <li data-i18n="advImpliedDesc"><strong>Implied Odds:</strong> The money you expect to win after
                             making a big hand.</li>
                     </ul>
-
                     <h3 data-i18n="handRanksTitle">Basic Hand Rankings (Strongest to Weakest)</h3>
                     <ul class="rankings-list">
                         <li data-i18n="rankRoyal"><strong>Royal Flush:</strong> A<span class="suit-red">♥</span> K<span
@@ -302,16 +404,23 @@
                         <li data-i18n="rankPair"><strong>One Pair:</strong> A A 8 5 3</li>
                         <li data-i18n="rankHigh"><strong>High Card:</strong> A K 9 5 2 (Highest card plays)</li>
                     </ul>
+                    </section>
+
+                    <section id="info-glossary-page" class="info-modal-page poker-glossary hidden"
+                        aria-labelledby="info-modal-title">
+                        <div id="poker-glossary-nav" class="glossary-category-nav" aria-label="Glossary categories"></div>
+                        <div id="poker-glossary-list" class="poker-glossary-list"></div>
+                    </section>
                 </div>
             </div>
         </div>
 
         <!-- ===================== STATS MODAL ===================== -->
-        <div id="stats-modal" class="modal hidden">
+        <div id="stats-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="stats-modal-title">
             <div class="modal-content glassmorphism modal-large">
                 <div class="modal-header">
-                    <h2 data-i18n="statsTitle">Progress & Accuracy</h2>
-                    <button class="btn-close" onclick="closeStatsModal()">&times;</button>
+                    <h2 id="stats-modal-title" data-i18n="statsTitle">Detailed Stats</h2>
+                    <button class="btn-close" onclick="closeStatsModal()" aria-label="Close stats modal">&times;</button>
                 </div>
                 <div id="stats-content" class="modal-body stats-body">
                     <!-- Injected by JS -->
@@ -319,45 +428,521 @@
             </div>
         </div>
 
+        <!-- ===================== CUSTOM DRILL MANAGER MODAL ===================== -->
+        <div id="drill-manager-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="drill-manager-title">
+            <div class="modal-content glassmorphism modal-large">
+                <div class="modal-header">
+                    <h2 id="drill-manager-title" data-i18n="drillManagerTitle">Custom Drill Manager</h2>
+                    <button class="btn-close" onclick="closeDrillManager()" aria-label="Close drill manager">&times;</button>
+                </div>
+                <div class="modal-body drill-manager-body">
+                    <form class="drill-form" onsubmit="saveDrillFromForm(event)">
+                        <input type="hidden" id="drill-id-input">
+                        <div class="drill-builder-header">
+                            <div>
+                                <div class="panel-kicker" data-i18n="drillBuilderKicker">Drill Builder</div>
+                                <h3 data-i18n="drillBuilderTitle">Build a training spot</h3>
+                            </div>
+                            <span id="drill-form-status" class="drill-status-chip" data-i18n="drillNewStatus">New</span>
+                        </div>
+                        <div class="drill-form-section">
+                            <div class="drill-section-title" data-i18n="drillBasicsTitle">Basics</div>
+                            <div class="drill-form-grid">
+                                <label>
+                                    <span data-i18n="drillNameLabel">Name</span>
+                                    <input id="drill-name-input" class="range-name-input" type="text"
+                                        data-i18n-placeholder="drillNamePlaceholder" placeholder="Drill name">
+                                </label>
+                                <label>
+                                    <span data-i18n="drillTypeLabel">Type</span>
+                                    <select id="drill-type-select" class="mode-select" onchange="syncDrillFormFields()">
+                                        <option value="RFI_FOCUS" data-i18n="drillTypeRfi">RFI Focus</option>
+                                        <option value="DEFENSE_VS_OPEN" data-i18n="drillTypeDefense">Defense vs Open</option>
+                                        <option value="FACING_3BET" data-i18n="drillTypeFacing3Bet">Facing 3-Bet</option>
+                                        <option value="PUSH_FOLD" data-i18n="drillTypePushFold">Push/Fold</option>
+                                        <option value="ALL_STREET" data-i18n="drillTypeAllStreet">All-Street</option>
+                                    </select>
+                                </label>
+                                <label>
+                                    <span data-i18n="drillGameTypeLabel">Game</span>
+                                    <select id="drill-game-type-select" class="mode-select">
+                                        <option value="CASH" data-i18n="drillGameCash">Cash</option>
+                                        <option value="TOURNAMENT" data-i18n="drillGameTournament">Tournament</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="drill-form-section">
+                            <div class="drill-section-title" data-i18n="drillSpotTitle">Spot setup</div>
+                            <div id="facing-3bet-fields" class="drill-advanced-fields">
+                                <div id="drill-hero-positions-field" class="drill-position-field">
+                                    <span class="drill-field-label" data-i18n="drillHeroPositionsLabel">Hero positions</span>
+                                    <select id="drill-hero-positions-select" class="mode-select drill-position-select-backup" multiple size="5" aria-hidden="true" tabindex="-1">
+                                        <option value="UTG">UTG</option>
+                                        <option value="HJ">HJ</option>
+                                        <option value="CO">CO</option>
+                                        <option value="BTN">BTN</option>
+                                        <option value="SB">SB</option>
+                                    </select>
+                                    <div id="drill-hero-position-chips" class="position-chip-group" role="group" aria-label="Hero positions">
+                                        <label class="position-chip"><input type="checkbox" value="UTG"><span>UTG</span></label>
+                                        <label class="position-chip"><input type="checkbox" value="HJ"><span>HJ</span></label>
+                                        <label class="position-chip"><input type="checkbox" value="CO"><span>CO</span></label>
+                                        <label class="position-chip"><input type="checkbox" value="BTN"><span>BTN</span></label>
+                                        <label class="position-chip"><input type="checkbox" value="SB"><span>SB</span></label>
+                                    </div>
+                                </div>
+                                <label id="drill-hero-position-field">
+                                    <span data-i18n="drillHeroPositionLabel">Hero opened</span>
+                                    <select id="drill-hero-position-select" class="mode-select">
+                                        <option value="ALL" data-i18n="drillAllRandomOption">All / random</option>
+                                        <option value="UTG">UTG</option>
+                                        <option value="HJ">HJ</option>
+                                        <option value="CO">CO</option>
+                                        <option value="BTN">BTN</option>
+                                        <option value="SB">SB</option>
+                                    </select>
+                                </label>
+                                <label id="drill-opener-position-field">
+                                    <span data-i18n="drillOpenerPositionLabel">Opener</span>
+                                    <select id="drill-opener-position-select" class="mode-select">
+                                        <option value="ALL" data-i18n="drillAllRandomOption">All / random</option>
+                                        <option value="UTG">UTG</option>
+                                        <option value="HJ">HJ</option>
+                                        <option value="CO">CO</option>
+                                        <option value="BTN">BTN</option>
+                                        <option value="SB">SB</option>
+                                    </select>
+                                </label>
+                                <label id="drill-villain-position-field">
+                                    <span data-i18n="drillVillainPositionLabel">3-bettor</span>
+                                    <select id="drill-villain-position-select" class="mode-select">
+                                        <option value="ALL" data-i18n="drillAllRandomOption">All / random</option>
+                                        <option value="HJ">HJ</option>
+                                        <option value="CO">CO</option>
+                                        <option value="BTN">BTN</option>
+                                        <option value="SB">SB</option>
+                                        <option value="BB">BB</option>
+                                    </select>
+                                </label>
+                                <label id="drill-stack-field">
+                                    <span data-i18n="drillStackLabel">Stack bb</span>
+                                    <select id="drill-stack-input" class="mode-select">
+                                        <option value="10">10bb</option>
+                                        <option value="20">20bb</option>
+                                        <option value="30">30bb</option>
+                                        <option value="40">40bb</option>
+                                        <option value="50">50bb</option>
+                                        <option value="60">60bb</option>
+                                        <option value="70">70bb</option>
+                                        <option value="80">80bb</option>
+                                        <option value="90">90bb</option>
+                                        <option value="100" selected>100bb</option>
+                                    </select>
+                                </label>
+                                <label id="drill-open-size-field">
+                                    <span data-i18n="drillOpenSizeLabel">Open bb</span>
+                                    <input id="drill-open-size-input" class="range-name-input" type="number" min="0.1"
+                                        step="0.1" value="2.5">
+                                </label>
+                                <label id="drill-open-size-random-field" class="drill-checkbox-label">
+                                    <input id="drill-open-size-random-input" type="checkbox" onchange="syncDrillOpenSizeRandom()">
+                                    <span data-i18n="drillOpenSizeRandomLabel">Random open size</span>
+                                </label>
+                                <label id="drill-threebet-size-field">
+                                    <span data-i18n="drillThreeBetSizeLabel">3-bet bb</span>
+                                    <input id="drill-threebet-size-input" class="range-name-input" type="number" min="0.1"
+                                        step="0.1" value="9">
+                                </label>
+                                <div id="drill-allstreet-fields" class="drill-allstreet-fields hidden">
+                                    <label id="drill-street-field">
+                                        <span data-i18n="drillStreetLabel">Street</span>
+                                        <select id="drill-street-select" class="mode-select">
+                                            <option value="ALL" data-i18n="drillAllRandomOption">All / random</option>
+                                            <option value="FLOP" data-i18n="drillStreetFlop">Flop</option>
+                                            <option value="TURN" data-i18n="drillStreetTurn">Turn</option>
+                                            <option value="RIVER" data-i18n="drillStreetRiver">River</option>
+                                        </select>
+                                    </label>
+                                    <label id="drill-template-field">
+                                        <span data-i18n="drillTemplateLabel">Template</span>
+                                        <select id="drill-template-select" class="mode-select">
+                                            <option value="ALL" data-i18n="drillAllRandomOption">All / random</option>
+                                            <option value="CBET_FLOP" data-i18n="drillTemplateCbetFlop">Flop c-bet</option>
+                                            <option value="CHECK_RAISE_FLOP" data-i18n="drillTemplateCheckRaiseFlop">Flop check-raise</option>
+                                            <option value="PROBE_TURN" data-i18n="drillTemplateProbeTurn">Turn probe</option>
+                                            <option value="BARREL_TURN" data-i18n="drillTemplateBarrelTurn">Turn barrel</option>
+                                            <option value="BLUFF_CATCH_RIVER" data-i18n="drillTemplateBluffCatchRiver">River bluff-catch</option>
+                                            <option value="VALUE_BET_RIVER" data-i18n="drillTemplateValueBetRiver">River value bet</option>
+                                            <option value="FACING_OVERBET" data-i18n="drillTemplateFacingOverbet">Facing overbet</option>
+                                        </select>
+                                    </label>
+                                    <label id="drill-board-preset-field">
+                                        <span data-i18n="drillBoardPresetLabel">Board texture</span>
+                                        <select id="drill-board-preset-select" class="mode-select">
+                                            <option value="ALL" data-i18n="drillAllRandomOption">All / random</option>
+                                            <option value="DRY" data-i18n="drillBoardPresetDry">Dry board</option>
+                                            <option value="NEUTRAL" data-i18n="drillBoardPresetNeutral">Neutral board</option>
+                                            <option value="WET" data-i18n="drillBoardPresetWet">Wet board</option>
+                                            <option value="PAIRED" data-i18n="drillBoardPresetPaired">Paired board</option>
+                                        </select>
+                                    </label>
+                                    <label id="drill-hand-quality-field">
+                                        <span data-i18n="drillHandQualityLabel">Hand class</span>
+                                        <select id="drill-hand-quality-select" class="mode-select">
+                                            <option value="ALL" data-i18n="drillAllRandomOption">All / random</option>
+                                            <option value="GOOD" data-i18n="drillHandQualityGood">Value-heavy hands</option>
+                                            <option value="NORMAL" data-i18n="drillHandQualityNormal">Medium-strength hands</option>
+                                            <option value="BAD" data-i18n="drillHandQualityBad">Bluff-candidate hands</option>
+                                        </select>
+                                    </label>
+                                    <label id="drill-pot-preset-field">
+                                        <span data-i18n="drillPotPresetLabel">Pot size</span>
+                                        <select id="drill-pot-preset-select" class="mode-select">
+                                            <option value="ALL" data-i18n="drillAllRandomOption">All / random</option>
+                                            <option value="SMALL" data-i18n="drillPotPresetSmall">Single-raised pot</option>
+                                            <option value="MEDIUM" data-i18n="drillPotPresetMedium">Medium SPR pot</option>
+                                            <option value="LARGE" data-i18n="drillPotPresetLarge">Large low-SPR pot</option>
+                                        </select>
+                                    </label>
+                                    <label id="drill-raise-size-field">
+                                        <span data-i18n="drillRaiseSizingLabel">Bet / raise size</span>
+                                        <select id="drill-raise-size-select" class="mode-select">
+                                            <option value="BET_33" data-i18n="drillRaiseSize33">Bet 33%</option>
+                                            <option value="BET_50" data-i18n="drillRaiseSize50">Bet 50%</option>
+                                            <option value="BET_75" data-i18n="drillRaiseSize75">Bet 75%</option>
+                                            <option value="OVERBET" data-i18n="drillRaiseSizeOverbet">Overbet</option>
+                                            <option value="JAM" data-i18n="drillRaiseSizeJam">Jam</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <label id="drill-raise-range-field" class="drill-range-code-field">
+                                    <span data-i18n="drillRaiseRangeLabel">Raise / shove range code</span>
+                                    <select id="drill-raise-range-select" class="mode-select drill-range-select"></select>
+                                    <small data-i18n="drillRangeSelectHelp">Optional. Leave default to use the built-in range.</small>
+                                </label>
+                                <label id="drill-call-range-field" class="drill-range-code-field">
+                                    <span data-i18n="drillCallRangeLabel">Call range code</span>
+                                    <select id="drill-call-range-select" class="mode-select drill-range-select"></select>
+                                    <small data-i18n="drillRangeSelectHelp">Optional. Leave default to use the built-in range.</small>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="drill-form-actions">
+                            <button class="btn-range-action" type="submit" data-i18n="drillSaveDraft">Save Draft</button>
+                            <button class="btn-range-action btn-range-clear" type="button" onclick="resetDrillForm()"
+                                data-i18n="drillNewDraft">New Draft</button>
+                            <button class="btn-range-action btn-range-clear" type="button" onclick="importDrillDefinition()"
+                                data-i18n="drillImport">Import Drill</button>
+                        </div>
+                    </form>
+                    <div id="drill-manager-list" class="drill-manager-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== ASSESSMENT MODAL ===================== -->
+        <div id="assessment-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="assessment-title">
+            <div class="modal-content glassmorphism modal-large">
+                <div class="modal-header">
+                    <h2 id="assessment-title" data-i18n="assessmentTitle">Ability Assessment</h2>
+                    <button class="btn-close" onclick="closeAssessmentModal()" aria-label="Close assessment modal">&times;</button>
+                </div>
+                <div class="modal-body assessment-body">
+                    <form class="assessment-form" onsubmit="saveAssessmentFromForm(event)">
+                        <div class="assessment-form-grid">
+                            <label>
+                                <span data-i18n="assessmentExperienceLabel">Experience</span>
+                                <select id="assessment-experience-select" class="mode-select">
+                                    <option value="beginner" data-i18n="assessmentExperienceBeginner">New to Texas Hold'em</option>
+                                    <option value="intermediate" data-i18n="assessmentExperienceIntermediate">Comfortable with core ranges</option>
+                                    <option value="advanced" data-i18n="assessmentExperienceAdvanced">Advanced and leak-focused</option>
+                                </select>
+                            </label>
+                            <label>
+                                <span data-i18n="assessmentGameTypeLabel">Main game</span>
+                                <select id="assessment-game-type-select" class="mode-select">
+                                    <option value="cash" data-i18n="assessmentGameCash">Cash</option>
+                                    <option value="tournament" data-i18n="assessmentGameTournament">Tournament</option>
+                                    <option value="mixed" data-i18n="assessmentGameMixed">Mixed</option>
+                                </select>
+                            </label>
+                            <label>
+                                <span data-i18n="assessmentStackFocusLabel">Stack focus</span>
+                                <select id="assessment-stack-focus-select" class="mode-select">
+                                    <option value="deep" data-i18n="assessmentStackDeep">Deep / 80bb+</option>
+                                    <option value="medium" data-i18n="assessmentStackMedium">Medium / 25-80bb</option>
+                                    <option value="short" data-i18n="assessmentStackShort">Short / 15bb or less</option>
+                                </select>
+                            </label>
+                            <label>
+                                <span data-i18n="assessmentConfidenceLabel">Confidence</span>
+                                <select id="assessment-confidence-select" class="mode-select">
+                                    <option value="low" data-i18n="assessmentConfidenceLow">Low</option>
+                                    <option value="medium" data-i18n="assessmentConfidenceMedium">Medium</option>
+                                    <option value="high" data-i18n="assessmentConfidenceHigh">High</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div id="assessment-recommendation-preview" class="assessment-recommendation"></div>
+                        <div id="diagnostic-summary-preview" class="assessment-recommendation"></div>
+                        <div class="drill-form-actions">
+                            <button class="btn-range-action" type="submit" data-i18n="assessmentSave">Save Assessment</button>
+                            <button class="btn-range-action" type="button" onclick="startDiagnosticSession()"
+                                data-i18n="diagnosticStart">Start Diagnostic</button>
+                            <button class="btn-range-action" type="button" onclick="startRecommendedTraining()"
+                                data-i18n="assessmentTrainRecommendation">Train Recommendation</button>
+                            <button class="btn-range-action btn-range-clear" type="button"
+                                onclick="skipAssessmentFromModal()" data-i18n="assessmentSkip">Skip</button>
+                            <button class="btn-range-action btn-range-clear" type="button"
+                                onclick="resetAssessmentFromModal()" data-i18n="assessmentReset">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== SESSION SUMMARY MODAL ===================== -->
+        <div id="session-summary-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="session-summary-title">
+            <div class="modal-content glassmorphism modal-large">
+                <div class="modal-header">
+                    <h2 id="session-summary-title" data-i18n="sessionSummaryTitle">Session Summary</h2>
+                    <button class="btn-close" onclick="closeSessionSummary()" aria-label="Close session summary">&times;</button>
+                </div>
+                <div id="session-summary-content" class="modal-body session-summary-body">
+                    <!-- Injected by JS -->
+                </div>
+                <div class="drill-form-actions">
+                    <button class="btn-range-action" type="button" onclick="startTodayDrill()"
+                        data-i18n="sessionNextDrill">Start Next Drill</button>
+                    <button class="btn-range-action btn-range-clear" type="button" onclick="closeSessionSummary()"
+                        data-i18n="sessionClose">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== VIEWPORT AD MODAL ===================== -->
+        <div id="ad-modal" class="modal ad-modal hidden" role="dialog" aria-modal="true" aria-labelledby="ad-modal-title">
+            <div class="modal-content glassmorphism ad-modal-content">
+                <div class="modal-header ad-modal-header">
+                    <h2 id="ad-modal-title" data-i18n="adSlotTitle">Sponsor note</h2>
+                    <button id="ad-modal-close" class="btn-close" onclick="closeAdModal()" aria-label="Close sponsor note">&times;</button>
+                </div>
+                <div id="ad-modal-body" class="modal-body ad-modal-body">
+                    <div class="ad-modal-copy">
+                        <strong data-i18n="adSlotTitle">Sponsor note</strong>
+                        <p data-i18n="adSlotBody">A low-frequency sponsor placement can appear here between sessions.</p>
+                        <p class="ad-frequency-note" data-i18n="adFrequencyNote">Ads never appear during a hand decision and are capped at three per day.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== SUPPORT / DONATE MODAL ===================== -->
+        <div id="support-donate-modal" class="modal support-modal hidden" role="dialog" aria-modal="true" aria-labelledby="support-donate-title">
+            <div class="modal-content glassmorphism modal-large">
+                <div class="modal-header">
+                    <h2 id="support-donate-title" data-i18n="supportTabDonate">Support / Donate</h2>
+                    <button class="btn-close" onclick="closeDonateModal()" aria-label="Close support modal">&times;</button>
+                </div>
+                <div class="modal-body support-body">
+                    <section class="support-page">
+                        <h3 data-i18n="supportDonatePageTitle">Support SpotSense</h3>
+                        <p data-i18n="supportOptionsBody">Share feedback, recommend the trainer, or sponsor development. Training features remain free.</p>
+                        <div class="support-slot" role="note">
+                            <div>
+                                <strong data-i18n="donateSlotTitle">Support SpotSense</strong>
+                                <p data-i18n="donateSlotBody">Donations help keep the trainer free, offline-first, and account-free.</p>
+                            </div>
+                            <button class="btn-range-action" type="button" onclick="recordDonateIntent()"
+                                data-i18n="donateCta">Donate</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== ABOUT & SETTINGS MODAL ===================== -->
+        <div id="support-about-modal" class="modal support-modal hidden" role="dialog" aria-modal="true" aria-labelledby="support-about-title">
+            <div class="modal-content glassmorphism modal-large">
+                <div class="modal-header">
+                    <h2 id="support-about-title" data-i18n="supportTabAbout">About & Settings</h2>
+                    <button class="btn-close" onclick="closeAboutModal()" aria-label="Close about and settings modal">&times;</button>
+                </div>
+                <div class="modal-body support-body">
+                    <section class="support-page">
+                        <h3 data-i18n="supportAboutPageTitle">About & Settings</h3>
+                        <label class="support-language-control">
+                            <span data-i18n="languageLabel">Language</span>
+                            <select id="support-language-select" class="support-feedback-control" onchange="setLanguage(this.value)"></select>
+                        </label>
+                        <div class="support-copy-block support-feedback-settings">
+                            <h4 data-i18n="trainingFeedbackTitle">Training feedback</h4>
+                            <label class="support-toggle-control" for="sound-effects-toggle">
+                                <span data-i18n="soundEffectsLabel">Sound effects</span>
+                                <input id="sound-effects-toggle" type="checkbox"
+                                    onchange="setFeedbackPreference('soundEffectsEnabled', this.checked)">
+                            </label>
+                            <label class="support-toggle-control" for="wrong-answer-feedback-toggle">
+                                <span data-i18n="wrongAnswerFeedbackLabel">Wrong-answer shake + vibration</span>
+                                <input id="wrong-answer-feedback-toggle" type="checkbox"
+                                    onchange="setFeedbackPreference('wrongAnswerFeedbackEnabled', this.checked)">
+                            </label>
+                        </div>
+                        <div class="support-copy-block">
+                            <h4 data-i18n="supportAboutTitle">About SpotSense</h4>
+                            <p data-i18n="supportAboutBody">SpotSense is a compact Texas Hold'em study tool for preflop and postflop decisions, review, and range discipline.</p>
+                        </div>
+                        <div class="support-copy-block">
+                            <h4 data-i18n="supportMissionTitle">Mission</h4>
+                            <p data-i18n="supportMissionBody">Keep a fast, free, offline-first poker study tool available without accounts or paywalls.</p>
+                        </div>
+                        <div class="support-copy-block">
+                            <h4 data-i18n="supportPrivacyPolicyTitle">Privacy Policy</h4>
+                            <p data-i18n="supportPrivacyBody">Progress, drills, ranges, and assessment data are stored locally in this browser.</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== FEEDBACK MODAL ===================== -->
+        <div id="support-feedback-modal" class="modal support-modal hidden" role="dialog" aria-modal="true" aria-labelledby="support-feedback-title">
+            <div class="modal-content glassmorphism modal-large">
+                <div class="modal-header">
+                    <h2 id="support-feedback-title" data-i18n="supportTabFeedback">Feedback</h2>
+                    <button class="btn-close" onclick="closeFeedbackModal()" aria-label="Close feedback modal">&times;</button>
+                </div>
+                <div class="modal-body support-body">
+                    <section class="support-page">
+                        <h3 data-i18n="supportFeedbackTitle">Send Feedback</h3>
+                        <p data-i18n="supportFeedbackBody">Feedback is sent by email so fixes and new drills can be prioritized.</p>
+                        <form class="support-feedback-form" action="https://formspree.io/f/xlgvazpe" method="POST"
+                            onsubmit="submitSupportFeedback(event)">
+                            <input type="hidden" name="_subject" value="SpotSense Poker Trainer Feedback">
+                            <input type="hidden" name="_next" value="https://aislin-pj.github.io/SpotSense/">
+                            <div class="support-feedback-grid">
+                                <div class="support-feedback-field">
+                                    <label class="support-feedback-label" for="support-feedback-email"
+                                        data-i18n="supportFeedbackEmailLabel">Email</label>
+                                    <input id="support-feedback-email" name="email" class="support-feedback-control"
+                                        type="email" autocomplete="email"
+                                        data-i18n-placeholder="supportFeedbackEmailPlaceholder"
+                                        placeholder="you@example.com">
+                                </div>
+                                <div class="support-feedback-field">
+                                    <label class="support-feedback-label" for="support-feedback-category"
+                                        data-i18n="supportFeedbackCategoryLabel">Feedback type</label>
+                                    <select id="support-feedback-category" name="category" class="support-feedback-control">
+                                        <option value="bug" data-i18n="supportFeedbackCategoryBug">Bug / Error</option>
+                                        <option value="feature" data-i18n="supportFeedbackCategoryFeature">Feature request</option>
+                                        <option value="strategy" data-i18n="supportFeedbackCategoryStrategy">Strategy content</option>
+                                        <option value="other" data-i18n="supportFeedbackCategoryOther">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="support-feedback-field">
+                                <label class="support-feedback-label" for="support-feedback-input"
+                                    data-i18n="supportFeedbackMessageLabel">Feedback details</label>
+                                <textarea id="support-feedback-input" name="message" class="support-feedback-input"
+                                    rows="5" required data-i18n-placeholder="supportFeedbackPlaceholder"
+                                    placeholder="Describe the issue, spot (mode, position, hand), or suggestion."></textarea>
+                            </div>
+                            <input id="support-feedback-gotcha" class="support-feedback-honeypot" type="text"
+                                name="_gotcha" tabindex="-1" autocomplete="off">
+                            <div class="support-actions">
+                                <button class="btn-range-action" type="submit"
+                                    data-i18n="supportFeedbackCta">Send Feedback</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== GLASS CONFIRMATION MODAL ===================== -->
+        <div id="confirm-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title"
+            aria-describedby="confirm-message">
+            <div class="modal-content glassmorphism confirm-modal-content">
+                <div class="modal-header">
+                    <h2 id="confirm-title" data-i18n="confirmTitle">Confirm action</h2>
+                </div>
+                <div class="modal-body confirm-body">
+                    <p id="confirm-message">Are you sure?</p>
+                    <div class="confirm-actions">
+                        <button id="confirm-cancel" class="btn-range-action btn-range-clear" type="button"
+                            data-i18n="confirmCancel">Cancel</button>
+                        <button id="confirm-accept" class="btn-range-action btn-danger" type="button"
+                            data-i18n="confirmOk">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- ===================== RANGE EDITOR MODAL ===================== -->
-        <div id="range-editor-modal" class="modal hidden">
+        <div id="range-editor-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="range-editor-title">
             <div class="modal-content glassmorphism range-editor-modal-content">
                 <div class="modal-header">
-                    <h2 data-i18n="rangeEditorTitle">Range Editor</h2>
-                    <button class="btn-close" onclick="closeRangeEditor()">&times;</button>
+                    <h2 id="range-editor-title" data-i18n="rangeEditorTitle">Range Editor</h2>
+                    <button class="btn-close" onclick="closeRangeEditor()" aria-label="Close range editor">&times;</button>
                 </div>
-                <p class="range-editor-help" data-i18n="rangeEditorHelp">Click cells to toggle: Fold → Raise → Call →
-                    Fold</p>
-                <div class="range-editor-purpose-wrap">
-                    <p class="range-editor-purpose" data-i18n="rangeEditorPurpose">Use this tool to visualize and save
-                        your custom preflop ranges for study.</p>
-                </div>
-                <div class="range-editor-legend">
-                    <span class="re-legend-item re-raise">Raise</span>
-                    <span class="re-legend-item re-call">Call</span>
-                    <span class="re-legend-item re-fold">Fold</span>
-                </div>
-                <div id="range-editor-grid" class="chart-grid range-editor-grid"></div>
-                <div class="range-editor-controls">
-                    <div class="range-save-row">
-                        <span data-i18n="rangeNameLabel">Name:</span>
-                        <input id="range-name-input" class="range-name-input" type="text" placeholder="Range name..."
-                            data-i18n-placeholder="rangeEditorNamePlaceholder">
-                        <button class="btn-range-action" onclick="saveCustomRange()"
-                            data-i18n="rangeEditorSave">Save</button>
-                        <button class="btn-range-action btn-range-clear" onclick="clearEditorGrid()"
-                            data-i18n="rangeEditorClear">Clear</button>
+                <div class="modal-body range-editor-body">
+                    <p class="range-editor-help" data-i18n="rangeEditorHelp">Click cells to toggle: Fold → Raise → Call →
+                        Fold</p>
+                    <div class="range-editor-purpose-wrap">
+                        <p class="range-editor-purpose" data-i18n="rangeEditorPurpose">Use this tool to visualize and save
+                            your custom preflop ranges for study.</p>
                     </div>
-                    <div class="range-load-row">
-                        <select id="range-load-select" class="mode-select">
-                            <option value="">-- No saved ranges --</option>
-                        </select>
-                        <button class="btn-range-action" onclick="loadCustomRange()"
-                            data-i18n="rangeEditorLoad">Load</button>
-                        <button class="btn-range-action btn-range-delete" onclick="deleteCustomRange()"
-                            data-i18n="rangeEditorDelete">Delete</button>
-                        <button class="btn-range-action" onclick="exportRange()" title="Export to Clipboard">📤</button>
-                        <button class="btn-range-action" onclick="importRange()" title="Import from JSON">📥</button>
+                    <div class="range-editor-legend">
+                        <span class="re-legend-item re-raise" data-i18n="legendRaise">Raise</span>
+                        <span class="re-legend-item re-call" data-i18n="legendCall">Call</span>
+                        <span class="re-legend-item re-fold" data-i18n="legendFold">Fold</span>
+                    </div>
+                    <div id="range-editor-grid" class="chart-grid range-editor-grid"></div>
+                    <section class="range-code-panel" aria-labelledby="range-code-title">
+                        <div class="range-code-header">
+                            <h3 id="range-code-title" data-i18n="rangeCodeTitle">Range Code</h3>
+                            <span id="range-code-counts" class="range-code-counts">Raise 0 · Call 0 · Fold 169</span>
+                        </div>
+                        <div class="range-code-output-row">
+                            <label for="range-code-output" data-i18n="rangeCodeCurrentLabel">Current code</label>
+                            <textarea id="range-code-output" class="range-code-output" rows="2" readonly></textarea>
+                        </div>
+                        <div class="range-code-actions">
+                            <button class="btn-range-action" type="button" onclick="copyRangeCode()"
+                                data-i18n="rangeCodeCopyRange">Copy Range</button>
+                        </div>
+                        <div class="range-code-import-row">
+                            <label for="range-code-input" data-i18n="rangeCodePasteLabel">Paste/import code</label>
+                            <textarea id="range-code-input" class="range-code-input" rows="2"
+                                data-i18n-placeholder="rangeCodeInputPlaceholder"
+                                placeholder="PT1.<payload> or 48-character payload"
+                                oninput="previewRangeCodeInput()"></textarea>
+                            <div id="range-code-preview" class="range-code-preview" role="status"
+                                data-i18n="rangeCodePreviewEmpty">Paste a Range Code to preview it.</div>
+                            <button id="range-code-apply" class="btn-range-action" onclick="applyRangeCodePreview()"
+                                disabled data-i18n="rangeCodeApply">Apply to Grid</button>
+                        </div>
+                    </section>
+                    <div class="range-editor-controls">
+                        <div class="range-save-row">
+                            <span data-i18n="rangeNameLabel">Name:</span>
+                            <input id="range-name-input" class="range-name-input" type="text" placeholder="Range name..."
+                                data-i18n-placeholder="rangeEditorNamePlaceholder">
+                            <button class="btn-range-action" onclick="saveCustomRange()"
+                                data-i18n="rangeEditorSave">Save</button>
+                            <button class="btn-range-action btn-range-clear" onclick="clearEditorGrid()"
+                                data-i18n="rangeEditorClear">Clear</button>
+                        </div>
+                        <div class="range-load-row">
+                            <select id="range-load-select" class="mode-select">
+                                <option value="">-- No saved ranges --</option>
+                            </select>
+                            <button class="btn-range-action" onclick="loadCustomRange()"
+                                data-i18n="rangeEditorLoad">Load</button>
+                            <button class="btn-range-action btn-range-delete" onclick="deleteCustomRange()"
+                                data-i18n="rangeEditorDelete">Delete</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -365,10 +950,70 @@
 
     </div><!-- /app-container -->
 
+    <nav id="app-bottom-nav" class="app-bottom-nav" aria-label="Primary sections">
+        <button class="app-nav-item active" type="button" onclick="setActiveTab('plan')" data-app-tab="plan">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 11l9-8 9 8" />
+                <path d="M5 10v10h14V10" />
+                <path d="M9 20v-6h6v6" />
+            </svg>
+            <span data-i18n="appTabPlan">Home</span>
+        </button>
+        <button class="app-nav-item" type="button" onclick="setActiveTab('practice')" data-app-tab="practice">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="3" width="10" height="14" rx="2" transform="rotate(-8 10 10)" />
+                <rect x="9" y="7" width="10" height="14" rx="2" transform="rotate(8 14 14)" />
+                <path d="M12 11h4" />
+                <path d="M12 15h4" />
+            </svg>
+            <span data-i18n="appTabPractice">Drills</span>
+        </button>
+        <button class="app-nav-item" type="button" onclick="setActiveTab('review')" data-app-tab="review">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h2" />
+                <path d="M4 12h2" />
+                <path d="M4 18h2" />
+                <path d="m9 6 2 2 4-4" />
+                <path d="m9 12 2 2 4-4" />
+                <path d="m9 18 2 2 4-4" />
+                <path d="M17 6h3" />
+                <path d="M17 12h3" />
+                <path d="M17 18h3" />
+            </svg>
+            <span data-i18n="appTabReview">Review</span>
+        </button>
+        <button class="app-nav-item" type="button" onclick="setActiveTab('progress')" data-app-tab="progress">
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19h16" />
+                <path d="M7 16V9" />
+                <path d="M12 16V5" />
+                <path d="M17 16v-4" />
+            </svg>
+            <span data-i18n="appTabProgress">Stats</span>
+        </button>
+    </nav>
+
     <div id="toast-container"></div>
 
+    <script src="ad-config.js"></script>
     <script src="i18n.js"></script>
     <script src="script.js"></script>
+    <script>
+        (function () {
+            var splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.addEventListener('animationend', function (e) {
+                    if (e.animationName === 'splashFadeOut') {
+                        splash.classList.add('done');
+                    }
+                });
+            }
+        })();
+    </script>
 </body>
 
 </html>
