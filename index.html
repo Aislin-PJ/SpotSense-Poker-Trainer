@@ -9,8 +9,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SpotSense">
-    <link rel="apple-touch-icon" href="logo-pure.png">
-    <link rel="icon" href="logo-pure.png">
+    <link rel="apple-touch-icon" href="logo-ui.png">
+    <link rel="icon" href="logo-ui.png">
     <link rel="manifest" href="manifest.json">
     <title>SpotSense - Free Forever, Full-Featured Poker Trainer</title>
     <meta name="description"
@@ -34,58 +34,14 @@
     <!-- ===================== SPLASH SCREEN ===================== -->
     <div id="splash-screen" class="splash-screen">
         <div class="splash-logo" aria-label="SpotSense">
-            <img class="brand-logo-img splash-brand-logo" src="logo-transparent.png" alt="SpotSense logo">
+            <img class="brand-logo-img splash-brand-logo" src="logo-ui.png" alt="SpotSense logo">
         </div>
     </div>
 
     <div class="app-container">
+        <h1 class="sr-only" data-i18n="appTitle">SpotSense Poker Trainer</h1>
         <!-- Header / Stats -->
         <header id="app-header" class="header glassmorphism">
-            <div class="header-row-top">
-                <div class="header-top-left">
-                    <div class="header-logo-mark" title="SpotSense Poker Trainer" role="img"
-                        aria-label="SpotSense Poker Trainer">
-                        <img class="brand-logo-img header-brand-logo" src="logo-transparent.png" alt="">
-                    </div>
-                </div>
-                <div class="header-top-center">
-                    <nav id="top-level-tabs" class="top-level-tabs" aria-label="Training sections">
-                        <button id="tab-plan" class="top-level-tab" type="button" onclick="setActiveTab('plan')"
-                            data-app-tab="plan" data-i18n="appTabPlan">Home</button>
-                        <button id="tab-practice" class="top-level-tab active" type="button"
-                            onclick="setActiveTab('practice')" data-app-tab="practice"
-                            data-i18n="appTabPractice">Drills</button>
-                        <button id="tab-review" class="top-level-tab" type="button" onclick="setActiveTab('review')"
-                            data-app-tab="review" data-i18n="appTabReview">Review</button>
-                        <button id="tab-progress" class="top-level-tab" type="button"
-                            onclick="setActiveTab('progress')" data-app-tab="progress"
-                            data-i18n="appTabProgress">Stats</button>
-                    </nav>
-                </div>
-                <div class="header-top-right">
-                    <button class="btn-icon" onclick="toggleInfoModal()" title="Poker Rules &amp; Info"
-                        aria-label="Poker Rules and Info">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <line x1="12" y1="16" x2="12" y2="12" />
-                            <line x1="12" y1="8" x2="12.01" y2="8" />
-                        </svg>
-                    </button>
-                    <div class="language-picker">
-                        <select id="language-select" class="language-select" onchange="setLanguage(this.value)"
-                            aria-label="Language">
-                            <option value="en">EN</option>
-                            <option value="zh-TW">TW</option>
-                            <option value="zh-CN">CN</option>
-                            <option value="ja">JA</option>
-                            <option value="ko">KO</option>
-                            <option value="es">ES</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
             <div class="header-row-bottom">
                 <div id="header-mode-control" class="header-mode-control">
                     <select id="mode-selector" class="mode-select" onchange="changeMode(this.value)"
@@ -801,6 +757,19 @@
                             <h4 data-i18n="supportPrivacyPolicyTitle">Privacy Policy</h4>
                             <p data-i18n="supportPrivacyBody">Progress, drills, ranges, and assessment data are stored locally in this browser.</p>
                         </div>
+                        <div class="support-copy-block trust-settings-panel">
+                            <h4 data-i18n="backupSettingsTitle">Backup & Data</h4>
+                            <p data-i18n="backupSettingsBody">Export or import a complete local backup including settings, ranges, drills, review queue, and training events.</p>
+                            <div class="support-actions">
+                                <button class="btn-range-action" type="button" onclick="exportBackup()"
+                                    data-i18n="backupExportCta">Export Backup</button>
+                                <button class="btn-range-action btn-range-clear" type="button"
+                                    onclick="document.getElementById('backup-import-input').click()"
+                                    data-i18n="backupImportCta">Import Backup</button>
+                                <input id="backup-import-input" class="hidden" type="file" accept="application/json,.json"
+                                onchange="importBackupFromFile(this.files && this.files[0])">
+                            </div>
+                        </div>
                     </section>
                 </div>
             </div>
@@ -999,9 +968,9 @@
 
     <div id="toast-container"></div>
 
-    <script src="ad-config.js"></script>
-    <script src="i18n.js"></script>
-    <script src="script.js"></script>
+    <script src="ad-config.js" defer></script>
+    <script src="i18n.js" defer></script>
+    <script src="script.js" defer></script>
     <script>
         (function () {
             var splash = document.getElementById('splash-screen');
