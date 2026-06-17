@@ -385,6 +385,52 @@ const STRATEGY_PACKS = {
     }
 };
 
+function buildChartComboNames() {
+    const combos = [];
+    for (let i = 0; i < CHART_RANKS.length; i++) {
+        for (let j = 0; j < CHART_RANKS.length; j++) {
+            const r1 = CHART_RANKS[i], r2 = CHART_RANKS[j];
+            if (i === j) {
+                combos.push(r1 + r2);
+            } else if (j > i) {
+                combos.push(r1 + r2 + 's');
+            } else {
+                combos.push(r2 + r1 + 'o');
+            }
+        }
+    }
+    return combos;
+}
+
+const CHART_COMBO_NAMES = Object.freeze(buildChartComboNames());
+
+function completeAllStreetComboActions(comboActions = {}, defaultAction = 'Fold') {
+    const normalized = {};
+    const covered = new Set();
+    Object.entries(comboActions || {}).forEach(([action, combos]) => {
+        normalized[action] = Array.from(new Set(Array.isArray(combos) ? combos : []));
+        normalized[action].forEach(combo => {
+            if (CHART_COMBO_NAMES.includes(combo)) covered.add(combo);
+        });
+    });
+    const fallbackAction = normalized[defaultAction] ? defaultAction : 'Fold';
+    if (!normalized[fallbackAction]) normalized[fallbackAction] = [];
+    const remaining = CHART_COMBO_NAMES.filter(combo => !covered.has(combo));
+    normalized[fallbackAction] = Array.from(new Set([...normalized[fallbackAction], ...remaining]));
+    return normalized;
+}
+
+function makeAllStreetScenario(input) {
+    return {
+        version: 1,
+        packId: ALL_STREET_PACKS.cash100.id,
+        effectiveStackBb: 94,
+        spr: 14.46,
+        defaultAction: 'Fold',
+        ...input
+    };
+}
+
 const ALL_STREET_SCENARIOS = Object.freeze([
     {
         id: 'starter_flop_cbet_a72r',
@@ -560,18 +606,315 @@ const ALL_STREET_SCENARIOS = Object.freeze([
             Fold: ['K9s', 'Q9s', '98s', '76s']
         },
         explanation: 'Against polarized overbets, start with pot odds, then keep hands that block value or unblock missed draws. Medium-strength hands without useful blockers overfold.'
-    }
-]);
+    },
+    makeAllStreetScenario({
+        id: 'starter_flop_cbet_k83r',
+        name: 'Flop C-Bet: K-high static board',
+        template: 'CBET_FLOP',
+        street: 'FLOP',
+        boardCards: ['Kh', '8d', '3c'],
+        boardTexture: ['rainbow', 'disconnected', 'dry', 'static'],
+        heroPosition: 'CO',
+        villainPosition: 'BB',
+        potBb: 6.5,
+        previousAction: ['CO opens 2.5bb', 'BB calls'],
+        availableSizes: ['Check', '33% pot', '66% pot'],
+        availableActions: ['Fold', 'Raise'],
+        actionLabels: { Fold: 'Check', Raise: '33% pot' },
+        comboActions: {
+            Raise: ['AA', 'KK', '88', '33', 'AKs', 'KQs', 'KJs', 'KTs', 'AQs', 'AJs', 'QJs', 'JTs', 'A5s', 'A4s'],
+            Fold: ['76s', '65s', '54s', 'A2o']
+        },
+        explanation: 'Static king-high boards favor the opener but less dramatically than ace-high boards. Use small bets with top-pair value, sets, and blocker-heavy backdoors; check low equity hands.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_flop_cbet_qjt_two_tone',
+        name: 'Flop C-Bet: broadway connected two-tone',
+        template: 'CBET_FLOP',
+        street: 'FLOP',
+        boardCards: ['Qs', 'Jh', 'Ts'],
+        boardTexture: ['broadway-heavy', 'two-tone', 'connected', 'wet'],
+        heroPosition: 'HJ',
+        villainPosition: 'BTN',
+        potBb: 7.5,
+        effectiveStackBb: 92,
+        spr: 12.27,
+        previousAction: ['HJ opens 2.5bb', 'BTN calls'],
+        availableSizes: ['Check', '50% pot', '75% pot'],
+        availableActions: ['Fold', 'Raise'],
+        actionLabels: { Fold: 'Check', Raise: '50% pot' },
+        comboActions: {
+            Raise: ['AA', 'KK', 'QQ', 'JJ', 'TT', 'AKs', 'KQs', 'QJs', 'JTs', 'AsKs', 'AsJs', 'KsTs'],
+            Fold: ['66', '55', '44', 'A5s', '76s']
+        },
+        explanation: 'Very connected broadway flops interact strongly with both ranges. Continue betting polar value and high-equity blockers; check weak one-pair and low-equity underpairs.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_flop_checkraise_t97tt',
+        name: 'Flop Check-Raise: dynamic T-high board',
+        template: 'CHECK_RAISE_FLOP',
+        street: 'FLOP',
+        boardCards: ['Ts', '9s', '7d'],
+        boardTexture: ['two-tone', 'connected', 'wet'],
+        heroPosition: 'BB',
+        villainPosition: 'CO',
+        potBb: 6.5,
+        previousAction: ['CO opens 2.5bb', 'BB calls', 'BB checks', 'CO bets 50% pot'],
+        availableSizes: ['Fold', 'Call', 'Raise 55% pot'],
+        availableActions: ['Fold', 'Call', 'Raise'],
+        actionLabels: { Fold: 'Fold', Call: 'Call', Raise: 'Raise 55%' },
+        comboActions: {
+            Raise: ['TT', '99', '77', 'J8s', '86s', 'T9s', '97s', 'As8s', 'KsQs', 'QsJs'],
+            Call: ['JJ', '88', 'T8s', '98s', '87s', '76s', 'A9s', 'KTs', 'QTs', 'JTs'],
+            Fold: ['A2o', 'K4o', 'Q5o']
+        },
+        explanation: 'Dynamic middling boards give the caller strong two-pair, set, and straight coverage. Check-raise nutted hands and high-equity draws; call hands with showdown value and redraws.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_flop_checkraise_a54r',
+        name: 'Flop Check-Raise: wheel board pressure',
+        template: 'CHECK_RAISE_FLOP',
+        street: 'FLOP',
+        boardCards: ['Ad', '5c', '4h'],
+        boardTexture: ['ace-high', 'rainbow', 'low-card', 'disconnected'],
+        heroPosition: 'BB',
+        villainPosition: 'SB',
+        potBb: 5.5,
+        effectiveStackBb: 96,
+        spr: 17.45,
+        previousAction: ['SB opens 2.5bb', 'BB calls', 'BB checks', 'SB bets 33% pot'],
+        availableSizes: ['Fold', 'Call', 'Raise 55% pot'],
+        availableActions: ['Fold', 'Call', 'Raise'],
+        actionLabels: { Fold: 'Fold', Call: 'Call', Raise: 'Raise 55%' },
+        comboActions: {
+            Raise: ['55', '44', 'A5s', 'A4s', '65s', '54s', '76s', '32s', '63s'],
+            Call: ['AQs', 'AJs', 'ATs', 'A9s', 'A3s', 'A2s', '66', '77', '88', 'K5s'],
+            Fold: ['KJo', 'QTo', 'J9o']
+        },
+        explanation: 'Wheel boards let the big blind represent two-pair, sets, and straight pressure. Raise condensed nutted hands and equity-heavy wheel draws; call stable Ax and pairs.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_turn_barrel_adtd4s8s',
+        name: 'Turn Barrel: ace-high flush pressure',
+        template: 'BARREL_TURN',
+        street: 'TURN',
+        boardCards: ['Ad', 'Td', '4s', '8s'],
+        boardTexture: ['ace-high', 'two-tone', 'draw-completer', 'wet'],
+        heroPosition: 'CO',
+        villainPosition: 'BB',
+        potBb: 14,
+        effectiveStackBb: 84,
+        spr: 6,
+        previousAction: ['CO opens 2.5bb', 'BB calls', 'CO bets 33% pot on flop', 'BB calls'],
+        availableSizes: ['Check', '50% pot', '75% pot'],
+        availableActions: ['Fold', 'Raise'],
+        actionLabels: { Fold: 'Check', Raise: '75% pot' },
+        comboActions: {
+            Raise: ['AA', 'TT', 'AKs', 'AQs', 'AJs', 'ATs', 'A8s', 'AdKd', 'AdQd', 'KdQd', 'QdJd', 'JsTs'],
+            Fold: ['66', '55', 'KJo', 'Q9s']
+        },
+        explanation: 'The turn adds a second flush draw and rewards hands that deny equity while retaining nut advantage. Barrel strong Ax, sets, and nut-draw blockers; check low-equity floats.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_turn_barrel_762k',
+        name: 'Turn Barrel: overcard to low board',
+        template: 'BARREL_TURN',
+        street: 'TURN',
+        boardCards: ['7s', '6s', '2h', 'Kh'],
+        boardTexture: ['two-tone', 'connected', 'wet', 'broadway-heavy'],
+        heroPosition: 'BTN',
+        villainPosition: 'BB',
+        potBb: 13.5,
+        effectiveStackBb: 86,
+        spr: 6.37,
+        previousAction: ['BTN opens 2.5bb', 'BB calls', 'BTN c-bets flop', 'BB calls'],
+        availableSizes: ['Check', '50% pot', '75% pot'],
+        availableActions: ['Fold', 'Raise'],
+        actionLabels: { Fold: 'Check', Raise: '75% pot' },
+        comboActions: {
+            Raise: ['KK', '77', '66', 'AKs', 'KQs', 'KJs', 'AsKs', 'AsQs', 'QsJs', '98s', '85s'],
+            Fold: ['AJo', 'QTo', 'T9o', '44']
+        },
+        explanation: 'A high overcard after a low connected flop shifts some range advantage back to the opener. Barrel top-pair value, sets, and strong spade or straight blockers.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_turn_probe_k739',
+        name: 'Turn Probe: delayed stab on neutral runout',
+        template: 'PROBE_TURN',
+        street: 'TURN',
+        boardCards: ['Kc', '7d', '3s', '9c'],
+        boardTexture: ['medium-card', 'semi-connected', 'two-tone'],
+        heroPosition: 'BB',
+        villainPosition: 'CO',
+        potBb: 6.5,
+        previousAction: ['CO opens 2.5bb', 'BB calls', 'flop checks through'],
+        availableSizes: ['Check', 'Probe 27%', 'Probe 73%'],
+        availableActions: ['Fold', 'Raise'],
+        actionLabels: { Fold: 'Check', Raise: 'Probe 27%' },
+        comboActions: {
+            Raise: ['99', '77', '33', 'K9s', 'K7s', '97s', 'T8s', 'QJs', 'JTs', 'AcQc', 'QcJc'],
+            Fold: ['A2o', 'Q5o', '65o']
+        },
+        explanation: 'After flop checks through, the caller can probe turns that improve their condensed range. Lead improved pairs, two-pair, sets, and equity-denial draws.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_turn_probe_q842',
+        name: 'Turn Probe: low blank after missed c-bet',
+        template: 'PROBE_TURN',
+        street: 'TURN',
+        boardCards: ['Qs', '8s', '4d', '2h'],
+        boardTexture: ['two-tone', 'medium-card', 'semi-connected'],
+        heroPosition: 'BB',
+        villainPosition: 'HJ',
+        potBb: 6.5,
+        previousAction: ['HJ opens 2.5bb', 'BB calls', 'flop checks through'],
+        availableSizes: ['Check', 'Probe 27%', 'Probe 73%'],
+        availableActions: ['Fold', 'Raise'],
+        actionLabels: { Fold: 'Check', Raise: 'Probe 73%' },
+        comboActions: {
+            Raise: ['88', '44', '22', 'Q8s', 'Q4s', '84s', 'AsKs', 'KsJs', 'JsTs', 'T9s'],
+            Fold: ['A5o', 'K7o', 'J6o']
+        },
+        explanation: 'A low blank after a missed c-bet lets the caller pressure capped overcard hands. Use larger probes with value and strong draws; check air that cannot barrel rivers.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_river_bluffcatch_aq964',
+        name: 'River Bluff-Catch: ace-high missed flush',
+        template: 'BLUFF_CATCH_RIVER',
+        street: 'RIVER',
+        boardCards: ['Ah', 'Qs', '9s', '6d', '4c'],
+        boardTexture: ['ace-high', 'two-tone', 'missed-draw-relevant', 'static'],
+        heroPosition: 'BB',
+        villainPosition: 'CO',
+        potBb: 38,
+        effectiveStackBb: 68,
+        spr: 1.79,
+        previousAction: ['CO opens 2.5bb', 'BB calls', 'CO bets flop', 'BB calls', 'turn checks through', 'CO bets river 75% pot'],
+        availableSizes: ['Fold', 'Call'],
+        availableActions: ['Fold', 'Call'],
+        actionLabels: { Fold: 'Fold', Call: 'Call' },
+        comboActions: {
+            Call: ['AQs', 'AJs', 'ATs', 'A9s', 'Q9s', 'KQs', 'QsJs', 'JsTs'],
+            Fold: ['Q8s', 'T9s', '98s', '76s']
+        },
+        explanation: 'When front-door draws miss, bluff-catch with hands that block thin value or unblock missed draws. Fold dominated bluff-catchers with poor blocker interaction.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_river_bluffcatch_98742',
+        name: 'River Bluff-Catch: low straight texture',
+        template: 'BLUFF_CATCH_RIVER',
+        street: 'RIVER',
+        boardCards: ['9c', '8d', '7c', '4s', '2h'],
+        boardTexture: ['connected', 'two-tone', 'missed-draw-relevant'],
+        heroPosition: 'BB',
+        villainPosition: 'BTN',
+        potBb: 44,
+        effectiveStackBb: 62,
+        spr: 1.41,
+        previousAction: ['BTN opens 2.5bb', 'BB calls', 'BTN bets flop', 'BB calls', 'BTN barrels turn', 'BB calls', 'BTN bets river 75% pot'],
+        availableSizes: ['Fold', 'Call'],
+        availableActions: ['Fold', 'Call'],
+        actionLabels: { Fold: 'Fold', Call: 'Call' },
+        comboActions: {
+            Call: ['T9s', '98s', '87s', '97s', '86s', '76s', 'TT', '99', '88'],
+            Fold: ['A9o', 'K8o', 'Q7s', '65s']
+        },
+        explanation: 'On low connected rivers, call hands that retain two-pair, set, or strong pair-plus-blocker properties. Fold one-pair hands that block missed bluffs poorly.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_river_value_k7732',
+        name: 'River Value Bet: paired king-high board',
+        template: 'VALUE_BET_RIVER',
+        street: 'RIVER',
+        boardCards: ['Kh', '7d', '7s', '3c', '2h'],
+        boardTexture: ['paired', 'dry', 'static'],
+        heroPosition: 'BTN',
+        villainPosition: 'BB',
+        potBb: 24,
+        effectiveStackBb: 80,
+        spr: 3.33,
+        previousAction: ['BTN opens 2.5bb', 'BB calls', 'flop checks through', 'BTN bets turn', 'BB calls'],
+        availableSizes: ['Check', 'Value 33%', 'Value 75%'],
+        availableActions: ['Fold', 'Raise'],
+        actionLabels: { Fold: 'Check', Raise: 'Value 33%' },
+        comboActions: {
+            Raise: ['AA', 'KK', 'AKs', 'KQs', 'KJs', 'KTs', 'A7s', '87s', '77', '33', '22'],
+            Fold: ['QJs', 'JTs', 'T9s', '66']
+        },
+        explanation: 'Paired dry rivers let top pair and trips value bet thinly because missed draws and worse bluff-catchers still call. Size smaller with merged value.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_river_value_t9652',
+        name: 'River Value Bet: thin pair value',
+        template: 'VALUE_BET_RIVER',
+        street: 'RIVER',
+        boardCards: ['Td', '9c', '6s', '5h', '2d'],
+        boardTexture: ['connected', 'rainbow', 'static'],
+        heroPosition: 'CO',
+        villainPosition: 'BB',
+        potBb: 30,
+        effectiveStackBb: 74,
+        spr: 2.47,
+        previousAction: ['CO opens 2.5bb', 'BB calls', 'CO bets flop', 'BB calls', 'turn checks through'],
+        availableSizes: ['Check', 'Value 33%', 'Value 75%'],
+        availableActions: ['Fold', 'Raise'],
+        actionLabels: { Fold: 'Check', Raise: 'Value 33%' },
+        comboActions: {
+            Raise: ['TT', '99', '66', '55', 'T9s', 'ATs', 'KTs', 'QTs', 'JTs', '98s', '87s'],
+            Fold: ['AKo', 'AQo', 'KQo', '44']
+        },
+        explanation: 'On stable river runouts, second-tier value hands can bet small when worse pairs and bluff-catchers call often enough. Avoid turning no-showdown overcards into thin value.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_river_facing_overbet_q942j',
+        name: 'Facing Overbet: missed spade river',
+        template: 'FACING_OVERBET',
+        street: 'RIVER',
+        boardCards: ['Qs', '9s', '4h', '2d', 'Jc'],
+        boardTexture: ['two-tone', 'missed-draw-relevant', 'polarized'],
+        heroPosition: 'BB',
+        villainPosition: 'CO',
+        potBb: 48,
+        effectiveStackBb: 60,
+        spr: 1.25,
+        previousAction: ['CO opens 2.5bb', 'BB calls', 'CO bets flop', 'BB calls', 'turn checks through', 'CO overbets river'],
+        availableSizes: ['Fold', 'Call all-in'],
+        availableActions: ['Fold', 'Call'],
+        actionLabels: { Fold: 'Fold', Call: 'Call Jam' },
+        comboActions: {
+            Call: ['QJs', 'KQs', 'AQs', 'J9s', 'T9s', 'QsTs', 'AsQh', 'KsQh'],
+            Fold: ['Q8s', 'K9s', '98s', '76s']
+        },
+        explanation: 'Against river overbets after missed flush draws, keep bluff-catchers that block value or unblock busted draws. Fold dominated queen-x and weak pairs.'
+    }),
+    makeAllStreetScenario({
+        id: 'starter_river_facing_overbet_765ka',
+        name: 'Facing Overbet: range-shifting ace river',
+        template: 'FACING_OVERBET',
+        street: 'RIVER',
+        boardCards: ['7h', '6h', '5c', 'Kd', 'As'],
+        boardTexture: ['connected', 'wet', 'draw-completer', 'polarized'],
+        heroPosition: 'BB',
+        villainPosition: 'BTN',
+        potBb: 56,
+        effectiveStackBb: 54,
+        spr: 0.96,
+        previousAction: ['BTN opens 2.5bb', 'BB calls', 'BTN bets flop', 'BB calls', 'BTN overbets turn', 'BB calls', 'BTN jams river'],
+        availableSizes: ['Fold', 'Call all-in'],
+        availableActions: ['Fold', 'Call'],
+        actionLabels: { Fold: 'Fold', Call: 'Call Jam' },
+        comboActions: {
+            Call: ['87s', '76s', '65s', '54s', '88', '77', '66', '55', 'Ah7h', 'KhQh'],
+            Fold: ['K9s', 'Q7s', 'A4s', '98s']
+        },
+        explanation: 'A high river over a connected low board polarizes the bettor. Call with straights, sets, and key heart blockers; fold one-pair hands without blocker leverage.'
+    })
+].map(scenario => ({
+    ...scenario,
+    comboActions: completeAllStreetComboActions(scenario.comboActions, scenario.defaultAction || 'Fold')
+})));
 
-const ALL_STREET_PRACTICE_ORDER = Object.freeze([
-    'starter_flop_cbet_a72r',
-    'starter_turn_barrel_ksqs5d2c',
-    'starter_river_bluffcatch_jt722',
-    'starter_flop_checkraise_884tt',
-    'starter_turn_probe_9h6h2c8h',
-    'starter_river_value_akq62',
-    'starter_river_facing_overbet_ak6jt'
-]);
+const ALL_STREET_PRACTICE_ORDER = Object.freeze(ALL_STREET_SCENARIOS.map(scenario => scenario.id));
 
 function getLanguageOption(lang) {
     return LANGUAGE_OPTIONS.find(option => option.code === lang) || LANGUAGE_OPTIONS[0];
@@ -1095,7 +1438,45 @@ const CANDY_POKER_HU_SB_PUSH_THRESHOLDS = Object.freeze(
 // ============================================================
 // DEFEND SCENARIOS
 // ============================================================
+const DEFENSE_TIGHT_3BET = ['AA', 'KK', 'QQ', 'AKs', 'AKo'];
+const DEFENSE_VALUE_3BET = ['AA', 'KK', 'QQ', 'JJ', 'AKs', 'AQs', 'AKo'];
+const DEFENSE_LINEAR_3BET = ['AA', 'KK', 'QQ', 'JJ', 'TT', 'AKs', 'AQs', 'AJs', 'KQs', 'AKo', 'AQo'];
+const DEFENSE_SB_3BET_TIGHT = ['AA', 'KK', 'QQ', 'JJ', 'AKs', 'AQs', 'A5s', 'A4s', 'AKo'];
+const DEFENSE_LOW_PAIRS = ['77', '66', '55', '44', '33', '22'];
+const DEFENSE_MID_PAIRS = ['TT', '99', '88'];
+const DEFENSE_SUITED_WHEELS = ['A5s', 'A4s', 'A3s', 'A2s'];
+
 const DEFEND_SCENARIOS = {
+    HJ_VS_UTG: {
+        hero: 'HJ', villain: 'UTG',
+        THREE_BET: new Set(DEFENSE_TIGHT_3BET),
+        CALL: new Set(['JJ', 'TT', '99', '88', 'AQs', 'AJs', 'KQs', 'AQo'])
+    },
+    CO_VS_UTG: {
+        hero: 'CO', villain: 'UTG',
+        THREE_BET: new Set(DEFENSE_VALUE_3BET),
+        CALL: new Set(['TT', '99', '88', '77', 'AQs', 'AJs', 'ATs', 'KQs', 'KJs', 'QJs', 'JTs', 'AQo'])
+    },
+    BTN_VS_UTG: {
+        hero: 'BTN', villain: 'UTG',
+        THREE_BET: new Set(['AA', 'KK', 'QQ', 'JJ', 'TT', 'AKs', 'AQs', 'AKo']),
+        CALL: new Set([...DEFENSE_LOW_PAIRS, '99', '88', 'AJs', 'ATs', 'A5s', 'A4s', 'KQs', 'KJs', 'KTs', 'QJs', 'QTs', 'JTs', 'T9s', 'AQo', 'AJo', 'KQo'])
+    },
+    SB_VS_UTG: {
+        hero: 'SB', villain: 'UTG',
+        THREE_BET: new Set(DEFENSE_SB_3BET_TIGHT),
+        CALL: new Set()
+    },
+    BB_VS_UTG: {
+        hero: 'BB', villain: 'UTG',
+        THREE_BET: new Set(DEFENSE_TIGHT_3BET),
+        CALL: new Set(['JJ', ...DEFENSE_MID_PAIRS, '77', '66', '55', 'AQs', 'AJs', 'ATs', 'KQs', 'KJs', 'QJs', 'JTs', 'T9s', '98s', 'AQo'])
+    },
+    CO_VS_HJ: {
+        hero: 'CO', villain: 'HJ',
+        THREE_BET: new Set(DEFENSE_LINEAR_3BET),
+        CALL: new Set(['99', '88', '77', '66', '55', 'ATs', 'A9s', 'A5s', 'KJs', 'KTs', 'QJs', 'QTs', 'JTs', 'T9s', '98s', 'AJo', 'KQo'])
+    },
     BTN_VS_CO: {
         hero: 'BTN', villain: 'CO',
         THREE_BET: new Set(['AA', 'KK', 'QQ', 'JJ', 'TT', 'AKs', 'AQs', 'AJs', 'KQs', 'AKo', 'AQo']),
@@ -1105,6 +1486,26 @@ const DEFEND_SCENARIOS = {
         hero: 'BTN', villain: 'HJ',
         THREE_BET: new Set(['AA', 'KK', 'QQ', 'JJ', 'TT', 'AKs', 'AQs', 'AJs', 'KQs', 'AKo', 'AQo']),
         CALL: new Set(['99', '88', '77', '66', '55', '44', '33', '22', 'ATs', 'A9s', 'A8s', 'A7s', 'A6s', 'A5s', 'KJs', 'KTs', 'K9s', 'QJs', 'QTs', 'Q9s', 'JTs', 'J9s', 'T9s', '98s', '87s', '76s', 'AJo', 'ATo', 'KQo', 'KJo'])
+    },
+    SB_VS_HJ: {
+        hero: 'SB', villain: 'HJ',
+        THREE_BET: new Set(['AA', 'KK', 'QQ', 'JJ', 'TT', 'AKs', 'AQs', 'AJs', 'KQs', 'A5s', 'A4s', 'AKo', 'AQo']),
+        CALL: new Set()
+    },
+    BB_VS_HJ: {
+        hero: 'BB', villain: 'HJ',
+        THREE_BET: new Set(['AA', 'KK', 'QQ', 'JJ', 'AKs', 'AQs', 'A5s', 'AKo']),
+        CALL: new Set(['TT', '99', '88', '77', '66', '55', '44', '33', '22', 'AJs', 'ATs', 'A9s', ...DEFENSE_SUITED_WHEELS, 'KQs', 'KJs', 'KTs', 'QJs', 'QTs', 'JTs', 'J9s', 'T9s', '98s', '87s', 'AQo', 'AJo', 'KQo'])
+    },
+    SB_VS_CO: {
+        hero: 'SB', villain: 'CO',
+        THREE_BET: new Set(['AA', 'KK', 'QQ', 'JJ', 'TT', '99', 'AKs', 'AQs', 'AJs', 'ATs', 'KQs', 'KJs', 'A5s', 'A4s', 'A3s', 'AKo', 'AQo', 'AJo', 'KQo']),
+        CALL: new Set()
+    },
+    BB_VS_CO: {
+        hero: 'BB', villain: 'CO',
+        THREE_BET: new Set(['AA', 'KK', 'QQ', 'JJ', 'AKs', 'AQs', 'AJs', 'A5s', 'A4s', 'KQs', 'AKo', 'AQo']),
+        CALL: new Set(['TT', '99', '88', '77', '66', '55', '44', '33', '22', 'ATs', 'A9s', 'A8s', 'A7s', 'A6s', ...DEFENSE_SUITED_WHEELS, 'KJs', 'KTs', 'K9s', 'QJs', 'QTs', 'Q9s', 'JTs', 'J9s', 'T9s', 'T8s', '98s', '87s', '76s', '65s', 'AJo', 'ATo', 'KQo', 'KJo', 'QJo'])
     },
     BB_VS_BTN: {
         hero: 'BB', villain: 'BTN',
@@ -1402,6 +1803,9 @@ let state = {
     lang: detectPreferredLanguage(),
     currentStack: '10',
     currentDefendScenario: 'BTN_VS_CO',
+    currentFacingThreeBetScenario: 'CO_VS_BTN',
+    currentFacingThreeBetScenarioIndex: -1,
+    currentFacingThreeBetStack: 100,
     currentCustomDrillId: null,
     currentCustomPracticeType: 'range',
     currentCustomDrillContext: null,
@@ -2228,18 +2632,24 @@ function getRangeSetsFromCompactSourceChart(chart) {
 }
 
 function getDefenseActionFrequencies(scenarioId, combo, scenario = null) {
+    const sc = scenario || DEFEND_SCENARIOS[scenarioId];
+    const fallbackFrequencies = getActionRangeFrequencies(combo, sc && sc.THREE_BET, sc && sc.CALL);
+    const fallbackHasContinue = getPositiveFrequencyActions(fallbackFrequencies).some(action => action !== 'Fold');
     const sourceTable = DEFENSE_ACTION_FREQUENCIES[scenarioId];
     if (sourceTable) {
         const sourced = sourceTable[combo];
-        return normalizeActionFrequencies(sourced || { Fold: 100 }, sourced ? getDominantFrequencyAction(sourced, 'Fold') : 'Fold');
+        const normalized = normalizeActionFrequencies(sourced || { Fold: 100 }, sourced ? getDominantFrequencyAction(sourced, 'Fold') : 'Fold');
+        const sourceHasContinue = getPositiveFrequencyActions(normalized).some(action => action !== 'Fold');
+        return sourceHasContinue || !fallbackHasContinue ? normalized : fallbackFrequencies;
     }
     const greenlineTable = GREENLINE_DEFENSE_ACTION_FREQUENCIES[scenarioId];
     if (greenlineTable) {
         const sourced = getCompactSourceChartFrequencies(greenlineTable, combo);
-        return normalizeActionFrequencies(sourced, getDominantFrequencyAction(sourced, 'Fold'));
+        const normalized = normalizeActionFrequencies(sourced, getDominantFrequencyAction(sourced, 'Fold'));
+        const sourceHasContinue = getPositiveFrequencyActions(normalized).some(action => action !== 'Fold');
+        return sourceHasContinue || !fallbackHasContinue ? normalized : fallbackFrequencies;
     }
-    const sc = scenario || DEFEND_SCENARIOS[scenarioId];
-    return getActionRangeFrequencies(combo, sc && sc.THREE_BET, sc && sc.CALL);
+    return fallbackFrequencies;
 }
 
 function getFacingThreeBetScenarioId(heroPosition, villainPosition) {
@@ -2247,6 +2657,35 @@ function getFacingThreeBetScenarioId(heroPosition, villainPosition) {
     const villain = normalizeChartPosition(villainPosition, '');
     if (!hero || !villain || hero === villain) return '';
     return `${hero}_VS_${villain}`;
+}
+
+function getFacingThreeBetScenarioIds() {
+    return Object.keys(GREENLINE_FACING_THREE_BET_ACTION_FREQUENCIES);
+}
+
+function getFacingThreeBetScenarioPositions(scenarioId) {
+    const [heroPosition, villainPosition] = String(scenarioId || '').split('_VS_');
+    return {
+        heroPosition: normalizeChartPosition(heroPosition, 'CO'),
+        villainPosition: normalizeChartPosition(villainPosition, 'BTN')
+    };
+}
+
+function getCurrentFacingThreeBetScenarioId() {
+    const ids = getFacingThreeBetScenarioIds();
+    return ids.includes(state.currentFacingThreeBetScenario)
+        ? state.currentFacingThreeBetScenario
+        : 'CO_VS_BTN';
+}
+
+function selectNextFacingThreeBetScenario() {
+    const ids = getFacingThreeBetScenarioIds();
+    const currentIndex = Number.isInteger(state.currentFacingThreeBetScenarioIndex)
+        ? state.currentFacingThreeBetScenarioIndex
+        : -1;
+    state.currentFacingThreeBetScenarioIndex = (currentIndex + 1) % ids.length;
+    state.currentFacingThreeBetScenario = ids[state.currentFacingThreeBetScenarioIndex] || 'CO_VS_BTN';
+    return state.currentFacingThreeBetScenario;
 }
 
 function getDefaultFacingThreeBetFallbackRanges() {
@@ -2350,6 +2789,9 @@ function getAllStreetScenarioExplanation(scenario, t = I18N[state.lang] || I18N.
 }
 
 function getFeedbackActionLabel(action) {
+    if (state.currentMode === 'FACING_3BET' && action === 'Raise') {
+        return (I18N[state.lang] || I18N.en).fourBetActionLabel || '4-Bet';
+    }
     if (state.currentMode === 'ALL_STREET') return getAllStreetActionLabel(action, getActiveAllStreetScenario());
     if (state.currentMode === 'CUSTOM') {
         const drill = getActiveCustomDrill();
@@ -3013,18 +3455,7 @@ window.startRecommendedTraining = function () {
         showToast(t.assessmentNoRecommendation || 'Complete the assessment first.', 'info');
         return;
     }
-    if (target === 'FACING_3BET') {
-        const drill = listCustomDrills().find(item => item.type === DRILL_TYPES.FACING_3BET && canTrainCustomDrill(item));
-        if (drill) {
-            state.currentCustomPracticeType = 'drill';
-            state.currentCustomDrillId = drill.id;
-        } else {
-            showToast(t.assessmentThreeBetFallback || 'Facing 3-Bet needs a custom drill. Starting Defense instead.', 'info');
-            closeAssessmentModal();
-            window.startFocusSession();
-            return;
-        }
-    }
+    if (target === 'FACING_3BET') state.currentCustomDrillId = null;
     closeAssessmentModal();
     window.startFocusSession();
 };
@@ -3537,6 +3968,7 @@ function getStackDepthLabel(key, t = I18N[state.lang] || I18N.en) {
 function getEffectiveStackBbForStat(mode, drill = null) {
     if (mode === 'REVIEW' && state.currentReviewItem && state.currentReviewItem.stack) return Number(state.currentReviewItem.stack);
     if (mode === 'PUSH_FOLD') return Number(state.currentStack);
+    if (mode === 'FACING_3BET') return Number(state.currentFacingThreeBetStack) || 100;
     if (mode === 'ALL_STREET') {
         const scenario = getActiveAllStreetScenario();
         return scenario && Number(scenario.effectiveStackBb) > 0 ? Number(scenario.effectiveStackBb) : 100;
@@ -3940,6 +4372,7 @@ function getAdaptiveComboMultiplier(combo) {
     if (state.currentMode === 'RFI' && priorities.includes('RFI') && rfiEdgeCombos.has(combo)) return 1.45;
     if (state.currentMode === 'DEFEND' && priorities.includes('DEFEND') && defenseCombos.has(combo)) return 1.45;
     if (state.currentMode === 'PUSH_FOLD' && priorities.includes('PUSH_FOLD') && pushCombos.has(combo)) return 1.45;
+    if (state.currentMode === 'FACING_3BET' && priorities.includes('FACING_3BET') && defenseCombos.has(combo)) return 1.45;
     if (state.currentMode === 'CUSTOM' && priorities.includes('FACING_3BET') && defenseCombos.has(combo)) return 1.45;
     return 1;
 }
@@ -4364,6 +4797,7 @@ function getMistakeLabel(mode, position, correctAction) {
     const t = I18N[state.lang] || I18N.en;
     if (mode === 'RFI') return `${t.assessmentLeakRfi || 'Opening range discipline'} (${position})`;
     if (mode === 'DEFEND') return `${t.assessmentLeakDefense || 'Facing opens'} (${correctAction})`;
+    if (mode === 'FACING_3BET') return `${t.assessmentLeakThreeBet || 'Facing 3-bets'} (${correctAction})`;
     if (mode === 'PUSH_FOLD') return `${t.assessmentLeakShortStack || 'Short-stack push/fold decisions'} (${position})`;
     if (mode === 'ALL_STREET') return `${t.assessmentLeakPostflop || 'Postflop sizing and texture'} (${getFeedbackActionLabel(correctAction)})`;
     if (mode === 'CUSTOM') return `${t.assessmentLeakThreeBet || 'Facing 3-bets'} (${correctAction})`;
@@ -4643,16 +5077,9 @@ function getCurrentTrainingPlan() {
         : getAssessmentPlan({ experience: 'beginner', gameType: 'cash', stackFocus: 'deep', confidence: 'medium' });
 }
 
-function resolvePlanTrainingTarget(target, quiet = false) {
-    const t = I18N[state.lang] || I18N.en;
+function resolvePlanTrainingTarget(target) {
     const planTarget = target || 'RFI';
-    if (planTarget === 'FACING_3BET') {
-        const drill = listCustomDrills().find(item => item.type === DRILL_TYPES.FACING_3BET && canTrainCustomDrill(item));
-        if (drill) return { mode: 'CUSTOM', target: planTarget, drillId: drill.id };
-        if (!quiet) showToast(t.assessmentThreeBetFallback || 'Facing 3-Bet needs a custom drill. Starting Defense instead.', 'info');
-        return { mode: 'DEFEND', target: 'DEFEND', drillId: null };
-    }
-    const modeMap = { RFI: 'RFI', DEFEND: 'DEFEND', PUSH_FOLD: 'PUSH_FOLD', CUSTOM: 'CUSTOM' };
+    const modeMap = { RFI: 'RFI', DEFEND: 'DEFEND', PUSH_FOLD: 'PUSH_FOLD', FACING_3BET: 'FACING_3BET', CUSTOM: 'CUSTOM' };
     return { mode: modeMap[planTarget] || planTarget || 'RFI', target: planTarget, drillId: null };
 }
 
@@ -5922,8 +6349,20 @@ window.startTodayDrill = function () {
     window.startFocusSession({ activeTab: 'practice' });
 };
 
+function resumePracticeAfterSessionSummary() {
+    const activeTab = document.body && document.body.getAttribute('data-active-tab');
+    if (state.activeTab !== 'practice' && activeTab !== 'practice') return;
+    if (state.pendingCompletion && state.pendingCompletion.type === 'session-summary') {
+        state.pendingCompletion = null;
+    }
+    if (state.diagnosticSession && state.diagnosticSession.pendingCompletion) return;
+    startTurn();
+    setDecisionControlsLocked(false);
+}
+
 window.closeSessionSummary = function () {
     hideSessionSummaryModal();
+    resumePracticeAfterSessionSummary();
     renderPersonalizedDashboard();
 };
 
@@ -6056,6 +6495,7 @@ function evaluateAction(hand, position) {
     if (state.currentMode === 'RFI') return evaluateRFI(hand, position);
     if (state.currentMode === 'PUSH_FOLD') return evaluatePushFold(hand, position);
     if (state.currentMode === 'DEFEND') return evaluateDefend(hand);
+    if (state.currentMode === 'FACING_3BET') return evaluateFacingThreeBet(hand);
     if (state.currentMode === 'ALL_STREET') return evaluateAllStreet(hand, getCurrentAllStreetScenario());
     if (state.currentMode === 'CUSTOM') {
         const drill = getActiveCustomDrill();
@@ -6242,6 +6682,27 @@ function evaluateDefend(hand) {
     return { action, actionFrequencies: frequencies, acceptableActions, explanation: I18N[state.lang].evalDefendFold(combo, sc.villain, sc.hero) };
 }
 
+function evaluateFacingThreeBet(hand, scenarioId = getCurrentFacingThreeBetScenarioId()) {
+    const combo = getComboName(hand);
+    const { heroPosition, villainPosition } = getFacingThreeBetScenarioPositions(scenarioId);
+    const frequencies = getFacingThreeBetActionFrequencies(heroPosition, villainPosition, combo);
+    const action = getDominantFrequencyAction(frequencies, 'Fold');
+    const acceptableActions = getPositiveFrequencyActions(frequencies);
+    const t = I18N[state.lang] || I18N.en;
+    const actionLabel = action === 'Raise' ? (t.fourBetActionLabel || '4-Bet') : getCoreActionLabel(action);
+    const summary = getActionFrequencySummary(frequencies);
+    const template = t.evalFacingThreeBet
+        || 'Facing {villain} 3-bet after opening {hero}, {combo} should be {action}. Source mix: {summary}.';
+    const explanation = template
+        .replace('{hero}', heroPosition)
+        .replace('{villain}', villainPosition)
+        .replace('{combo}', combo)
+        .replace('{action}', actionLabel)
+        .replace('{summary}', summary)
+        + getMixedFrequencyExplanationSuffix(frequencies);
+    return { action, actionFrequencies: frequencies, acceptableActions, explanation };
+}
+
 // ============================================================
 // DOM ELEMENTS (initialized on load)
 // ============================================================
@@ -6330,6 +6791,11 @@ function updateScenarioUI() {
         const sc = DEFEND_SCENARIOS[state.currentDefendScenario];
         tags = [openSizeTag(2.5)];
         tableModel = buildHeadsUpModel(sc.hero, sc.villain);
+    } else if (state.currentMode === 'FACING_3BET') {
+        const scenarioId = getCurrentFacingThreeBetScenarioId();
+        const { heroPosition, villainPosition } = getFacingThreeBetScenarioPositions(scenarioId);
+        tags = [openSizeTag(2.5), threeBetSizeTag(9), t.modeFacingThreeBetShort || t.drillTypeFacing3Bet || 'Facing 3-Bet'];
+        tableModel = buildHeadsUpModel(heroPosition, villainPosition);
     } else if (state.currentMode === 'CUSTOM') {
         const drill = getActiveCustomDrill();
         if (drill && drill.type === DRILL_TYPES.ALL_STREET) {
@@ -6404,6 +6870,11 @@ function startTurn() {
         state.currentDefendScenario = keys[Math.floor(Math.random() * keys.length)];
         const sc = DEFEND_SCENARIOS[state.currentDefendScenario];
         state.currentPosition = sc.hero;
+    } else if (state.currentMode === 'FACING_3BET') {
+        const scenarioId = selectNextFacingThreeBetScenario();
+        const { heroPosition } = getFacingThreeBetScenarioPositions(scenarioId);
+        state.currentPosition = heroPosition;
+        state.currentFacingThreeBetStack = 100;
     } else if (state.currentMode === 'ALL_STREET') {
         const scenario = selectNextAllStreetScenario();
         state.currentPosition = scenario.heroPosition || 'BTN';
@@ -6488,6 +6959,9 @@ window.handleAction = function (action) {
     // Record stats + adaptive weight
     const activeDrill = state.currentMode === 'CUSTOM' ? getActiveCustomDrill() : null;
     const activeDrillContext = activeDrill ? getCurrentCustomDrillContext(activeDrill) : null;
+    const facingThreeBetContext = state.currentMode === 'FACING_3BET'
+        ? getFacingThreeBetScenarioPositions(getCurrentFacingThreeBetScenarioId())
+        : null;
     const sourceMode = state.currentMode === 'REVIEW' && state.currentReviewItem ? getReviewSourceMode(state.currentReviewItem) : state.currentMode;
     const mistakeLabel = getMistakeLabel(sourceMode, state.currentPosition, state.correctAction);
     recordStat(state.currentPosition, state.currentMode, isCorrect, activeDrill ? activeDrill.id : null, combo);
@@ -6499,7 +6973,11 @@ window.handleAction = function (action) {
             mode: state.currentMode,
             sourceMode,
             spot: sourceMode,
-            stack: state.currentMode === 'PUSH_FOLD' ? state.currentStack : null,
+            stack: state.currentMode === 'PUSH_FOLD'
+                ? state.currentStack
+                : state.currentMode === 'FACING_3BET'
+                    ? state.currentFacingThreeBetStack
+                    : null,
             drillId: activeDrill ? activeDrill.id : null,
             allStreetScenarioId: state.currentMode === 'ALL_STREET'
                 ? state.currentAllStreetScenarioId
@@ -6512,8 +6990,16 @@ window.handleAction = function (action) {
                     ? activeDrillContext.allStreetScenario
                     : null,
             defendScenarioId: state.currentMode === 'DEFEND' ? state.currentDefendScenario : null,
-            heroPosition: activeDrillContext && activeDrillContext.heroPosition ? activeDrillContext.heroPosition : state.currentPosition,
-            villainPosition: activeDrillContext && activeDrillContext.villainPosition ? activeDrillContext.villainPosition : null,
+            heroPosition: activeDrillContext && activeDrillContext.heroPosition
+                ? activeDrillContext.heroPosition
+                : facingThreeBetContext
+                    ? facingThreeBetContext.heroPosition
+                    : state.currentPosition,
+            villainPosition: activeDrillContext && activeDrillContext.villainPosition
+                ? activeDrillContext.villainPosition
+                : facingThreeBetContext
+                    ? facingThreeBetContext.villainPosition
+                    : null,
             openerPosition: activeDrillContext && activeDrillContext.openerPosition ? activeDrillContext.openerPosition : null,
             scenario: scenarioTextEl ? scenarioTextEl.innerText : '',
             userAction: action,
@@ -6534,7 +7020,11 @@ window.handleAction = function (action) {
     // Hand history
     const entry = {
         combo, position: state.currentPosition, mode: state.currentMode,
-        stack: state.currentMode === 'PUSH_FOLD' ? state.currentStack : null,
+        stack: state.currentMode === 'PUSH_FOLD'
+            ? state.currentStack
+            : state.currentMode === 'FACING_3BET'
+                ? state.currentFacingThreeBetStack
+                : null,
         drillId: activeDrill ? activeDrill.id : null,
         allStreetScenarioId: state.currentMode === 'ALL_STREET'
             ? state.currentAllStreetScenarioId
@@ -6667,6 +7157,18 @@ window.changeMode = function (newMode, preserveScore, options = {}) {
         if (stackSelector) stackSelector.classList.add('hidden');
         const customCtrl = document.getElementById('custom-mode-controls');
         if (customCtrl) customCtrl.classList.add('hidden');
+    } else if (newMode === 'FACING_3BET') {
+        document.body.classList.add('theme-defend');
+        coachBadgeEl.innerText = t.badgeFacingThreeBet || t.drillTypeFacing3Bet || 'Facing 3-Bet';
+        coachBadgeEl.style.background = '#4c51bf';
+        coachContentEl.innerHTML = t.coachFacingThreeBet || t.coachDefend;
+        btnCallEl.classList.remove('hidden');
+        btnRaiseEl.classList.remove('hidden');
+        if (btnRaiseEl) btnRaiseEl.innerText = t.fourBetActionLabel || '4-Bet';
+        btnAllInEl.classList.add('hidden');
+        if (stackSelector) stackSelector.classList.add('hidden');
+        const customCtrl = document.getElementById('custom-mode-controls');
+        if (customCtrl) customCtrl.classList.add('hidden');
     } else if (newMode === 'ALL_STREET') {
         document.body.classList.add('theme-allstreet');
         coachBadgeEl.innerText = t.badgeAllStreet || 'Postflop';
@@ -6794,7 +7296,15 @@ window.openStatsModal = function () {
         </tr>`;
     }).join('');
 
-    const modeNames = { RFI: 'RFI (Open)', DEFEND: 'Defense', PUSH_FOLD: 'Push/Fold', CUSTOM: 'Custom', ALL_STREET: t.modeAllStreetShort || 'Postflop', REVIEW: t.modeReviewMistakesShort || 'Review' };
+    const modeNames = {
+        RFI: 'RFI (Open)',
+        DEFEND: 'Defense',
+        FACING_3BET: t.modeFacingThreeBetShort || t.drillTypeFacing3Bet || 'Facing 3-Bet',
+        PUSH_FOLD: 'Push/Fold',
+        CUSTOM: 'Custom',
+        ALL_STREET: t.modeAllStreetShort || 'Postflop',
+        REVIEW: t.modeReviewMistakesShort || 'Review'
+    };
     let modeRows = Object.keys(modeNames).map(m => {
         const d = s.byMode[m] || { hands: 0, correct: 0 };
         const p = pct(d.correct, d.hands);
@@ -8436,6 +8946,16 @@ window.renderChartGrid = function () {
             .replace('{villain}', sc.villain);
         titleHTML = `<div class="modal-header"><h2>${posLabel}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
         legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>3-Bet</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${I18N[state.lang].legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${I18N[state.lang].legendFold}</div></div>`;
+    } else if (state.currentMode === 'FACING_3BET') {
+        const t = I18N[state.lang] || I18N.en;
+        const { heroPosition, villainPosition } = getFacingThreeBetScenarioPositions(getCurrentFacingThreeBetScenarioId());
+        const ranges = getFacingThreeBetRanges(heroPosition, villainPosition);
+        range3Bet = ranges.raise;
+        rangeCall = ranges.call;
+        chartGridOptions = getChartGridOptionsForFacingThreeBet(heroPosition, villainPosition);
+        useActionRanges = true;
+        titleHTML = `<div class="modal-header"><h2>${escapeHtml(`${heroPosition} vs ${villainPosition} 3-Bet`)}</h2><button class="btn-close" onclick="toggleChartModal()">&times;</button></div>`;
+        legendHTML = `<div class="chart-legend"><div class="legend-item"><span class="color-box raise"></span>${t.fourBetActionLabel || '4-Bet'}</div><div class="legend-item" style="display:flex;align-items:center;gap:5px"><div style="width:14px;height:14px;background:#3182ce;border-radius:4px"></div>${t.legendCall}</div><div class="legend-item"><span class="color-box fold"></span>${t.legendFold}</div></div>`;
     } else if (state.currentMode === 'CUSTOM') {
         const drill = getActiveCustomDrill();
         if (!drill && state.diagnosticSession && state.diagnosticSession.active

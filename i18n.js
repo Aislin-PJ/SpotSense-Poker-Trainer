@@ -1229,28 +1229,28 @@ I18N.es = makeI18nPack({
     btnCall: "Pagar",
     btnRaise: "Subir",
     btnAllIn: "All-in",
-    scenarioTitle: "Situacion",
+    scenarioTitle: "Situación",
     waitingHand: "Esperando la siguiente mano...",
     nextHand: "Siguiente mano <span class='btn-hint'>Enter</span>",
     modeRFI: "Modo: RFI (Open raise)",
     modeDefend: "Modo: Defensa",
     modePushFold: "Modo: Push/Fold",
-    modeCustom: "Modo: Practica personalizada",
+    modeCustom: "Modo: Práctica personalizada",
     modeReviewMistakes: "Modo: Revisar errores",
-    modeReviewMistakesShort: "Revision",
-    appTabPractice: "Practica",
+    modeReviewMistakesShort: "Revisión",
+    appTabPractice: "Práctica",
     appTabPlan: "Plan",
     appTabProgress: "Progreso",
-    practiceModeTitle: "Practica manual",
+    practiceModeTitle: "Práctica manual",
     languageLabel: "Idioma",
-    quickStartKicker: "Inicio rapido",
-    quickStartTitle: "Diagnostico rapido",
-    quickStartBody: "Empieza con un diagnostico corto para crear tu primer plan de entrenamiento.",
-    quickStartBodyWithCount: "Empieza con un diagnostico corto de {count} manos para crear tu primer plan de entrenamiento.",
+    quickStartKicker: "Inicio rápido",
+    quickStartTitle: "Diagnóstico rápido",
+    quickStartBody: "Empieza con un diagnóstico corto para crear tu primer plan de entrenamiento.",
+    quickStartBodyWithCount: "Empieza con un diagnóstico corto de {count} manos para crear tu primer plan de entrenamiento.",
     todayDrillKicker: "Entreno de hoy",
     todayDrillCta: "Empezar hoy",
     focusSessionTitle: "Sesion de enfoque",
-    focusSessionCta: "Empezar sesion",
+    focusSessionCta: "Empezar sesión",
     focusSessionMix: "{mix} basado en {leak}.",
     reviewMistakesCta: "Revisar errores ({count})",
     reviewMistakesEmpty: "Revisar errores (0)",
@@ -1266,11 +1266,11 @@ I18N.es = makeI18nPack({
     legendFold: "Fold",
     legend3Bet: "3-Bet (resubida)",
     legendCall: "Call",
-    statsTitle: "Estadisticas detalladas",
+    statsTitle: "Estadísticas detalladas",
     statsReset: "Resetear estadisticas",
-    statsOverallAccuracy: "Precision total",
+    statsOverallAccuracy: "Precisión total",
     statsHands: "manos",
-    statsByPosition: "Por posicion",
+    statsByPosition: "Por posición",
     statsByMode: "Por modo",
     statsByCustomDrill: "Por drill personalizado",
     rangeEditorTitle: "Editor de rangos",
@@ -1282,17 +1282,17 @@ I18N.es = makeI18nPack({
     rangeNameLabel: "Nombre:",
     rangeEditorHelp: "Haz clic en celdas para alternar: Fold → Raise → Call → Fold",
     rangeEditorPurpose: "Usa esta herramienta para visualizar y guardar tus rangos preflop personalizados.",
-    rangeCodeTitle: "Codigo de rango",
-    rangeCodeCurrentLabel: "Codigo actual",
-    rangeCodeCopyFull: "Copiar codigo completo",
+    rangeCodeTitle: "Código de rango",
+    rangeCodeCurrentLabel: "Código actual",
+    rangeCodeCopyFull: "Copiar código completo",
     rangeCodeCopyCompact: "Copiar compacto",
-    rangeCodePasteLabel: "Pegar/importar codigo",
+    rangeCodePasteLabel: "Pegar/importar código",
     rangeCodeInputPlaceholder: "PT1.<payload> o payload de 48 caracteres",
-    rangeCodePreviewEmpty: "Pega un codigo de rango para previsualizarlo.",
-    rangeCodePreviewValid: "Codigo valido: Raise {raise} · Call {call} · Fold {fold}",
+    rangeCodePreviewEmpty: "Pega un código de rango para previsualizarlo.",
+    rangeCodePreviewValid: "Código válido: Raise {raise} · Call {call} · Fold {fold}",
     rangeCodeCounts: "Raise {raise} · Call {call} · Fold {fold}",
     rangeCodeApply: "Aplicar a la grilla",
-    customRangePracticeLabel: "Practica de rango:",
+    customRangePracticeLabel: "Práctica de rango:",
     customDrillsLabel: "Drills:",
     customNoSavedRanges: "No hay rangos guardados.",
     customDrillManagerOpen: "Gestionar drills",
@@ -1309,7 +1309,7 @@ I18N.es = makeI18nPack({
     drillGameTournament: "Torneo",
     drillSaveDraft: "Guardar borrador",
     drillNewDraft: "Nuevo borrador",
-    drillHeroPositionLabel: "Hero abrio",
+    drillHeroPositionLabel: "Hero abrió",
     drillHeroPositionsLabel: "Posiciones de Hero",
     drillOpenerPositionLabel: "Opener",
     drillVillainPositionLabel: "3-bettor",
@@ -1319,10 +1319,10 @@ I18N.es = makeI18nPack({
     drillAnteLabel: "Ante",
     drillRaiseRangeLabel: "Codigo de rango raise/shove",
     drillCallRangeLabel: "Codigo de rango call",
-    assessmentTitle: "Evaluacion de habilidad",
+    assessmentTitle: "Evaluación de habilidad",
     assessmentExperienceLabel: "Experiencia",
     assessmentExperienceBeginner: "Empezando a aprender Texas Hold'em",
-    assessmentExperienceIntermediate: "Comodo con rangos basicos",
+    assessmentExperienceIntermediate: "Cómodo con rangos básicos",
     assessmentExperienceAdvanced: "Avanzado y enfocado en leaks",
     assessmentGameTypeLabel: "Juego principal",
     assessmentGameCash: "Cash",
@@ -1340,50 +1340,50 @@ I18N.es = makeI18nPack({
     assessmentLeakDefense: "Defensa contra opens",
     assessmentLeakShortStack: "Decisiones push/fold short stack",
     assessmentLeakThreeBet: "Contra 3-Bets",
-    assessmentSave: "Guardar evaluacion",
+    assessmentSave: "Guardar evaluación",
     assessmentTrainRecommendation: "Entrenar recomendacion",
     assessmentSkip: "Saltar",
     firstRunSkip: "Saltar configuracion",
     assessmentReset: "Resetear",
-    diagnosticTitle: "Diagnostico",
-    diagnosticStart: "Empezar diagnostico",
+    diagnosticTitle: "Diagnóstico",
+    diagnosticStart: "Empezar diagnóstico",
     diagnosticSummary: "{hands} manos · {accuracy}% · {seconds}s prom.",
-    diagnosticCoach: "<h3>Ronda diagnostica</h3><p>Responde spots mixtos de RFI, defensa, Push/Fold y contra 3-Bet de forma normal.</p>",
+    diagnosticCoach: "<h3>Ronda diagnóstica</h3><p>Responde spots mixtos de RFI, defensa, Push/Fold y contra 3-Bet de forma normal.</p>",
     reviewEmpty: "No hay errores listos para revisar.",
-    sessionSummaryTitle: "Resumen de sesion",
+    sessionSummaryTitle: "Resumen de sesión",
     sessionNextDrill: "Empezar siguiente drill",
     sessionClose: "Cerrar",
     gamificationTitle: "XP y dominio",
     mastery: "Dominio",
     supportTitle: "Apoyar SpotSense",
-    supportMissionTitle: "Mision",
-    supportMissionBody: "Mantener una herramienta de estudio de poker rapida, gratis, offline-first y sin cuentas ni paywalls.",
+    supportMissionTitle: "Misión",
+    supportMissionBody: "Mantener una herramienta de estudio de poker rápida, gratis, offline-first y sin cuentas ni paywalls.",
     supportRoadmapTitle: "Roadmap",
-    supportRoadmapAdaptive: "Entrenamiento adaptativo y diagnosticos",
+    supportRoadmapAdaptive: "Entrenamiento adaptativo y diagnósticos",
     supportRoadmapDrills: "Mas plantillas derivadas de solver",
-    supportRoadmapPolish: "Mejoras PWA movil",
+    supportRoadmapPolish: "Mejoras PWA móvil",
     supportOptionsTitle: "Opciones de apoyo",
     supportOptionsBody: "Comparte feedback, recomienda el trainer o apoya el desarrollo. El entrenamiento sigue gratis.",
     supportPrivacyTitle: "Privacidad",
     supportPrivacyBody: "Progreso, drills, rangos y evaluaciones se guardan localmente en este navegador.",
     handHistoryTitle: "Historial de manos",
-    historyEmpty: "Aun no hay manos jugadas.",
+    historyEmpty: "Aún no hay manos jugadas.",
     kbdHint: "Teclas: C Pasar / Space Foldear / M Pagar / Enter Subir",
     stackLabel: "Stack:",
     rulesTitle: "Reglas y estrategia de poker",
-    positionTitle: "Posicion (orden de accion)",
-    positionDesc: "En poker, el orden de accion rota cada mano. Cuanto mas tarde actuas, mas informacion tienes sobre tus rivales.",
-    utgDesc: "<strong>UTG (Under the Gun):</strong> Actua primero y no tiene informacion. Debe jugar manos muy fuertes como AA, KK y AKs.",
-    hjCoDesc: "<strong>HJ (Hijack) & CO (Cutoff):</strong> Posiciones medias/tardias. Pueden abrir manos algo mas debiles.",
-    btnDesc: "<strong>BTN (Button):</strong> Actua ultimo postflop. Es la posicion mas fuerte y puede robar ciegas con rango amplio.",
+    positionTitle: "Posición (orden de acción)",
+    positionDesc: "En poker, el orden de acción rota cada mano. Cuanto más tarde actúas, más información tienes sobre tus rivales.",
+    utgDesc: "<strong>UTG (Under the Gun):</strong> Actúa primero y no tiene información. Debe jugar manos muy fuertes como AA, KK y AKs.",
+    hjCoDesc: "<strong>HJ (Hijack) & CO (Cutoff):</strong> Posiciones medias/tardías. Pueden abrir manos algo más débiles.",
+    btnDesc: "<strong>BTN (Button):</strong> Actúa último postflop. Es la posición más fuerte y puede robar ciegas con rango amplio.",
     sbBbDesc: "<strong>SB (Small Blind) & BB (Big Blind):</strong> Pagan ciegas antes del reparto y suelen actuar primero postflop.",
     preflopStratTitle: "Estrategia preflop",
     preflopStratDesc: "Cuando todos foldean hasta ti, decides entre <strong>Fold</strong> y <strong>Raise First In (RFI)</strong>. Limpear suele ser una mala estrategia para principiantes. Sube para tomar la iniciativa o foldea.",
     advStratTitle: "Conceptos avanzados",
-    advUtgDesc: "<strong>Rango tight en UTG:</strong> Under the Gun tiene una gran desventaja de informacion. Debes jugar muy tight porque toda la mesa actua detras.",
+    advUtgDesc: "<strong>Rango tight en UTG:</strong> Under the Gun tiene una gran desventaja de información. Debes jugar muy tight porque toda la mesa actúa detrás.",
     adv3BetDesc: "<strong>Contra 3-Bets:</strong> Un 3-Bet es una resubida preflop. Si abres UTG y enfrentas 3-bet, el rival suele tener un rango fuerte; defiende con cuidado o haz 4-Bet con premiums.",
     advImpliedDesc: "<strong>Odds implicitas:</strong> Dinero que esperas ganar despues de ligar una mano grande, como set con pocket pair.",
-    handRanksTitle: "Ranking basico de manos",
+    handRanksTitle: "Ranking básico de manos",
     rankRoyal: "<strong>Escalera real:</strong> A K Q J T del mismo palo",
     rankStrFlush: "<strong>Escalera de color:</strong> 9 8 7 6 5 del mismo palo",
     rankQuads: "<strong>Poker:</strong> Q Q Q Q 4",
@@ -1394,27 +1394,27 @@ I18N.es = makeI18nPack({
     rankTwoPair: "<strong>Doble pareja:</strong> J J 9 9 4",
     rankPair: "<strong>Pareja:</strong> A A 8 5 3",
     rankHigh: "<strong>Carta alta:</strong> A K 9 5 2",
-    coachRfi: "<h3>Raise First In (Open)</h3><p>Eres el primer jugador que entra voluntariamente al bote. Construye un rango de open rentable segun tu posicion.</p><ul><li><strong>Early position (UTG):</strong> Muy tight, pares premium y broadways fuertes.</li><li><strong>Late position (BTN):</strong> Mas amplio, puedes robar ciegas con manos especulativas.</li></ul><p><strong>Regla practica:</strong> Si eres first in, normalmente sube. Open-limp casi siempre es un error.</p>",
-    coachDefend: "<h3>Contra una subida (Defense)</h3><p>Un rival ya abrio y mostro fuerza. Decide entre 3-Bet, Call o Fold segun rango, posicion y realizacion de equity.</p>",
+    coachRfi: "<h3>Raise First In (Open)</h3><p>Eres el primer jugador que entra voluntariamente al bote. Construye un rango de open rentable según tu posición.</p><ul><li><strong>Early position (UTG):</strong> Muy tight, pares premium y broadways fuertes.</li><li><strong>Late position (BTN):</strong> Más amplio, puedes robar ciegas con manos especulativas.</li></ul><p><strong>Regla práctica:</strong> Si eres first in, normalmente sube. Open-limp casi siempre es un error.</p>",
+    coachDefend: "<h3>Contra una subida (Defense)</h3><p>Un rival ya abrió y mostró fuerza. Decide entre 3-Bet, Call o Fold según rango, posición y realización de equity.</p>",
     coachPushFold: "<h3>Short stack: Push / Fold</h3><p>En torneos, por debajo de unas 15BB la estrategia se simplifica a pushear o foldear.</p>",
-    coachCustom: "<h3>Practica personalizada</h3><p>Entrena contra rangos creados en el editor de rangos.</p>",
+    coachCustom: "<h3>Práctica personalizada</h3><p>Entrena contra rangos creados en el editor de rangos.</p>",
     scenarioRfi: (hand, pos) => `Recibes ${hand}. Eres first in en ${pos}.`,
     scenarioPush: (hand, pos, stack) => `Recibes ${hand}. Tienes ${stack || 10}bb en ${pos}.`,
-    scenarioDefend: (hand) => `Recibes ${hand}. CO sube a 2.5bb. Estas en BTN.`,
-    scenarioDefendFull: (hand, villain, hero) => `Recibes ${hand}. ${villain} sube a 2.5bb. Estas en ${hero}.`,
+    scenarioDefend: (hand) => `Recibes ${hand}. CO sube a 2.5bb. Estás en BTN.`,
+    scenarioDefendFull: (hand, villain, hero) => `Recibes ${hand}. ${villain} sube a 2.5bb. Estás en ${hero}.`,
     scenarioFacing3BetDrill: "Recibes {combo}. {hero} abre a {openSize}bb, {villain} hace 3-Bet a {threeBetSize}bb. Stack efectivo: {stack}bb.",
     scenarioRfiDrill: "Recibes {combo}. Eres first in desde {hero}.{note}",
-    scenarioDefenseDrill: "Recibes {combo}. {opener} abre a {openSize}bb. Estas en {hero}.",
+    scenarioDefenseDrill: "Recibes {combo}. {opener} abre a {openSize}bb. Estás en {hero}.",
     scenarioPushFoldDrill: "Recibes {combo}. Tienes {stack}bb en {hero}.{ante}",
     evalRfiUtgRaise: (combo) => `En UTG, ${combo} es suficientemente fuerte para jugar. UTG exige rango tight; sube para tomar la iniciativa.`,
-    evalRfiRaise: (pos, combo) => `En ${pos}, ${combo} esta dentro de tu rango de open. Sube a 2.5bb-3bb.`,
+    evalRfiRaise: (pos, combo) => `En ${pos}, ${combo} está dentro de tu rango de open. Sube a 2.5bb-3bb.`,
     evalRfiUtgFold: (combo) => `En UTG, ${combo} es fold. Mantente disciplinado para evitar desventaja postflop.`,
     evalRfiFold: (pos, combo) => `En ${pos}, ${combo} normalmente es fold como mano de open.`,
     evalPush: (pos, combo, stack) => `Con ${stack || 10}bb en ${pos}, ${combo} es un shove All-In rentable por fold equity y equity de cartas.`,
     evalPushFold: (pos, combo, stack) => `Con ${stack || 10}bb en ${pos}, ${combo} no tiene suficiente equity para pushear de forma rentable. Foldea.`,
     evalDefendRaise: (combo, villain, hero) => `Contra la subida de ${villain}, ${combo} en ${hero} es suficientemente fuerte para 3-Bet por valor.`,
     evalDefendCall: (combo, villain, hero) => `Contra la subida de ${villain}, ${combo} en ${hero} puede pagar para ver flop por equity y jugabilidad.`,
-    evalDefendFold: (combo, villain, hero) => `Contra la subida de ${villain}, ${combo} en ${hero} es demasiado debil para continuar. Foldea.`,
+    evalDefendFold: (combo, villain, hero) => `Contra la subida de ${villain}, ${combo} en ${hero} es demasiado débil para continuar. Foldea.`,
     evalCustomDrill: "{name}: {combo} es {action}.{note}",
     evalFacing3BetDrill: "{name}: {combo} es {action}.{note}",
     evalDrillUnsupported: "Este tipo de drill aun no se puede entrenar.",
@@ -2011,17 +2011,17 @@ const COACH_CONTENT_UPGRADES = {
     es: {
         diagnosticCoach: `
             <div class="coach-framework">
-                <h3>Ronda diagnostica: encuentra tus leaks</h3>
-                <p class="coach-summary">Responde spots mixtos de RFI, Defense, Push/Fold y Facing 3-Bet a velocidad normal. El objetivo es detectar que familia de decisiones te cuesta fichas.</p>
+                <h3>Ronda diagnóstica: encuentra tus leaks</h3>
+                <p class="coach-summary">Responde spots mixtos de RFI, Defense, Push/Fold y Facing 3-Bet a velocidad normal. El objetivo es detectar qué familia de decisiones te cuesta fichas.</p>
                 <div class="coach-section">
                     <p class="coach-section-title">Como usarlo</p>
                     <ol class="coach-process">
                         <li>Clasifica primero el spot: RFI, Defense, Push/Fold o Facing 3-Bet.</li>
-                        <li>Antes de hacer clic, nombra la variable clave: posicion, stack depth, blocker o playability.</li>
-                        <li>Despues de la ronda, entrena la familia mas debil en vez de manos aleatorias.</li>
+                        <li>Antes de hacer clic, nombra la variable clave: posición, stack depth, blocker o playability.</li>
+                        <li>Después de la ronda, entrena la familia más débil en vez de manos aleatorias.</li>
                     </ol>
                 </div>
-                <p class="coach-micro-goal"><strong>Objetivo del drill:</strong> Crear un leak map y mejorar una familia de decisiones en precision y velocidad.</p>
+                <p class="coach-micro-goal"><strong>Objetivo del drill:</strong> Crear un leak map y mejorar una familia de decisiones en precisión y velocidad.</p>
             </div>
         `,
         coachReviewMistakes: `
@@ -2031,9 +2031,9 @@ const COACH_CONTENT_UPGRADES = {
                 <div class="coach-section">
                     <p class="coach-section-title">Proceso de repaso</p>
                     <ol class="coach-process">
-                        <li>Di el spot original: posicion, accion previa, stack y hand class.</li>
+                        <li>Di el spot original: posición, acción previa, stack y hand class.</li>
                         <li>Elige la regla perdida: rango demasiado amplio, mal candidato de 3-Bet, demasiada defensa de ciegas o ignorar fold equity.</li>
-                        <li>Responde solo cuando puedas explicar por que la accion correcta gana a la alternativa.</li>
+                        <li>Responde solo cuando puedas explicar por qué la acción correcta gana a la alternativa.</li>
                     </ol>
                 </div>
                 <p class="coach-micro-goal"><strong>Objetivo del drill:</strong> Convertir cada fallo en una regla reutilizable, no en un combo memorizado.</p>
@@ -2044,11 +2044,11 @@ const COACH_CONTENT_UPGRADES = {
                 <h3>RFI: disciplina first-in</h3>
                 <p class="coach-summary">Cuando todos foldean hasta ti, decide si la mano pertenece al open range rentable de este asiento.</p>
                 <div class="coach-section">
-                    <p class="coach-section-title">Proceso de decision</p>
+                    <p class="coach-section-title">Proceso de decisión</p>
                     <ol class="coach-process">
-                        <li><strong>Posicion primero:</strong> UTG/HJ juegan tight; CO/BTN abren mas wide porque quedan menos jugadores para castigarte.</li>
-                        <li><strong>Hand class:</strong> pocket pairs, Ax fuertes, suited broadways y suited connectors ganan valor; offsuit broadways debiles suelen estar dominated.</li>
-                        <li><strong>Manos limite:</strong> BTN puede abrir mas por blind steal value, pero no fuerces marginal opens en UTG.</li>
+                        <li><strong>Posición primero:</strong> UTG/HJ juegan tight; CO/BTN abren más wide porque quedan menos jugadores para castigarte.</li>
+                        <li><strong>Hand class:</strong> pocket pairs, Ax fuertes, suited broadways y suited connectors ganan valor; offsuit broadways débiles suelen estar dominated.</li>
+                        <li><strong>Manos límite:</strong> BTN puede abrir más por blind steal value, pero no fuerces marginal opens en UTG.</li>
                     </ol>
                 </div>
                 <div class="coach-section coach-warning">
@@ -2059,20 +2059,20 @@ const COACH_CONTENT_UPGRADES = {
                         <li>Open-limp en vez de elegir Raise o Fold.</li>
                     </ul>
                 </div>
-                <p class="coach-micro-goal"><strong>Objetivo del drill:</strong> Antes de cada clic, di: posicion, hand class, dominated o playable.</p>
+                <p class="coach-micro-goal"><strong>Objetivo del drill:</strong> Antes de cada clic, di: posición, hand class, dominated o playable.</p>
             </div>
         `,
         coachDefend: `
             <div class="coach-framework">
                 <h3>Defense: separa 3-Bet, Call y Fold</h3>
-                <p class="coach-summary">Enfrentar un open no es solo medir fuerza de mano. Compara rango del opener, posicion, blockers y realizacion de equity.</p>
+                <p class="coach-summary">Enfrentar un open no es solo medir fuerza de mano. Compara rango del opener, posición, blockers y realización de equity.</p>
                 <div class="coach-section">
-                    <p class="coach-section-title">Proceso de decision</p>
+                    <p class="coach-section-title">Proceso de decisión</p>
                     <ol class="coach-process">
-                        <li><strong>Posicion del opener:</strong> UTG abre fuerte; CO/BTN abren mas wide y se pueden atacar con mas frecuencia.</li>
+                        <li><strong>Posición del opener:</strong> UTG abre fuerte; CO/BTN abren más wide y se pueden atacar con más frecuencia.</li>
                         <li><strong>3-Bet por valor o bluff:</strong> premiums por valor; suited Ax y manos con blockers como bluff 3-Bet.</li>
-                        <li><strong>Call solo con realizacion:</strong> flat con manos que juegan bien postflop, sobre todo en posicion. SB debe foldear o 3-betear mas porque esta OOP.</li>
-                        <li><strong>Descuento de BB:</strong> defiende mas wide que otros asientos, pero no conviertas toda mano suited en Call.</li>
+                        <li><strong>Call solo con realización:</strong> flat con manos que juegan bien postflop, sobre todo en posición. SB debe foldear o 3-betear más porque está OOP.</li>
+                        <li><strong>Descuento de BB:</strong> defiende más wide que otros asientos, pero no conviertas toda mano suited en Call.</li>
                     </ol>
                 </div>
                 <div class="coach-section coach-warning">
@@ -2089,12 +2089,12 @@ const COACH_CONTENT_UPGRADES = {
         coachPushFold: `
             <div class="coach-framework">
                 <h3>Push/Fold: compromiso short stack</h3>
-                <p class="coach-summary">Con short stack, la pregunta central es si el shove gana mas EV que Fold. Las subidas pequenas suelen dejarte sin maniobra postflop real.</p>
+                <p class="coach-summary">Con short stack, la pregunta central es si el shove gana más EV que Fold. Las subidas pequeñas suelen dejarte sin maniobra postflop real.</p>
                 <div class="coach-section">
-                    <p class="coach-section-title">Proceso de decision</p>
+                    <p class="coach-section-title">Proceso de decisión</p>
                     <ol class="coach-process">
-                        <li><strong>Stack depth primero:</strong> 15bb, 10bb y 5bb son juegos distintos. Cuanto mas corto, mas importa la fold equity.</li>
-                        <li><strong>La posicion cambia el rango:</strong> early position necesita disciplina; BTN y SB pueden presionar ciegas mas wide.</li>
+                        <li><strong>Stack depth primero:</strong> 15bb, 10bb y 5bb son juegos distintos. Cuanto más corto, más importa la fold equity.</li>
+                        <li><strong>La posición cambia el rango:</strong> early position necesita disciplina; BTN y SB pueden presionar ciegas más wide.</li>
                         <li><strong>Blockers y equity:</strong> pairs, Ax, suited broadways y manos que bloquean calling ranges ganan valor de shove.</li>
                     </ol>
                 </div>
@@ -2106,17 +2106,17 @@ const COACH_CONTENT_UPGRADES = {
                         <li>Foldear demasiado tight porque el All-in incomoda.</li>
                     </ul>
                 </div>
-                <p class="coach-micro-goal"><strong>Objetivo del drill:</strong> Pregunta si esta posicion y stack necesitan fold equity inmediata, no si la mano se ve bonita.</p>
+                <p class="coach-micro-goal"><strong>Objetivo del drill:</strong> Pregunta si esta posición y stack necesitan fold equity inmediata, no si la mano se ve bonita.</p>
             </div>
         `,
         coachCustom: `
             <div class="coach-framework">
                 <h3>Custom Drill: audita tu propio rango</h3>
-                <p class="coach-summary">Usa rangos personalizados para entrenar los spots que estudias o ensenas. El valor esta en encontrar errores de frontera, no en confirmar premiums obvios.</p>
+                <p class="coach-summary">Usa rangos personalizados para entrenar los spots que estudias o enseñas. El valor está en encontrar errores de frontera, no en confirmar premiums obvios.</p>
                 <div class="coach-section">
-                    <p class="coach-section-title">Proceso de decision</p>
+                    <p class="coach-section-title">Proceso de decisión</p>
                     <ol class="coach-process">
-                        <li>Confirma el drill spot: posicion, accion previa, stack y acciones permitidas.</li>
+                        <li>Confirma el drill spot: posición, acción previa, stack y acciones permitidas.</li>
                         <li>Coloca la mano en un bucket: Raise, Call, Fold o All-In.</li>
                         <li>Si fallas, revisa el range editor y ajusta la frontera, nota o assumption.</li>
                     </ol>
@@ -2124,7 +2124,7 @@ const COACH_CONTENT_UPGRADES = {
                 <div class="coach-section coach-warning">
                     <p class="coach-section-title">Leaks comunes</p>
                     <ul class="coach-checklist">
-                        <li>Rangos sin contexto, como stack depth o posicion del opener.</li>
+                        <li>Rangos sin contexto, como stack depth o posición del opener.</li>
                         <li>Call y Raise se solapan sin una razon clara de mixed frequency.</li>
                         <li>Entrenar solo manos fuertes y no probar el edge del rango.</li>
                     </ul>
@@ -2369,40 +2369,40 @@ Object.assign(I18N.ko, {
 
 Object.assign(I18N.es, {
     appTabPlan: "Entrenamiento",
-    appTabProgress: "Revision",
+    appTabProgress: "Revisión",
     reviewTodayWeakness: "Debilidad de hoy",
     reviewRecentImprovement: "Mejora reciente",
-    reviewTopMistakeSpots: "Spots mas fallados",
-    reviewPositionPerformance: "Por posicion",
+    reviewTopMistakeSpots: "Spots más fallados",
+    reviewPositionPerformance: "Por posición",
     reviewStackPerformance: "Por stack",
     reviewSpotPerformance: "Por tipo de spot",
     reviewNoMistakes: "No hay spots de error en cola.",
-    reviewNoBreakdownData: "Aun no hay datos.",
+    reviewNoBreakdownData: "Aún no hay datos.",
     reviewWeaknessEmpty: "Entrena algunas manos para detectar una debilidad.",
-    reviewImprovementEmpty: "Aun no hay tendencia de la semana anterior.",
+    reviewImprovementEmpty: "Aún no hay tendencia de la semana anterior.",
     reviewTrendUp: "+{trend}% vs semana anterior",
     reviewTrendDown: "{trend}% vs semana anterior",
     reviewTrendFlat: "Sin cambio vs semana anterior",
-    reviewTableDimension: "Dimension",
+    reviewTableDimension: "Dimensión",
     reviewStackShort: "Corto · 15bb o menos",
     reviewStackMedium: "Medio · 16-40bb",
     reviewStackDeep: "Deep · 41bb+",
     rangeCodeTitle: "Rango",
-    rangeCodeCurrentLabel: "Codigo listo para pegar",
+    rangeCodeCurrentLabel: "Código listo para pegar",
     rangeCodeCopyRange: "Copiar rango",
     rangeCodePasteLabel: "Pegar rango",
-    rangeCodeInputPlaceholder: "Pega el codigo de rango copiado de 48 caracteres",
+    rangeCodeInputPlaceholder: "Pega el código de rango copiado de 48 caracteres",
     rangeCodePreviewEmpty: "Pega un rango copiado para previsualizarlo.",
     rangeCodeCopied: "Rango copiado.",
-    rangeCodeCopyFallback: "Copia este codigo de rango:",
+    rangeCodeCopyFallback: "Copia este código de rango:",
     supportFeedbackTitle: "Enviar feedback",
-    supportFeedbackBody: "El feedback se envia por email para priorizar arreglos y nuevos drills.",
+    supportFeedbackBody: "El feedback se envía por email para priorizar arreglos y nuevos drills.",
     supportFeedbackEmailLabel: "Email opcional",
     supportFeedbackEmailPlaceholder: "tu@email.com",
     supportFeedbackCategoryLabel: "Tipo de feedback",
     supportFeedbackCategoryBug: "Bug / error",
-    supportFeedbackCategoryFeature: "Sugerencia de funcion",
-    supportFeedbackCategoryStrategy: "Contenido estrategico",
+    supportFeedbackCategoryFeature: "Sugerencia de función",
+    supportFeedbackCategoryStrategy: "Contenido estratégico",
     supportFeedbackCategoryOther: "Otro",
     supportFeedbackMessageLabel: "Detalle del feedback",
     supportFeedbackLabel: "Tu feedback",
@@ -2410,12 +2410,12 @@ Object.assign(I18N.es, {
     supportFeedbackCta: "Enviar feedback",
     supportFeedbackEmpty: "Escribe feedback antes de enviarlo.",
     supportFeedbackThanks: "Feedback enviado. Gracias por ayudar a mejorar SpotSense.",
-    supportFeedbackError: "No se pudo enviar el feedback. Intentalo de nuevo cuando estes online.",
+    supportFeedbackError: "No se pudo enviar el feedback. Inténtalo de nuevo cuando estés online.",
     supportOptionsTitle: "Opciones de apoyo",
     supportOptionsBody: "Recomienda el trainer o apoya el desarrollo. El entrenamiento sigue gratis.",
     scenarioTagFirstIn: "First in",
     scenarioTagOpen: "abre",
-    scenarioTagReview: "Revision",
+    scenarioTagReview: "Revisión",
     tableInfoHero: "Hero",
     tableInfoVillain: "Rival",
     tableInfoPot: "Bote",
@@ -2505,6 +2505,12 @@ Object.assign(I18N.es, {
 });
 
 Object.values(I18N).forEach(pack => Object.assign(pack, {
+    modeFacingThreeBet: pack.modeFacingThreeBet || "Mode: Facing 3-Bet",
+    modeFacingThreeBetShort: pack.modeFacingThreeBetShort || "Facing 3-Bet",
+    badgeFacingThreeBet: pack.badgeFacingThreeBet || "Facing 3-Bet",
+    fourBetActionLabel: pack.fourBetActionLabel || "4-Bet",
+    coachFacingThreeBet: pack.coachFacingThreeBet || "<div class=\"coach-framework\"><h3>Facing 3-Bet</h3><p class=\"coach-summary\">Train the response after you open and a later position 3-bets. Decide between 4-betting, calling, and folding using position, blockers, and stack depth.</p><div class=\"coach-section\"><p class=\"coach-section-title\">Decision process</p><ol class=\"coach-process\"><li>Start with opener position versus 3-bettor position.</li><li>Separate value 4-bets, playable calls, blocker bluffs, and hands that are dominated too often.</li></ol></div><p class=\"coach-micro-goal\"><strong>Practice target:</strong> Classify the hand before clicking: value 4-bet, call, bluff candidate, or fold.</p></div>",
+    evalFacingThreeBet: pack.evalFacingThreeBet || "Facing {villain} 3-bet after opening {hero}, {combo} should be {action}. Source mix: {summary}.",
     modeAllStreet: pack.modeAllStreet || "Mode: Postflop",
     modeAllStreetShort: pack.modeAllStreetShort || "Postflop",
     badgeAllStreet: pack.badgeAllStreet || "Postflop",
@@ -2539,6 +2545,38 @@ Object.values(I18N).forEach(pack => Object.assign(pack, {
     coachAllStreet: pack.coachAllStreet || "<div class=\"coach-framework\"><h3>Postflop Starter Pack</h3><p class=\"coach-summary\">Train one flop, turn, and river decision using board texture, pot, SPR, and sizing context.</p><div class=\"coach-section\"><p class=\"coach-section-title\">Decision process</p><ol class=\"coach-process\"><li>Read the board texture and action line before looking at the hand.</li><li>Use range advantage, nut advantage, blockers, and equity realization to choose the action.</li></ol></div><p class=\"coach-micro-goal\"><strong>Practice target:</strong> Name the board texture and sizing reason before clicking.</p></div>",
     coachAllStreetGlossary: pack.coachAllStreetGlossary || "<div class=\"coach-section\"><p class=\"coach-section-title\">Beginner terms</p><ul class=\"coach-checklist\"><li><strong>Hero / Opponent:</strong> Hero is your seat. Position tells who acts with more information after the flop; BTN usually acts last.</li><li><strong>SPR:</strong> Effective stack divided by pot. High SPR leaves room for multi-street play; low SPR reaches stack-commitment decisions faster.</li><li><strong>Dry board:</strong> Few straight or flush draws, such as A-7-2 rainbow. These boards often support smaller, frequent continuation bets.</li></ul></div>"
 }));
+
+Object.assign(I18N["zh-TW"], {
+    modeFacingThreeBet: "模式：面對 3-Bet",
+    modeFacingThreeBetShort: "面對 3-Bet",
+    badgeFacingThreeBet: "面對 3-Bet",
+    coachFacingThreeBet: "<div class=\"coach-framework\"><h3>面對 3-Bet</h3><p class=\"coach-summary\">訓練你 open 後被後位 3-Bet 時的回應。用位置、blocker 與 stack depth 判斷要 4-Bet、Call 或 Fold。</p><div class=\"coach-section\"><p class=\"coach-section-title\">決策流程</p><ol class=\"coach-process\"><li>先確認 open 位置與 3-bettor 位置的範圍碰撞。</li><li>分出價值 4-Bet、可實現勝率的 Call、blocker bluff，以及太常被 dominated 的 Fold。</li></ol></div><p class=\"coach-micro-goal\"><strong>練習目標：</strong>點擊前先分類這手牌：value 4-Bet、Call、bluff 候選或 Fold。</p></div>",
+    evalFacingThreeBet: "{hero} open 後面對 {villain} 的 3-Bet，{combo} 應該選擇 {action}。範圍頻率：{summary}。"
+});
+
+Object.assign(I18N.ja, {
+    modeFacingThreeBet: "モード: 3-Bet への対応",
+    modeFacingThreeBetShort: "3-Bet への対応",
+    badgeFacingThreeBet: "3-Bet への対応",
+    coachFacingThreeBet: "<div class=\"coach-framework\"><h3>3-Bet への対応</h3><p class=\"coach-summary\">自分が open した後、後ろのポジションから 3-Bet された場面を練習します。ポジション、blocker、stack depth を使って 4-Bet、Call、Fold を判断します。</p><div class=\"coach-section\"><p class=\"coach-section-title\">判断プロセス</p><ol class=\"coach-process\"><li>open したポジションと 3-bettor のポジションからレンジ同士のぶつかり方を確認する。</li><li>value 4-Bet、実現しやすい Call、blocker bluff、dominated になりやすい Fold を分ける。</li></ol></div><p class=\"coach-micro-goal\"><strong>練習目標:</strong> クリック前にハンドを分類する: value 4-Bet、Call、bluff 候補、Fold。</p></div>",
+    evalFacingThreeBet: "{hero} で open した後に {villain} から 3-Bet された場合、{combo} は {action} が目安です。レンジ頻度: {summary}。"
+});
+
+Object.assign(I18N.ko, {
+    modeFacingThreeBet: "모드: 3-Bet 대응",
+    modeFacingThreeBetShort: "3-Bet 대응",
+    badgeFacingThreeBet: "3-Bet 대응",
+    coachFacingThreeBet: "<div class=\"coach-framework\"><h3>3-Bet 대응</h3><p class=\"coach-summary\">내가 open한 뒤 뒤 포지션에서 3-Bet이 들어온 상황을 훈련합니다. 포지션, blocker, stack depth를 기준으로 4-Bet, Call, Fold를 결정합니다.</p><div class=\"coach-section\"><p class=\"coach-section-title\">의사결정 과정</p><ol class=\"coach-process\"><li>open한 포지션과 3-bettor 포지션의 레인지 충돌을 먼저 확인합니다.</li><li>value 4-Bet, 실현 가능한 Call, blocker bluff, dominated되기 쉬운 Fold를 구분합니다.</li></ol></div><p class=\"coach-micro-goal\"><strong>연습 목표:</strong> 클릭하기 전에 핸드를 value 4-Bet, Call, bluff 후보, Fold로 분류합니다.</p></div>",
+    evalFacingThreeBet: "{hero}에서 open한 뒤 {villain}의 3-Bet을 맞았을 때 {combo}는 {action}이 기준입니다. 레인지 빈도: {summary}."
+});
+
+Object.assign(I18N.es, {
+    modeFacingThreeBet: "Modo: contra 3-Bet",
+    modeFacingThreeBetShort: "Contra 3-Bet",
+    badgeFacingThreeBet: "Contra 3-Bet",
+    coachFacingThreeBet: "<div class=\"coach-framework\"><h3>Contra 3-Bet</h3><p class=\"coach-summary\">Entrena la respuesta después de abrir y recibir un 3-Bet de una posición posterior. Decide entre 4-Bet, Call y Fold usando posición, blockers y stack depth.</p><div class=\"coach-section\"><p class=\"coach-section-title\">Proceso de decisión</p><ol class=\"coach-process\"><li>Empieza por la posición del opener contra la posición del 3-bettor.</li><li>Separa value 4-Bets, Calls jugables, bluff candidates con blockers y manos demasiado dominated.</li></ol></div><p class=\"coach-micro-goal\"><strong>Objetivo del drill:</strong> Clasifica la mano antes de hacer clic: value 4-Bet, Call, bluff candidate o Fold.</p></div>",
+    evalFacingThreeBet: "Tras abrir en {hero} y enfrentar el 3-Bet de {villain}, {combo} debe ser {action}. Mezcla del rango: {summary}."
+});
 
 Object.assign(I18N.en, {
     postflopPotLabel: "Pot",
@@ -2872,7 +2910,7 @@ Object.assign(I18N.es, {
     postflopBoardLabel: "Board",
     postflopLineLabel: "Línea",
     postflopSizesLabel: "Sizings",
-    coachAllStreetGlossary: "<div class=\"coach-section\"><p class=\"coach-section-title\">Terminos para empezar</p><ul class=\"coach-checklist\"><li><strong>Hero / Rival:</strong> Hero es tu asiento. La posicion indica quien actua con mas informacion postflop; BTN normalmente actua ultimo.</li><li><strong>SPR:</strong> Stack efectivo dividido por el bote. SPR alto deja mas juego en varias calles; SPR bajo acerca antes las decisiones de jugar por todo el stack.</li><li><strong>Board seco:</strong> Board con pocos proyectos de escalera o color, como A-7-2 rainbow. Suele permitir c-bets pequenas y frecuentes.</li></ul></div>",
+    coachAllStreetGlossary: "<div class=\"coach-section\"><p class=\"coach-section-title\">Términos para empezar</p><ul class=\"coach-checklist\"><li><strong>Hero / Rival:</strong> Hero es tu asiento. La posición indica quién actúa con más información postflop; BTN normalmente actúa último.</li><li><strong>SPR:</strong> Stack efectivo dividido por el bote. SPR alto deja más juego en varias calles; SPR bajo acerca antes las decisiones de jugar por todo el stack.</li><li><strong>Board seco:</strong> Board con pocos proyectos de escalera o color, como A-7-2 rainbow. Suele permitir c-bets pequeñas y frecuentes.</li></ul></div>",
     postflopActionCheck: "Pasar",
     postflopActionFold: "Foldear",
     postflopActionCall: "Pagar",
@@ -3128,7 +3166,7 @@ Object.assign(I18N.ko, {
 });
 
 Object.assign(I18N.es, {
-    pokerGlossaryTitle: "Terminos de poker",
+    pokerGlossaryTitle: "Términos de poker",
     rulesPageRules: "Reglas y estrategia",
     rulesPageGlossary: "Glosario"
 });
@@ -3180,13 +3218,13 @@ Object.assign(I18N.es, {
     assessmentGameCash: "Juego cash",
     assessmentStackDeep: "Profundo / 80bb+",
     assessmentRecommendationTitle: "Recomendacion inicial",
-    assessmentNoRecommendation: "Completa primero la evaluacion.",
-    diagnosticComplete: "Diagnostico completo.",
+    assessmentNoRecommendation: "Completa primero la evaluación.",
+    diagnosticComplete: "Diagnóstico completo.",
     responseTime: "Tiempo",
     scenarioReviewMistake: "Revisa {combo} de {spot}. Tu respuesta anterior fue {action}.",
     sessionImprovement: "Tendencia por modo",
     sessionTopLeaks: "Siguiente enfoque",
-    sessionNoLeaks: "No hay leaks repetidos en esta sesion.",
+    sessionNoLeaks: "No hay leaks repetidos en esta sesión.",
     gamificationHide: "Ocultar XP y dominio",
     gamificationShow: "Mostrar XP y dominio",
     achievementsTitle: "Logros",
@@ -3203,8 +3241,8 @@ Object.assign(I18N.es, {
     drillRaiseSize75: "Apostar 75%",
     donateSlotBody: "Las donaciones ayudan a mantener el trainer gratis, offline-first y sin cuentas.",
     adSlotTitle: "Nota de patrocinador",
-    adSlotBody: "Una ubicacion de patrocinador de baja frecuencia puede aparecer aqui despues de completar una sesion.",
-    adFrequencyNote: "Los anuncios nunca aparecen durante una decision de mano y tienen un limite de tres por dia.",
+    adSlotBody: "Una ubicación de patrocinador de baja frecuencia puede aparecer aquí después de completar una sesión.",
+    adFrequencyNote: "Los anuncios nunca aparecen durante una decisión de mano y tienen un límite de tres por día.",
     adDismiss: "Cerrar",
     adFreeCta: "Sin anuncios de por vida",
     adFreeActivated: "Preferencia sin anuncios guardada."
@@ -5388,15 +5426,15 @@ Object.assign(I18N.ko, {
 
 Object.assign(I18N.es, {
     statsLifetimeFilter: "Todo",
-    statsSevenDayTrend: "Tendencia de precision de siete dias",
-    positionAccuracyTitle: "Precision por posicion",
-    handAccuracyTitle: "Precision por mano",
+    statsSevenDayTrend: "Tendencia de precisión de siete días",
+    positionAccuracyTitle: "Precisión por posición",
+    handAccuracyTitle: "Precisión por mano",
     handAccuracySubtitle: "{trained}/{total} tipos de mano entrenados",
     handAccuracyMastered: "80%+",
     handAccuracyReview: "60-79%",
     handAccuracyLeak: "<60%",
     handAccuracyNoData: "Sin datos",
-    handAccuracyEmpty: "Entrena mas manos para crear este mapa.",
+    handAccuracyEmpty: "Entrena más manos para crear este mapa.",
     handAccuracyCellLabel: "{combo}: {accuracy}% en {hands} manos",
     handAccuracyCellNoData: "{combo}: sin datos"
 });
@@ -5675,7 +5713,7 @@ Object.assign(I18N.es, {
     appTabPractice: "Drills",
     appTabReview: "Review",
     appTabProgress: "Stats",
-    homeGreetingMorning: "Buenos dias",
+    homeGreetingMorning: "Buenos días",
     homeGreetingAfternoon: "Buenas tardes",
     homeGreetingEvening: "Buenas noches",
     homeReady: "Listo para mejorar hoy?",
@@ -5717,8 +5755,8 @@ Object.assign(I18N.ko, {
 
 Object.assign(I18N.es, {
     appTabPlan: "Hoy",
-    appTabPractice: "Practica",
-    appTabProgress: "Revision",
+    appTabPractice: "Práctica",
+    appTabProgress: "Revisión",
     focusSessionTitle: "Drill de hoy",
     focusSessionCta: "Empezar drill",
     focusSessionMix: "{mix} enfocado en {leak}."
@@ -6009,7 +6047,7 @@ Object.assign(I18N.ko, {
 });
 
 Object.assign(I18N.es, {
-    statsStudioTitle: "Estadisticas de entrenamiento",
+    statsStudioTitle: "Estadísticas de entrenamiento",
     statsResetPanelTitle: "Reset training stats",
     statsResetPanelBody: "Clear lifetime accuracy, hand history, mistake queue, and adaptive weights.",
     confirmStatsResetFinalTitle: "Reset permanently?",
@@ -6474,25 +6512,72 @@ Object.assign(I18N["zh-TW"], {
 
 I18N["zh-CN"] = createSimplifiedChinesePack(I18N["zh-TW"]);
 
+Object.assign(I18N["zh-CN"], {
+    modeFacingThreeBet: "模式：面对 3-Bet",
+    modeFacingThreeBetShort: "面对 3-Bet",
+    badgeFacingThreeBet: "面对 3-Bet",
+    coachFacingThreeBet: "<div class=\"coach-framework\"><h3>面对 3-Bet</h3><p class=\"coach-summary\">训练你 open 后被后位 3-Bet 时的回应。用位置、blocker 与 stack depth 判断要 4-Bet、Call 还是 Fold。</p><div class=\"coach-section\"><p class=\"coach-section-title\">决策流程</p><ol class=\"coach-process\"><li>先确认 open 位置与 3-bettor 位置的范围碰撞。</li><li>分出价值 4-Bet、可实现胜率的 Call、blocker bluff，以及太常被 dominated 的 Fold。</li></ol></div><p class=\"coach-micro-goal\"><strong>练习目标：</strong>点击前先分类这手牌：value 4-Bet、Call、bluff 候选或 Fold。</p></div>",
+    evalFacingThreeBet: "{hero} open 后面对 {villain} 的 3-Bet，{combo} 应该选择 {action}。范围频率：{summary}。"
+});
+
 Object.assign(I18N.ja, {
-    dailyPlanMixLabel: "Daily plan",
-    dailyPlanFocus: "focus",
-    dailyPlanReview: "review",
-    dailyPlanMaintenance: "maintain"
+    dailyPlanMixLabel: "デイリープラン",
+    dailyPlanFocus: "集中",
+    dailyPlanReview: "復習",
+    dailyPlanMaintenance: "維持",
+    dailyPlanDueReviews: "期限到来の復習",
+    dailyPlanRecentMisses: "直近のミス",
+    dailyTemplateRfiEdges: "RFI の境界ハンド",
+    dailyTemplatePosition: "ポジション集中",
+    dailyTemplateMixedFrequencies: "混合頻度のオープン",
+    dailyTemplateDefense: "オープンへのディフェンス",
+    dailyTemplateBroadwayPairs: "ブロードウェイとミドルペア",
+    dailyTemplatePushFold: "ショートスタック push/fold",
+    dailyTemplateStackBuckets: "スタック深度別",
+    dailyTemplateThreeBet: "3-Bet への対応",
+    dailyTemplateContinueRange: "継続レンジの規律",
+    dailyTemplatePostflop: "ポストフロップのボードテクスチャとサイズ",
+    dailyTemplateStreetMix: "フロップ / ターン / リバーのミックス"
 });
 
 Object.assign(I18N.ko, {
-    dailyPlanMixLabel: "Daily plan",
-    dailyPlanFocus: "focus",
-    dailyPlanReview: "review",
-    dailyPlanMaintenance: "maintain"
+    dailyPlanMixLabel: "일일 계획",
+    dailyPlanFocus: "집중",
+    dailyPlanReview: "복습",
+    dailyPlanMaintenance: "유지",
+    dailyPlanDueReviews: "복습 예정",
+    dailyPlanRecentMisses: "최근 실수",
+    dailyTemplateRfiEdges: "RFI 경계 핸드",
+    dailyTemplatePosition: "포지션 집중",
+    dailyTemplateMixedFrequencies: "혼합 빈도 오픈",
+    dailyTemplateDefense: "오픈 방어",
+    dailyTemplateBroadwayPairs: "브로드웨이와 미들 페어",
+    dailyTemplatePushFold: "숏스택 push/fold",
+    dailyTemplateStackBuckets: "스택 깊이 구간",
+    dailyTemplateThreeBet: "3-Bet 대응",
+    dailyTemplateContinueRange: "컨티뉴 레인지 규율",
+    dailyTemplatePostflop: "포스트플랍 보드 텍스처와 사이징",
+    dailyTemplateStreetMix: "플랍 / 턴 / 리버 믹스"
 });
 
 Object.assign(I18N.es, {
     dailyPlanMixLabel: "Plan diario",
     dailyPlanFocus: "foco",
     dailyPlanReview: "repaso",
-    dailyPlanMaintenance: "mantener"
+    dailyPlanMaintenance: "mantener",
+    dailyPlanDueReviews: "revisiones pendientes",
+    dailyPlanRecentMisses: "errores recientes",
+    dailyTemplateRfiEdges: "combos marginales de RFI",
+    dailyTemplatePosition: "enfoque por posición",
+    dailyTemplateMixedFrequencies: "opens de frecuencia mixta",
+    dailyTemplateDefense: "defensa contra opens",
+    dailyTemplateBroadwayPairs: "broadways y pares medios",
+    dailyTemplatePushFold: "push/fold short-stack",
+    dailyTemplateStackBuckets: "bloques de stack depth",
+    dailyTemplateThreeBet: "contra 3-bets",
+    dailyTemplateContinueRange: "disciplina del rango de continuación",
+    dailyTemplatePostflop: "textura y sizing postflop",
+    dailyTemplateStreetMix: "mezcla de flop, turn y river"
 });
 
 Object.assign(I18N.en, {
@@ -6522,7 +6607,7 @@ Object.assign(I18N.ko, {
 
 Object.assign(I18N.es, {
     feedbackViewTrainingSummary: "Ver resumen del entrenamiento",
-    feedbackViewAssessmentResult: "Ver resultado de evaluacion"
+    feedbackViewAssessmentResult: "Ver resultado de evaluación"
 });
 
 Object.assign(I18N.en, {
