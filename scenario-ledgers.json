@@ -1,0 +1,1623 @@
+[
+  {
+    "id": "starter_flop_cbet_a72r",
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "name": "Flop C-Bet: A-high dry board",
+    "template": "CBET_FLOP",
+    "street": "FLOP",
+    "boardCards": [
+      "As",
+      "7d",
+      "2c"
+    ],
+    "boardTexture": [
+      "ace-high",
+      "disconnected",
+      "dry",
+      "rainbow"
+    ],
+    "heroPosition": "BTN",
+    "villainPosition": "BB",
+    "potBb": 5.5,
+    "effectiveStackBb": 97.5,
+    "spr": 17.7273,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "FLOP: BB checks; BTN to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 1.83 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 1.83 BB (33.33% pot)"
+    },
+    "defaultAction": null,
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 5.5,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      }
+    ],
+    "remainingStacks": {
+      "BTN": 97.5,
+      "BB": 97.5
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "id": "starter_flop_checkraise_884tt",
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "name": "Flop Check-Raise: paired low board",
+    "template": "CHECK_RAISE_FLOP",
+    "street": "FLOP",
+    "boardCards": [
+      "8s",
+      "8d",
+      "4c"
+    ],
+    "boardTexture": [
+      "paired",
+      "low-card",
+      "dry",
+      "rainbow"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "BTN",
+    "potBb": 7.3333,
+    "effectiveStackBb": 97.5,
+    "spr": 17.7273,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "FLOP: BB checks; BTN bets 1.8333 BB; BB to act"
+    ],
+    "availableSizes": [
+      "Fold",
+      "Call 1.8333 BB",
+      "Raise to 5.50 BB (street total)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Call",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Fold",
+      "Call": "Call 1.8333 BB",
+      "Raise": "Raise to 5.50 BB (street total)"
+    },
+    "defaultAction": null,
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 5.5,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 1.8333
+      }
+    ],
+    "remainingStacks": {
+      "BB": 97.5,
+      "BTN": 95.6667
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 1.8333,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "id": "starter_turn_barrel_ksqs5d2c",
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "name": "Turn Barrel: broadway-heavy two-tone board",
+    "template": "BARREL_TURN",
+    "street": "TURN",
+    "boardCards": [
+      "Ks",
+      "Qs",
+      "5d",
+      "2c"
+    ],
+    "boardTexture": [
+      "broadway-heavy",
+      "connected",
+      "wet",
+      "two-tone"
+    ],
+    "heroPosition": "BTN",
+    "villainPosition": "BB",
+    "potBb": 9.1666,
+    "effectiveStackBb": 95.6667,
+    "spr": 10.4364,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: BTN bets 1.8333 BB; opponent calls",
+      "TURN: BB checks; BTN to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 3.06 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 3.06 BB (33.33% pot)"
+    },
+    "defaultAction": null,
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 9.1666,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 1.8333
+      }
+    ],
+    "remainingStacks": {
+      "BTN": 95.6667,
+      "BB": 95.6667
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "id": "starter_turn_probe_9h6h2c8h",
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "name": "Turn Probe: draw-completing card",
+    "template": "PROBE_TURN",
+    "street": "TURN",
+    "boardCards": [
+      "9h",
+      "6h",
+      "2c",
+      "8h"
+    ],
+    "boardTexture": [
+      "connected",
+      "wet",
+      "draw-completer"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "BTN",
+    "potBb": 5.5,
+    "effectiveStackBb": 97.5,
+    "spr": 17.7273,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: both check",
+      "TURN: BB to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 1.83 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 1.83 BB (33.33% pot)"
+    },
+    "defaultAction": null,
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 5.5,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      }
+    ],
+    "remainingStacks": {
+      "BB": 97.5,
+      "BTN": 97.5
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "id": "starter_river_bluffcatch_jt722",
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "name": "River Bluff-Catch: paired missed-draw board",
+    "template": "BLUFF_CATCH_RIVER",
+    "street": "RIVER",
+    "boardCards": [
+      "Jh",
+      "Ts",
+      "7s",
+      "2d",
+      "2c"
+    ],
+    "boardTexture": [
+      "paired",
+      "connected",
+      "missed-draw-relevant",
+      "two-tone"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "BTN",
+    "potBb": 16.0415,
+    "effectiveStackBb": 95.6667,
+    "spr": 10.4364,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: BTN bets 1.8333 BB; opponent calls",
+      "Turn: both check",
+      "RIVER: BB checks; BTN bets 6.8749 BB; BB to act"
+    ],
+    "availableSizes": [
+      "Fold",
+      "Call 6.8749 BB",
+      "Raise to 20.62 BB (street total)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Call",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Fold",
+      "Call": "Call 6.8749 BB",
+      "Raise": "Raise to 20.62 BB (street total)"
+    },
+    "defaultAction": null,
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 9.1666,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BTN",
+        "street": "RIVER",
+        "amount": 6.8749
+      }
+    ],
+    "remainingStacks": {
+      "BB": 95.6667,
+      "BTN": 88.79180000000001
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 6.8749,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "id": "starter_river_value_akq62",
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "name": "River Value Bet: thin value on broadway runout",
+    "template": "VALUE_BET_RIVER",
+    "street": "RIVER",
+    "boardCards": [
+      "Ah",
+      "Kd",
+      "Qs",
+      "6c",
+      "2d"
+    ],
+    "boardTexture": [
+      "broadway-heavy",
+      "dry",
+      "static",
+      "two-tone"
+    ],
+    "heroPosition": "BTN",
+    "villainPosition": "BB",
+    "potBb": 9.1666,
+    "effectiveStackBb": 95.6667,
+    "spr": 10.4364,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: BTN bets 1.8333 BB; opponent calls",
+      "Turn: both check",
+      "RIVER: BB checks; BTN to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 3.06 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 3.06 BB (33.33% pot)"
+    },
+    "defaultAction": null,
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 9.1666,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 1.8333
+      }
+    ],
+    "remainingStacks": {
+      "BTN": 95.6667,
+      "BB": 95.6667
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "id": "starter_river_facing_overbet_ak6jt",
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "name": "Facing Overbet: polarized river pressure",
+    "template": "FACING_OVERBET",
+    "street": "RIVER",
+    "boardCards": [
+      "As",
+      "Kh",
+      "6s",
+      "Jc",
+      "Td"
+    ],
+    "boardTexture": [
+      "broadway-heavy",
+      "connected",
+      "wet",
+      "polarized",
+      "two-tone"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "BTN",
+    "potBb": 124.3125,
+    "effectiveStackBb": 76.1875,
+    "spr": 1.5831,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: BTN bets 6.875 BB; opponent calls",
+      "Turn: BTN bets 14.4375 BB; BB calls",
+      "RIVER: BB checks; BTN bets 76.1875 BB; BB to act"
+    ],
+    "availableSizes": [
+      "Fold",
+      "Call 76.1875 BB"
+    ],
+    "availableActions": [
+      "Fold",
+      "Call"
+    ],
+    "actionLabels": {
+      "Fold": "Fold",
+      "Call": "Call 76.1875 BB"
+    },
+    "defaultAction": null,
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 48.125,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 6.875
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 6.875
+      },
+      {
+        "position": "BTN",
+        "street": "TURN",
+        "amount": 14.4375
+      },
+      {
+        "position": "BB",
+        "street": "TURN",
+        "amount": 14.4375
+      },
+      {
+        "position": "BTN",
+        "street": "RIVER",
+        "amount": 76.1875
+      }
+    ],
+    "remainingStacks": {
+      "BB": 76.1875,
+      "BTN": 0.0
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 76.1875,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 97.5,
+    "spr": 17.7273,
+    "defaultAction": null,
+    "id": "starter_flop_cbet_k83r",
+    "name": "Flop C-Bet: K-high static board",
+    "template": "CBET_FLOP",
+    "street": "FLOP",
+    "boardCards": [
+      "Kh",
+      "8d",
+      "3c"
+    ],
+    "boardTexture": [
+      "disconnected",
+      "dry",
+      "static",
+      "rainbow"
+    ],
+    "heroPosition": "CO",
+    "villainPosition": "BB",
+    "potBb": 5.5,
+    "previousAction": [
+      "CO opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "FLOP: BB checks; CO to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 1.83 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 1.83 BB (33.33% pot)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 5.5,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "CO",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      }
+    ],
+    "remainingStacks": {
+      "CO": 97.5,
+      "BB": 97.5
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 97.5,
+    "spr": 15.0,
+    "defaultAction": null,
+    "id": "starter_flop_cbet_qjt_two_tone",
+    "name": "Flop C-Bet: broadway connected two-tone",
+    "template": "CBET_FLOP",
+    "street": "FLOP",
+    "boardCards": [
+      "Qs",
+      "Jh",
+      "Ts"
+    ],
+    "boardTexture": [
+      "broadway-heavy",
+      "connected",
+      "wet",
+      "two-tone"
+    ],
+    "heroPosition": "HJ",
+    "villainPosition": "BTN",
+    "potBb": 6.5,
+    "previousAction": [
+      "HJ opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 1.5 BB; initial stacks 100 BB; no ante / rake",
+      "FLOP: BTN checks; HJ to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 2.17 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 2.17 BB (33.33% pot)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 6.5,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "HJ",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      }
+    ],
+    "remainingStacks": {
+      "HJ": 97.5,
+      "BTN": 97.5
+    },
+    "deadBlindsBb": 1.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 97.5,
+    "spr": 17.7273,
+    "defaultAction": null,
+    "id": "starter_flop_checkraise_t97tt",
+    "name": "Flop Check-Raise: dynamic T-high board",
+    "template": "CHECK_RAISE_FLOP",
+    "street": "FLOP",
+    "boardCards": [
+      "Ts",
+      "9s",
+      "7d"
+    ],
+    "boardTexture": [
+      "connected",
+      "wet",
+      "two-tone"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "CO",
+    "potBb": 7.3333,
+    "previousAction": [
+      "CO opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "FLOP: BB checks; CO bets 1.8333 BB; BB to act"
+    ],
+    "availableSizes": [
+      "Fold",
+      "Call 1.8333 BB",
+      "Raise to 5.50 BB (street total)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Call",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Fold",
+      "Call": "Call 1.8333 BB",
+      "Raise": "Raise to 5.50 BB (street total)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 5.5,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "CO",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "CO",
+        "street": "FLOP",
+        "amount": 1.8333
+      }
+    ],
+    "remainingStacks": {
+      "BB": 97.5,
+      "CO": 95.6667
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 1.8333,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 97.5,
+    "spr": 17.7273,
+    "defaultAction": null,
+    "id": "starter_flop_checkraise_a54r",
+    "name": "BB vs BTN wheel board check-raise",
+    "template": "CHECK_RAISE_FLOP",
+    "street": "FLOP",
+    "boardCards": [
+      "Ad",
+      "5c",
+      "4h"
+    ],
+    "boardTexture": [
+      "ace-high",
+      "low-card",
+      "disconnected",
+      "rainbow"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "BTN",
+    "potBb": 7.3333,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "FLOP: BB checks; BTN bets 1.8333 BB; BB to act"
+    ],
+    "availableSizes": [
+      "Fold",
+      "Call 1.8333 BB",
+      "Raise to 5.50 BB (street total)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Call",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Fold",
+      "Call": "Call 1.8333 BB",
+      "Raise": "Raise to 5.50 BB (street total)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 5.5,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 1.8333
+      }
+    ],
+    "remainingStacks": {
+      "BB": 97.5,
+      "BTN": 95.6667
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 1.8333,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 95.6667,
+    "spr": 10.4364,
+    "defaultAction": null,
+    "id": "starter_turn_barrel_adtd4s8s",
+    "name": "Turn Barrel: ace-high flush pressure",
+    "template": "BARREL_TURN",
+    "street": "TURN",
+    "boardCards": [
+      "Ad",
+      "Td",
+      "4s",
+      "8s"
+    ],
+    "boardTexture": [
+      "ace-high",
+      "draw-completer",
+      "wet",
+      "two-tone"
+    ],
+    "heroPosition": "CO",
+    "villainPosition": "BB",
+    "potBb": 9.1666,
+    "previousAction": [
+      "CO opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: CO bets 1.8333 BB; opponent calls",
+      "TURN: BB checks; CO to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 3.06 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 3.06 BB (33.33% pot)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 9.1666,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "CO",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "CO",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 1.8333
+      }
+    ],
+    "remainingStacks": {
+      "CO": 95.6667,
+      "BB": 95.6667
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 95.6667,
+    "spr": 10.4364,
+    "defaultAction": null,
+    "id": "starter_turn_barrel_762k",
+    "name": "Turn Barrel: overcard to low board",
+    "template": "BARREL_TURN",
+    "street": "TURN",
+    "boardCards": [
+      "7s",
+      "6s",
+      "2h",
+      "Kh"
+    ],
+    "boardTexture": [
+      "connected",
+      "wet",
+      "broadway-heavy",
+      "two-tone"
+    ],
+    "heroPosition": "BTN",
+    "villainPosition": "BB",
+    "potBb": 9.1666,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: BTN bets 1.8333 BB; opponent calls",
+      "TURN: BB checks; BTN to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 3.06 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 3.06 BB (33.33% pot)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 9.1666,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 1.8333
+      }
+    ],
+    "remainingStacks": {
+      "BTN": 95.6667,
+      "BB": 95.6667
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 97.5,
+    "spr": 17.7273,
+    "defaultAction": null,
+    "id": "starter_turn_probe_k739",
+    "name": "Turn Probe: delayed stab on neutral runout",
+    "template": "PROBE_TURN",
+    "street": "TURN",
+    "boardCards": [
+      "Kc",
+      "7d",
+      "3s",
+      "9c"
+    ],
+    "boardTexture": [
+      "medium-card",
+      "semi-connected",
+      "two-tone"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "CO",
+    "potBb": 5.5,
+    "previousAction": [
+      "CO opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: both check",
+      "TURN: BB to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 1.83 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 1.83 BB (33.33% pot)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 5.5,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "CO",
+        "street": "PREFLOP",
+        "amount": 2.5
+      }
+    ],
+    "remainingStacks": {
+      "BB": 97.5,
+      "CO": 97.5
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 97.5,
+    "spr": 17.7273,
+    "defaultAction": null,
+    "id": "starter_turn_probe_q842",
+    "name": "Turn Probe: low blank after missed c-bet",
+    "template": "PROBE_TURN",
+    "street": "TURN",
+    "boardCards": [
+      "Qs",
+      "8s",
+      "4d",
+      "2h"
+    ],
+    "boardTexture": [
+      "medium-card",
+      "semi-connected",
+      "two-tone"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "HJ",
+    "potBb": 5.5,
+    "previousAction": [
+      "HJ opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: both check",
+      "TURN: BB to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 1.83 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 1.83 BB (33.33% pot)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 5.5,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "HJ",
+        "street": "PREFLOP",
+        "amount": 2.5
+      }
+    ],
+    "remainingStacks": {
+      "BB": 97.5,
+      "HJ": 97.5
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 95.6667,
+    "spr": 10.4364,
+    "defaultAction": null,
+    "id": "starter_river_bluffcatch_aq964",
+    "name": "River Bluff-Catch: ace-high missed flush",
+    "template": "BLUFF_CATCH_RIVER",
+    "street": "RIVER",
+    "boardCards": [
+      "Ah",
+      "Qs",
+      "9s",
+      "6d",
+      "4c"
+    ],
+    "boardTexture": [
+      "ace-high",
+      "missed-draw-relevant",
+      "static",
+      "two-tone"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "CO",
+    "potBb": 16.0415,
+    "previousAction": [
+      "CO opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: CO bets 1.8333 BB; opponent calls",
+      "Turn: both check",
+      "RIVER: BB checks; CO bets 6.8749 BB; BB to act"
+    ],
+    "availableSizes": [
+      "Fold",
+      "Call 6.8749 BB",
+      "Raise to 20.62 BB (street total)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Call",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Fold",
+      "Call": "Call 6.8749 BB",
+      "Raise": "Raise to 20.62 BB (street total)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 9.1666,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "CO",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "CO",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "CO",
+        "street": "RIVER",
+        "amount": 6.8749
+      }
+    ],
+    "remainingStacks": {
+      "BB": 95.6667,
+      "CO": 88.79180000000001
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 6.8749,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 95.6667,
+    "spr": 10.4364,
+    "defaultAction": null,
+    "id": "starter_river_bluffcatch_98742",
+    "name": "River Bluff-Catch: low straight texture",
+    "template": "BLUFF_CATCH_RIVER",
+    "street": "RIVER",
+    "boardCards": [
+      "9c",
+      "8d",
+      "7c",
+      "4s",
+      "2h"
+    ],
+    "boardTexture": [
+      "connected",
+      "missed-draw-relevant",
+      "two-tone"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "BTN",
+    "potBb": 16.0415,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: BTN bets 1.8333 BB; opponent calls",
+      "Turn: both check",
+      "RIVER: BB checks; BTN bets 6.8749 BB; BB to act"
+    ],
+    "availableSizes": [
+      "Fold",
+      "Call 6.8749 BB",
+      "Raise to 20.62 BB (street total)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Call",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Fold",
+      "Call": "Call 6.8749 BB",
+      "Raise": "Raise to 20.62 BB (street total)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 9.1666,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BTN",
+        "street": "RIVER",
+        "amount": 6.8749
+      }
+    ],
+    "remainingStacks": {
+      "BB": 95.6667,
+      "BTN": 88.79180000000001
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 6.8749,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 95.6667,
+    "spr": 10.4364,
+    "defaultAction": null,
+    "id": "starter_river_value_k7732",
+    "name": "River Value Bet: paired king-high board",
+    "template": "VALUE_BET_RIVER",
+    "street": "RIVER",
+    "boardCards": [
+      "Kh",
+      "7d",
+      "7s",
+      "3c",
+      "2h"
+    ],
+    "boardTexture": [
+      "paired",
+      "dry",
+      "static",
+      "two-tone"
+    ],
+    "heroPosition": "BTN",
+    "villainPosition": "BB",
+    "potBb": 9.1666,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: BTN bets 1.8333 BB; opponent calls",
+      "Turn: both check",
+      "RIVER: BB checks; BTN to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 3.06 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 3.06 BB (33.33% pot)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 9.1666,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 1.8333
+      }
+    ],
+    "remainingStacks": {
+      "BTN": 95.6667,
+      "BB": 95.6667
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 95.6667,
+    "spr": 10.4364,
+    "defaultAction": null,
+    "id": "starter_river_value_t9652",
+    "name": "River Value Bet: thin pair value",
+    "template": "VALUE_BET_RIVER",
+    "street": "RIVER",
+    "boardCards": [
+      "Td",
+      "9c",
+      "6s",
+      "5h",
+      "2d"
+    ],
+    "boardTexture": [
+      "connected",
+      "static",
+      "two-tone"
+    ],
+    "heroPosition": "CO",
+    "villainPosition": "BB",
+    "potBb": 9.1666,
+    "previousAction": [
+      "CO opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: CO bets 1.8333 BB; opponent calls",
+      "Turn: both check",
+      "RIVER: BB checks; CO to act"
+    ],
+    "availableSizes": [
+      "Check",
+      "Bet 3.06 BB (33.33% pot)"
+    ],
+    "availableActions": [
+      "Fold",
+      "Raise"
+    ],
+    "actionLabels": {
+      "Fold": "Check",
+      "Raise": "Bet 3.06 BB (33.33% pot)"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 9.1666,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "CO",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "CO",
+        "street": "FLOP",
+        "amount": 1.8333
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 1.8333
+      }
+    ],
+    "remainingStacks": {
+      "CO": 95.6667,
+      "BB": 95.6667
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 0.0,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 76.1875,
+    "spr": 1.5831,
+    "defaultAction": null,
+    "id": "starter_river_facing_overbet_q942j",
+    "name": "Facing Overbet: missed spade river",
+    "template": "FACING_OVERBET",
+    "street": "RIVER",
+    "boardCards": [
+      "Qs",
+      "9s",
+      "4h",
+      "2d",
+      "Jc"
+    ],
+    "boardTexture": [
+      "missed-draw-relevant",
+      "polarized",
+      "two-tone"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "CO",
+    "potBb": 124.3125,
+    "previousAction": [
+      "CO opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: CO bets 6.875 BB; opponent calls",
+      "Turn: CO bets 14.4375 BB; BB calls",
+      "RIVER: BB checks; CO bets 76.1875 BB; BB to act"
+    ],
+    "availableSizes": [
+      "Fold",
+      "Call 76.1875 BB"
+    ],
+    "availableActions": [
+      "Fold",
+      "Call"
+    ],
+    "actionLabels": {
+      "Fold": "Fold",
+      "Call": "Call 76.1875 BB"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 48.125,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "CO",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "CO",
+        "street": "FLOP",
+        "amount": 6.875
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 6.875
+      },
+      {
+        "position": "CO",
+        "street": "TURN",
+        "amount": 14.4375
+      },
+      {
+        "position": "BB",
+        "street": "TURN",
+        "amount": 14.4375
+      },
+      {
+        "position": "CO",
+        "street": "RIVER",
+        "amount": 76.1875
+      }
+    ],
+    "remainingStacks": {
+      "BB": 76.1875,
+      "CO": 0.0
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 76.1875,
+    "reviewStatus": "exploration-only"
+  },
+  {
+    "version": 3,
+    "packId": "cash100-postflop-v1",
+    "effectiveStackBb": 76.1875,
+    "spr": 1.5831,
+    "defaultAction": null,
+    "id": "starter_river_facing_overbet_765ka",
+    "name": "Facing Overbet: range-shifting ace river",
+    "template": "FACING_OVERBET",
+    "street": "RIVER",
+    "boardCards": [
+      "7h",
+      "6h",
+      "5c",
+      "Kd",
+      "As"
+    ],
+    "boardTexture": [
+      "connected",
+      "wet",
+      "draw-completer",
+      "polarized",
+      "two-tone"
+    ],
+    "heroPosition": "BB",
+    "villainPosition": "BTN",
+    "potBb": 124.3125,
+    "previousAction": [
+      "BTN opens to 2.5 BB; opponent calls; other seats fold",
+      "Dead blinds 0.5 BB; initial stacks 100 BB; no ante / rake",
+      "Flop: BTN bets 6.875 BB; opponent calls",
+      "Turn: BTN bets 14.4375 BB; BB calls",
+      "RIVER: BB checks; BTN bets 76.1875 BB; BB to act"
+    ],
+    "availableSizes": [
+      "Fold",
+      "Call 76.1875 BB"
+    ],
+    "availableActions": [
+      "Fold",
+      "Call"
+    ],
+    "actionLabels": {
+      "Fold": "Fold",
+      "Call": "Call 76.1875 BB"
+    },
+    "comboActions": {},
+    "explanation": "原啟發式策略答案已停用。帳目由100BB起始籌碼與明示動作重建，不計前注及抽水。底池含待跟注下注；有效籌碼與SPR採該下注前時點。未驗證策略不判分。",
+    "preBetPotBb": 48.125,
+    "sprTiming": "before-facing-bet",
+    "ledger": [
+      {
+        "position": "BB",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "PREFLOP",
+        "amount": 2.5
+      },
+      {
+        "position": "BTN",
+        "street": "FLOP",
+        "amount": 6.875
+      },
+      {
+        "position": "BB",
+        "street": "FLOP",
+        "amount": 6.875
+      },
+      {
+        "position": "BTN",
+        "street": "TURN",
+        "amount": 14.4375
+      },
+      {
+        "position": "BB",
+        "street": "TURN",
+        "amount": 14.4375
+      },
+      {
+        "position": "BTN",
+        "street": "RIVER",
+        "amount": 76.1875
+      }
+    ],
+    "remainingStacks": {
+      "BB": 76.1875,
+      "BTN": 0.0
+    },
+    "deadBlindsBb": 0.5,
+    "toCallBb": 76.1875,
+    "reviewStatus": "exploration-only"
+  }
+]

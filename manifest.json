@@ -1,17 +1,17 @@
 {
-    "name": "SpotSense",
-    "short_name": "SpotSense",
-    "description": "A free-forever, full-featured SpotSense poker trainer with preflop and postflop drills, custom ranges, adaptive review, and offline-first practice.",
-    "start_url": "./index.html",
-    "display": "standalone",
-    "background_color": "#151817",
-    "theme_color": "#151817",
-    "icons": [
-        {
-            "src": "logo-pure.png",
-            "sizes": "1024x1024",
-            "type": "image/png",
-            "purpose": "any"
-        }
-    ]
+  "name": "SpotSense 教學與訓練",
+  "short_name": "SpotSense",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f0eb",
+  "theme_color": "#f3f0eb",
+  "icons": [
+    {
+      "src": "logo-pure.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
