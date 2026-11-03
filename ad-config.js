@@ -1,1 +1,1 @@
-window.SPOTSENSE_AD_CONFIG={provider:'google-publisher-tag',enabled:false,gptAdUnitPath:'',enableHouseAdFallback:false};
+window.SPOTSENSE_AD_CONFIG={enabled:false};

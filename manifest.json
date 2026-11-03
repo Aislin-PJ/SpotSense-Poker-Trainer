@@ -1,17 +1,1 @@
-{
-  "name": "SpotSense 教學與訓練",
-  "short_name": "SpotSense",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
-  "background_color": "#f3f0eb",
-  "theme_color": "#f3f0eb",
-  "icons": [
-    {
-      "src": "logo-pure.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    }
-  ]
-}
+{"name": "SpotSense", "short_name": "SpotSense", "start_url": "./index.html", "scope": "./", "display": "standalone", "theme_color": "#f3f0eb", "background_color": "#f3f0eb", "icons": [{"src": "app-icon.png", "sizes": "512x512", "type": "image/png"}]}

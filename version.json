@@ -1,14 +1,1 @@
-{
-  "version": "0.3.1",
-  "stage": "RC",
-  "buildType": "reconstructed-from-uploaded-originals-and-conversation-changes",
-  "includes": [
-    "teaching",
-    "reference-trainer",
-    "integrity-corrections",
-    "unified-UI",
-    "models-and-frequency",
-    "offline-cache"
-  ],
-  "physicalIOS27Tested": false
-}
+{"version":"0.4.0"}

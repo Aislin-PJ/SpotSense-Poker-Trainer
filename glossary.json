@@ -1,0 +1,1123 @@
+[
+  {
+    "id": "small-blind-sb",
+    "name": "小盲位",
+    "en": "Small Blind (SB)",
+    "description": "發牌前先放入較小強制盲注的位置。",
+    "aliases": [
+      "Small Blind (SB)",
+      "Small Blind",
+      "SB"
+    ],
+    "learnNote": "小盲，BTN 左邊的強制注位置。單挑桌 BTN 兼 SB。"
+  },
+  {
+    "id": "big-blind-bb",
+    "name": "大盲位",
+    "en": "Big Blind (BB)",
+    "description": "放入完整盲注的位置，也是常用的 bb 籌碼單位來源。",
+    "aliases": [
+      "Big Blind (BB)",
+      "Big Blind",
+      "BB"
+    ]
+  },
+  {
+    "id": "under-the-gun-utg",
+    "name": "槍口位",
+    "en": "Under the Gun (UTG)",
+    "description": "翻牌前第一個行動的位置，後面還有很多人未行動，因此開局範圍要緊。",
+    "aliases": [
+      "Under the Gun (UTG)",
+      "Under the Gun",
+      "UTG"
+    ],
+    "learnNote": "大盲左邊，翻牌前最先行動的位置。"
+  },
+  {
+    "id": "hijack-hj",
+    "name": "劫持位",
+    "en": "Hijack (HJ)",
+    "description": "中後段位置，可比 UTG 開得寬，但仍要面對 CO、BTN 與盲位。",
+    "aliases": [
+      "Hijack (HJ)",
+      "Hijack",
+      "HJ"
+    ],
+    "learnNote": "此六人桌在 UTG 與 CO 之間的位置。"
+  },
+  {
+    "id": "cutoff-co",
+    "name": "關門位",
+    "en": "Cutoff (CO)",
+    "description": "BTN 前一位，是常見偷盲與施壓位置。",
+    "aliases": [
+      "Cutoff (CO)",
+      "Cutoff",
+      "CO"
+    ],
+    "learnNote": "BTN 前一位，屬後位。"
+  },
+  {
+    "id": "button-btn",
+    "name": "按鈕位",
+    "en": "Button (BTN)",
+    "description": "莊家按鈕位置，翻後最後行動，資訊優勢最大。",
+    "aliases": [
+      "Button (BTN)",
+      "Button",
+      "BTN"
+    ],
+    "learnNote": "莊家位，以 D 標記；通常每手順時針移動。六人桌翻牌後通常最後行動。"
+  },
+  {
+    "id": "in-position-ip",
+    "name": "有位置",
+    "en": "In Position (IP)",
+    "description": "翻後比對手晚行動，可以先看對手決策。",
+    "aliases": [
+      "In Position (IP)",
+      "In Position",
+      "IP"
+    ]
+  },
+  {
+    "id": "out-of-position-oop",
+    "name": "無位置",
+    "en": "Out of Position (OOP)",
+    "description": "翻後比對手早行動，資訊劣勢較大。",
+    "aliases": [
+      "Out of Position (OOP)",
+      "Out of Position",
+      "OOP"
+    ]
+  },
+  {
+    "id": "blinds",
+    "name": "盲注",
+    "en": "Blinds",
+    "description": "發牌前強制放入底池的籌碼。",
+    "aliases": [
+      "Blinds"
+    ]
+  },
+  {
+    "id": "ante",
+    "name": "底注",
+    "en": "Ante",
+    "description": "盲注之外的小額強制投入，多見於錦標賽。",
+    "aliases": [
+      "Ante"
+    ],
+    "learnNote": "依牌局設定、與盲注不同的強制投入，本示範桌不設前注。"
+  },
+  {
+    "id": "hole-cards",
+    "name": "底牌",
+    "en": "Hole Cards",
+    "description": "只有你自己看得到的兩張手牌。",
+    "aliases": [
+      "Hole Cards"
+    ],
+    "learnNote": "每人兩張私有牌。最後可以用零、一或兩張。"
+  },
+  {
+    "id": "preflop",
+    "name": "翻牌前",
+    "en": "Preflop",
+    "description": "公共牌尚未出現前的下注回合。",
+    "aliases": [
+      "Preflop"
+    ],
+    "learnNote": "兩張手牌發下後、公共牌發出前的階段。"
+  },
+  {
+    "id": "flop",
+    "name": "翻牌",
+    "en": "Flop",
+    "description": "第一次發出的三張公共牌。",
+    "aliases": [
+      "Flop"
+    ],
+    "learnNote": "前三張公共牌與其下注階段。"
+  },
+  {
+    "id": "turn",
+    "name": "轉牌",
+    "en": "Turn",
+    "description": "第四張公共牌。",
+    "aliases": [
+      "Turn"
+    ],
+    "learnNote": "第四張公共牌與其下注階段。"
+  },
+  {
+    "id": "river",
+    "name": "河牌",
+    "en": "River",
+    "description": "第五張也是最後一張公共牌。",
+    "aliases": [
+      "River"
+    ],
+    "learnNote": "第五張公共牌與最後下注階段。"
+  },
+  {
+    "id": "showdown",
+    "name": "攤牌",
+    "en": "Showdown",
+    "description": "仍在牌局中的玩家亮牌比較牌力。",
+    "aliases": [
+      "Showdown"
+    ],
+    "learnNote": "下注結束後，比較仍在局玩家的最佳五張。"
+  },
+  {
+    "id": "fold",
+    "name": "棄牌",
+    "en": "Fold",
+    "description": "放棄這手牌，不再爭奪底池。",
+    "aliases": [
+      "Fold"
+    ],
+    "learnNote": "放棄本手底池，已投入的籌碼不退回。"
+  },
+  {
+    "id": "check",
+    "name": "過牌",
+    "en": "Check",
+    "description": "前面沒有人下注時，不投入籌碼並把行動交給下一位。",
+    "aliases": [
+      "Check"
+    ],
+    "learnNote": "本街沒有待補下注時，不投注新籌碼並保留牌局資格。"
+  },
+  {
+    "id": "bet",
+    "name": "下注",
+    "en": "Bet",
+    "description": "在該街率先投入籌碼。",
+    "aliases": [
+      "Bet"
+    ],
+    "learnNote": "在本街尚無下注時，首先投注籌碼。"
+  },
+  {
+    "id": "call",
+    "name": "跟注",
+    "en": "Call",
+    "description": "投入與目前下注相同的籌碼以繼續。",
+    "aliases": [
+      "Call"
+    ],
+    "learnNote": "補足與目前下注相同的金額；不足時可能以全押跟注。"
+  },
+  {
+    "id": "raise",
+    "name": "加注",
+    "en": "Raise",
+    "description": "面對下注時投入更多籌碼，提高對手繼續的價格。",
+    "aliases": [
+      "Raise"
+    ],
+    "learnNote": "在已有下注的情況下，提高目前金額。"
+  },
+  {
+    "id": "re-raise",
+    "name": "再加注",
+    "en": "Re-Raise",
+    "description": "面對加注後再次加注。",
+    "aliases": [
+      "Re-Raise"
+    ]
+  },
+  {
+    "id": "open-raise",
+    "name": "率先加注",
+    "en": "Open Raise",
+    "description": "翻牌前第一個自願加注入池的行動。",
+    "aliases": [
+      "Open Raise"
+    ]
+  },
+  {
+    "id": "limp",
+    "name": "跛入",
+    "en": "Limp",
+    "description": "翻牌前只跟大盲，不選擇加注。",
+    "aliases": [
+      "Limp"
+    ]
+  },
+  {
+    "id": "3-bet",
+    "name": "三下注",
+    "en": "3-Bet",
+    "description": "面對 open raise 的再加注，不是加到三倍。",
+    "aliases": [
+      "3-Bet"
+    ],
+    "learnNote": "翻牌前把大盲算第一注、首次加注為第二注，再加注稱 3-bet；不代表三倍。"
+  },
+  {
+    "id": "4-bet",
+    "name": "四下注",
+    "en": "4-Bet",
+    "description": "面對 3-Bet 後再次加注。",
+    "aliases": [
+      "4-Bet"
+    ]
+  },
+  {
+    "id": "all-in",
+    "name": "全下",
+    "en": "All-in",
+    "description": "投入所有剩餘籌碼。",
+    "aliases": [
+      "All-in"
+    ],
+    "learnNote": "投入剩餘全部籌碼；可能是下注、跟注或加注。"
+  },
+  {
+    "id": "jam",
+    "name": "推全下",
+    "en": "Jam",
+    "description": "策略語境中常指主動推入全下。",
+    "aliases": [
+      "Jam"
+    ]
+  },
+  {
+    "id": "c-bet",
+    "name": "持續下注",
+    "en": "C-Bet",
+    "description": "前一街進攻者在下一街延續下注，最常見是翻前加注者翻牌下注。",
+    "aliases": [
+      "C-Bet"
+    ],
+    "learnNote": "前一街進攻者在下一街下注，不代表每次都該做。"
+  },
+  {
+    "id": "barrel",
+    "name": "連續下注",
+    "en": "Barrel",
+    "description": "在轉牌或河牌繼續開火下注。",
+    "aliases": [
+      "Barrel"
+    ]
+  },
+  {
+    "id": "check-raise",
+    "name": "過牌加注",
+    "en": "Check-Raise",
+    "description": "先過牌，等對手下注後再加注。",
+    "aliases": [
+      "Check-Raise"
+    ]
+  },
+  {
+    "id": "donk-bet",
+    "name": "領先下注",
+    "en": "Donk Bet",
+    "description": "前一街非進攻者，下一街反而率先下注。",
+    "aliases": [
+      "Donk Bet"
+    ]
+  },
+  {
+    "id": "probe-bet",
+    "name": "探測下注",
+    "en": "Probe Bet",
+    "description": "前一街進攻者選擇過牌後，防守方主動下注。",
+    "aliases": [
+      "Probe Bet"
+    ]
+  },
+  {
+    "id": "stab",
+    "name": "刺探下注",
+    "en": "Stab",
+    "description": "對手放棄下注或局面空出來時，嘗試主動下注拿下底池。",
+    "aliases": [
+      "Stab"
+    ]
+  },
+  {
+    "id": "float",
+    "name": "浮跟",
+    "en": "Float",
+    "description": "用不一定很強的牌跟注，計畫在後續街用下注或加注拿下底池。",
+    "aliases": [
+      "Float"
+    ]
+  },
+  {
+    "id": "overbet",
+    "name": "超池下注",
+    "en": "Overbet",
+    "description": "下注金額大於目前底池。",
+    "aliases": [
+      "Overbet"
+    ]
+  },
+  {
+    "id": "nuts",
+    "name": "最強牌（堅果）",
+    "en": "Nuts",
+    "description": "當下牌面沒有任何牌能擊敗的最佳牌型。本訓練器策略文案優先稱為「最強牌」。",
+    "aliases": [
+      "Nuts"
+    ]
+  },
+  {
+    "id": "second-nuts",
+    "name": "第二強牌",
+    "en": "Second Nuts",
+    "description": "當下牌面第二強的可能牌型。",
+    "aliases": [
+      "Second Nuts"
+    ]
+  },
+  {
+    "id": "draw",
+    "name": "聽牌",
+    "en": "Draw",
+    "description": "目前尚未成牌，但後續公共牌可能讓它變強。",
+    "aliases": [
+      "Draw"
+    ]
+  },
+  {
+    "id": "flush-draw",
+    "name": "同花聽牌",
+    "en": "Flush Draw",
+    "description": "再來一張同花色牌就可能成同花。",
+    "aliases": [
+      "Flush Draw"
+    ]
+  },
+  {
+    "id": "straight-draw",
+    "name": "順子聽牌",
+    "en": "Straight Draw",
+    "description": "再來特定點數就可能成順子。",
+    "aliases": [
+      "Straight Draw"
+    ]
+  },
+  {
+    "id": "set",
+    "name": "口袋三條",
+    "en": "Set",
+    "description": "手上一對加上牌面同點數牌形成的三條。",
+    "aliases": [
+      "Set"
+    ]
+  },
+  {
+    "id": "trips",
+    "name": "明三條",
+    "en": "Trips",
+    "description": "牌面成對，再用一張手牌補成的三條。",
+    "aliases": [
+      "Trips"
+    ]
+  },
+  {
+    "id": "top-pair",
+    "name": "頂對",
+    "en": "Top Pair",
+    "description": "用手牌配上牌面最高張形成的一對。",
+    "aliases": [
+      "Top Pair"
+    ]
+  },
+  {
+    "id": "top-set",
+    "name": "頂 Set",
+    "en": "Top Set",
+    "description": "用手中口袋對子配上牌面最高點數形成的 Set。",
+    "aliases": [
+      "Top Set"
+    ]
+  },
+  {
+    "id": "kicker",
+    "name": "踢腳牌",
+    "en": "Kicker",
+    "description": "牌型相同時用來比較大小的副牌。",
+    "aliases": [
+      "Kicker"
+    ],
+    "learnNote": "同一主要牌型時，用於依序比較的其餘牌。"
+  },
+  {
+    "id": "rainbow-board",
+    "name": "彩虹牌面",
+    "en": "Rainbow Board",
+    "description": "翻牌三張為三種不同花色。",
+    "aliases": [
+      "Rainbow Board"
+    ]
+  },
+  {
+    "id": "monotone-board",
+    "name": "單色牌面",
+    "en": "Monotone Board",
+    "description": "目前公共牌都屬於同一花色。",
+    "aliases": [
+      "Monotone Board"
+    ]
+  },
+  {
+    "id": "two-tone-board",
+    "name": "雙色牌面",
+    "en": "Two-tone Board",
+    "description": "牌面有兩張同花色牌，常帶來同花聽牌壓力。",
+    "aliases": [
+      "Two-tone Board"
+    ]
+  },
+  {
+    "id": "dry-board",
+    "name": "乾燥牌面",
+    "en": "Dry Board",
+    "description": "順子或同花聽牌較少、連結性低的牌面。",
+    "aliases": [
+      "Dry Board"
+    ]
+  },
+  {
+    "id": "wet-board",
+    "name": "濕潤牌面",
+    "en": "Wet Board",
+    "description": "連結性高、聽牌多，後續牌容易改變牌力的牌面。",
+    "aliases": [
+      "Wet Board"
+    ]
+  },
+  {
+    "id": "paired-board",
+    "name": "成對牌面",
+    "en": "Paired Board",
+    "description": "公共牌上已有兩張同點數牌。",
+    "aliases": [
+      "Paired Board"
+    ]
+  },
+  {
+    "id": "blocker",
+    "name": "阻斷牌",
+    "en": "Blocker",
+    "description": "你手上的牌會降低對手持有某些強牌或跟注牌的機率。",
+    "aliases": [
+      "Blocker"
+    ],
+    "learnNote": "已知牌排除對手可能組合；是否適合下注還要看完整範圍與被阻擋的是跟注或棄牌。"
+  },
+  {
+    "id": "backdoor-draw",
+    "name": "後門聽牌",
+    "en": "Backdoor Draw",
+    "description": "需要轉牌與河牌連續幫忙才完成的聽牌。",
+    "aliases": [
+      "Backdoor Draw"
+    ]
+  },
+  {
+    "id": "range",
+    "name": "範圍",
+    "en": "Range",
+    "description": "某位玩家在這個行動後合理可能持有的所有手牌集合。",
+    "aliases": [
+      "Range"
+    ],
+    "learnNote": "一群可能手牌及其權重，不等於猜出確切一手。"
+  },
+  {
+    "id": "value-bet",
+    "name": "價值下注",
+    "en": "Value Bet",
+    "description": "預期較差的牌會跟注，因此用好牌下注拿價值。",
+    "aliases": [
+      "Value Bet"
+    ],
+    "learnNote": "希望較差牌跟注的下注；需要與過牌收益比較。"
+  },
+  {
+    "id": "bluff",
+    "name": "詐唬",
+    "en": "Bluff",
+    "description": "用不夠好的牌下注或加注，希望更好的牌棄牌。",
+    "aliases": [
+      "Bluff"
+    ],
+    "learnNote": "主要希望對手棄牌；純詐唬模型不含被跟後的勝率。"
+  },
+  {
+    "id": "semi-bluff",
+    "name": "半詐唬",
+    "en": "Semi-Bluff",
+    "description": "用聽牌詐唬；被跟注後仍有機會成牌。",
+    "aliases": [
+      "Semi-Bluff"
+    ],
+    "learnNote": "被跟後仍有機會改善的進攻。"
+  },
+  {
+    "id": "air",
+    "name": "空氣牌",
+    "en": "Air",
+    "description": "幾乎沒有攤牌價值的弱牌。",
+    "aliases": [
+      "Air"
+    ]
+  },
+  {
+    "id": "bluff-catcher",
+    "name": "抓詐唬牌",
+    "en": "Bluff Catcher",
+    "description": "主要靠對手在詐唬時才會贏的中等牌。",
+    "aliases": [
+      "Bluff Catcher"
+    ]
+  },
+  {
+    "id": "polarized-range",
+    "name": "兩極化範圍",
+    "en": "Polarized Range",
+    "description": "由強價值牌與詐唬牌組成，中等牌較少的範圍。",
+    "aliases": [
+      "Polarized Range"
+    ]
+  },
+  {
+    "id": "merged-range",
+    "name": "合併範圍",
+    "en": "Merged Range",
+    "description": "下注或加注範圍中包含強牌與不少中強牌。",
+    "aliases": [
+      "Merged Range"
+    ]
+  },
+  {
+    "id": "capped-range",
+    "name": "封頂範圍",
+    "en": "Capped Range",
+    "description": "因先前行動限制，通常不太會有最強牌的範圍。",
+    "aliases": [
+      "Capped Range"
+    ]
+  },
+  {
+    "id": "uncapped-range",
+    "name": "未封頂範圍",
+    "en": "Uncapped Range",
+    "description": "仍可能包含最強牌的範圍。",
+    "aliases": [
+      "Uncapped Range"
+    ]
+  },
+  {
+    "id": "range-advantage",
+    "name": "範圍優勢",
+    "en": "Range Advantage",
+    "description": "某一方在這個牌面上整體勝率或好牌比例較高。",
+    "aliases": [
+      "Range Advantage"
+    ]
+  },
+  {
+    "id": "nut-advantage",
+    "name": "最強牌優勢",
+    "en": "Nut Advantage",
+    "description": "某一方在這個牌面上更常擁有最強牌組合。",
+    "aliases": [
+      "Nut Advantage"
+    ]
+  },
+  {
+    "id": "equity",
+    "name": "勝率",
+    "en": "Equity",
+    "description": "若一路發到攤牌，這手牌長期平均能贏得底池的比例。",
+    "aliases": [
+      "Equity"
+    ],
+    "learnNote": "對指定對手範圍與後續發牌模型的平均底池份額，含平手。"
+  },
+  {
+    "id": "equity-realization",
+    "name": "勝率實現",
+    "en": "Equity Realization",
+    "description": "理論勝率能不能真的透過後續行動轉成 EV；位置差、容易被迫棄牌時，勝率實現會變差。",
+    "aliases": [
+      "Equity Realization"
+    ]
+  },
+  {
+    "id": "fold-equity",
+    "name": "棄牌率收益",
+    "en": "Fold Equity",
+    "description": "下注讓對手棄牌時額外得到的收益。",
+    "aliases": [
+      "Fold Equity"
+    ]
+  },
+  {
+    "id": "showdown-value",
+    "name": "攤牌價值",
+    "en": "Showdown Value",
+    "description": "若能進入攤牌，仍有一定機率贏的牌。",
+    "aliases": [
+      "Showdown Value"
+    ]
+  },
+  {
+    "id": "protection",
+    "name": "保護下注",
+    "en": "Protection",
+    "description": "用下注避免對手免費看牌追上你的牌。",
+    "aliases": [
+      "Protection"
+    ]
+  },
+  {
+    "id": "pot-odds",
+    "name": "底池賠率",
+    "en": "Pot Odds",
+    "description": "跟注成本與可贏底池之間的比例。",
+    "aliases": [
+      "Pot Odds"
+    ],
+    "learnNote": "跟注前可爭奪底池與跟注成本之比；可換算打平勝率門檻。"
+  },
+  {
+    "id": "implied-odds",
+    "name": "隱含賠率",
+    "en": "Implied Odds",
+    "description": "若後續成牌，預期還能從對手身上多贏到的籌碼。",
+    "aliases": [
+      "Implied Odds"
+    ]
+  },
+  {
+    "id": "reverse-implied-odds",
+    "name": "反向隱含賠率",
+    "en": "Reverse Implied Odds",
+    "description": "即使補到牌仍可能輸給更強牌，導致未來多輸的風險。",
+    "aliases": [
+      "Reverse Implied Odds"
+    ]
+  },
+  {
+    "id": "expected-value-ev",
+    "name": "期望值",
+    "en": "Expected Value (EV)",
+    "description": "某個決策長期平均會賺或虧多少。",
+    "aliases": [
+      "Expected Value (EV)",
+      "Expected Value",
+      "EV"
+    ]
+  },
+  {
+    "id": "runout",
+    "name": "後續公共牌",
+    "en": "Runout",
+    "description": "一手牌從翻牌到河牌形成的公共牌走勢。",
+    "aliases": [
+      "Runout"
+    ]
+  },
+  {
+    "id": "stack",
+    "name": "籌碼量",
+    "en": "Stack",
+    "description": "玩家目前持有的籌碼。",
+    "aliases": [
+      "Stack"
+    ],
+    "learnNote": "面前尚未投入底池的籌碼。"
+  },
+  {
+    "id": "effective-stack",
+    "name": "有效籌碼",
+    "en": "Effective Stack",
+    "description": "雙方實際能互相贏輸的最大籌碼量，通常取較短的一方。",
+    "aliases": [
+      "Effective Stack"
+    ],
+    "learnNote": "單挑中以較短一方的可爭奪籌碼為限。"
+  },
+  {
+    "id": "stack-to-pot-ratio-spr",
+    "name": "籌碼底池比",
+    "en": "Stack-to-Pot Ratio (SPR)",
+    "description": "有效籌碼除以底池；SPR 越低，越快進入是否願意打光的決策。",
+    "aliases": [
+      "Stack-to-Pot Ratio (SPR)",
+      "Stack-to-Pot Ratio",
+      "SPR"
+    ],
+    "learnNote": "此時有效剩餘籌碼除以底池；不直接決定是否該全押。"
+  },
+  {
+    "id": "big-blind-unit-bb",
+    "name": "大盲單位",
+    "en": "Big Blind Unit (bb)",
+    "description": "用大盲注衡量下注與籌碼深度的單位。",
+    "aliases": [
+      "Big Blind Unit (bb)",
+      "Big Blind Unit",
+      "bb"
+    ],
+    "learnNote": "大盲，SB 左邊的強制注位置；BB 同時常用作籌碼單位。"
+  },
+  {
+    "id": "outs",
+    "name": "補牌張數",
+    "en": "Outs",
+    "description": "能讓你改善成可能勝出牌型的牌張數。",
+    "aliases": [
+      "Outs"
+    ],
+    "learnNote": "可能讓你改善成所需牌型的未知牌；需分辨乾淨與髒 outs。"
+  },
+  {
+    "id": "vpip",
+    "name": "自願入池率",
+    "en": "VPIP",
+    "description": "玩家翻牌前自願入池的頻率，不含被迫支付盲注。",
+    "aliases": [
+      "VPIP"
+    ]
+  },
+  {
+    "id": "pfr",
+    "name": "翻前加注率",
+    "en": "PFR",
+    "description": "玩家翻牌前主動加注的頻率。",
+    "aliases": [
+      "PFR"
+    ]
+  },
+  {
+    "id": "rake",
+    "name": "抽水",
+    "en": "Rake",
+    "description": "牌室從底池或賽事中收取的費用。",
+    "aliases": [
+      "Rake"
+    ]
+  },
+  {
+    "id": "icm",
+    "name": "獨立籌碼模型",
+    "en": "ICM",
+    "description": "錦標賽中把籌碼量轉換成獎金價值壓力的模型。",
+    "aliases": [
+      "ICM"
+    ]
+  },
+  {
+    "id": "bubble",
+    "name": "泡沫期",
+    "en": "Bubble",
+    "description": "即將進入獎金圈前的階段。",
+    "aliases": [
+      "Bubble"
+    ]
+  },
+  {
+    "id": "in-the-money-itm",
+    "name": "進入獎金圈",
+    "en": "In the Money (ITM)",
+    "description": "錦標賽已確定至少拿到獎金。",
+    "aliases": [
+      "In the Money (ITM)",
+      "In the Money",
+      "ITM"
+    ]
+  },
+  {
+    "id": "chip-ev",
+    "name": "籌碼期望值",
+    "en": "Chip EV",
+    "description": "以籌碼增減衡量的期望值，不直接等於獎金價值。",
+    "aliases": [
+      "Chip EV"
+    ]
+  },
+  {
+    "id": "roi",
+    "name": "投資報酬率",
+    "en": "ROI",
+    "description": "長期投入成本與獲利之間的報酬比例。",
+    "aliases": [
+      "ROI"
+    ]
+  },
+  {
+    "id": "rebuy",
+    "name": "重買",
+    "en": "Rebuy",
+    "description": "規則允許時，在出局或籌碼過少後重新買入。",
+    "aliases": [
+      "Rebuy"
+    ]
+  },
+  {
+    "id": "add-on",
+    "name": "加碼買入",
+    "en": "Add-on",
+    "description": "在指定時間額外購買籌碼。",
+    "aliases": [
+      "Add-on"
+    ]
+  },
+  {
+    "id": "overlay",
+    "name": "保證獎池補貼",
+    "en": "Overlay",
+    "description": "報名費未達保證獎池，主辦方補足差額。",
+    "aliases": [
+      "Overlay"
+    ]
+  },
+  {
+    "id": "final-table",
+    "name": "決賽桌",
+    "en": "Final Table",
+    "description": "錦標賽剩最後一桌玩家的階段。",
+    "aliases": [
+      "Final Table"
+    ]
+  },
+  {
+    "id": "bad-beat",
+    "name": "爆冷輸牌",
+    "en": "Bad Beat",
+    "description": "原本大幅領先的牌，被後續小機率牌逆轉。",
+    "aliases": [
+      "Bad Beat"
+    ]
+  },
+  {
+    "id": "tilt",
+    "name": "情緒失控",
+    "en": "Tilt",
+    "description": "因情緒波動導致決策品質下降。",
+    "aliases": [
+      "Tilt"
+    ]
+  },
+  {
+    "id": "bankroll",
+    "name": "牌局資金",
+    "en": "Bankroll",
+    "description": "專門用來打牌與控管風險的資金。",
+    "aliases": [
+      "Bankroll"
+    ]
+  },
+  {
+    "id": "regular-reg",
+    "name": "常客",
+    "en": "Regular (Reg)",
+    "description": "常出現在牌桌、通常有固定打法與經驗的玩家。",
+    "aliases": [
+      "Regular (Reg)",
+      "Regular",
+      "Reg"
+    ]
+  },
+  {
+    "id": "fish",
+    "name": "弱玩家",
+    "en": "Fish",
+    "description": "指技術較弱的玩家，帶貶義，實際交流時避免直接稱呼。",
+    "aliases": [
+      "Fish"
+    ]
+  },
+  {
+    "id": "shark",
+    "name": "強玩家",
+    "en": "Shark",
+    "description": "指技術強、長期有優勢的玩家。",
+    "aliases": [
+      "Shark"
+    ]
+  },
+  {
+    "id": "slow-play",
+    "name": "慢打",
+    "en": "Slow Play",
+    "description": "拿強牌時故意不快速加大底池，誘導對手下注。",
+    "aliases": [
+      "Slow Play"
+    ]
+  },
+  {
+    "id": "hero-call",
+    "name": "英雄跟注",
+    "en": "Hero Call",
+    "description": "用邊緣牌力做困難跟注，判斷對手詐唬。",
+    "aliases": [
+      "Hero Call"
+    ]
+  },
+  {
+    "id": "hero-fold",
+    "name": "英雄棄牌",
+    "en": "Hero Fold",
+    "description": "拿看似不錯的牌仍判斷落後而棄牌。",
+    "aliases": [
+      "Hero Fold"
+    ]
+  },
+  {
+    "id": "chop",
+    "name": "平分底池",
+    "en": "Chop",
+    "description": "雙方牌力相同時平分底池。",
+    "aliases": [
+      "Chop"
+    ]
+  },
+  {
+    "id": "sitting-out",
+    "name": "暫離牌桌",
+    "en": "Sitting Out",
+    "description": "暫時離開牌桌或不參與牌局。",
+    "aliases": [
+      "Sitting Out"
+    ]
+  },
+  {
+    "id": "learn-6",
+    "name": "D / Dealer Button",
+    "en": "D / Dealer Button",
+    "description": "標記莊家位的圓牌，不代表這位玩家一定親自發牌。",
+    "aliases": [
+      "D / Dealer Button"
+    ]
+  },
+  {
+    "id": "learn-7",
+    "name": "LJ / Lowjack、UTG+1",
+    "en": "LJ / Lowjack、UTG+1",
+    "description": "更多人數時常見的位置名稱；六人桌配置不必硬塞所有名稱。",
+    "aliases": [
+      "LJ / Lowjack、UTG+1"
+    ]
+  },
+  {
+    "id": "learn-9",
+    "name": "Board / 公共牌",
+    "en": "Board / 公共牌",
+    "description": "全桌共用，依序發 3、1、1 張。",
+    "aliases": [
+      "Board / 公共牌"
+    ]
+  },
+  {
+    "id": "learn-10",
+    "name": "Pot / 底池",
+    "en": "Pot / 底池",
+    "description": "本手大家已投入、目前爭奪的籌碼。",
+    "aliases": [
+      "Pot / 底池"
+    ]
+  },
+  {
+    "id": "learn-31",
+    "name": "Open-raise / 首次加注開池",
+    "en": "Open-raise / 首次加注開池",
+    "description": "前面沒人入池時的首次加注；不同於面對既有加注。",
+    "aliases": [
+      "Open-raise / 首次加注開池"
+    ]
+  },
+  {
+    "id": "learn-36",
+    "name": "s / suited、o / offsuit",
+    "en": "s / suited、o / offsuit",
+    "description": "起手牌記法：s 同花、o 不同花；例如 AKs 與 AKo。",
+    "aliases": [
+      "s / suited、o / offsuit"
+    ]
+  },
+  {
+    "id": "learn-38",
+    "name": "Side Pot / 邊池",
+    "en": "Side Pot / 邊池",
+    "description": "多人投入不同全押金額時，超過較短玩家可爭奪份額的部分另分池。",
+    "aliases": [
+      "Side Pot / 邊池"
+    ]
+  },
+  {
+    "id": "learn-39",
+    "name": "GTO / Game Theory Optimal",
+    "en": "GTO / Game Theory Optimal",
+    "description": "指定模型中的均衡策略概念；不是每手必勝、所有對手都最賺的動作表。詳見 03 範圍思考與 GTO。",
+    "aliases": [
+      "GTO / Game Theory Optimal"
+    ]
+  },
+  {
+    "id": "learn-40",
+    "name": "Nash Equilibrium / 納許均衡",
+    "en": "Nash Equilibrium / 納許均衡",
+    "description": "其他人策略固定時，沒有任何玩家能單方面改策略提升自己期望收益的策略組合。",
+    "aliases": [
+      "Nash Equilibrium / 納許均衡"
+    ]
+  },
+  {
+    "id": "learn-41",
+    "name": "Mixed Strategy / 混合策略",
+    "en": "Mixed Strategy / 混合策略",
+    "description": "同一資訊集合以一定頻率採取不同動作；精確均衡中真正混合的動作 EV 相同。",
+    "aliases": [
+      "Mixed Strategy / 混合策略"
+    ]
+  },
+  {
+    "id": "learn-42",
+    "name": "Indifference / 無差異",
+    "en": "Indifference / 無差異",
+    "description": "在指定對手策略與模型下，不同動作的期望值相同；不代表任何對手都一樣。",
+    "aliases": [
+      "Indifference / 無差異"
+    ]
+  },
+  {
+    "id": "learn-43",
+    "name": "MDF / 最低防守頻率",
+    "en": "MDF / 最低防守頻率",
+    "description": "簡化模型下使零權益詐唬無自動利潤的範圍防守參考，不是每手勝率或全街通用指令。",
+    "aliases": [
+      "MDF / 最低防守頻率"
+    ]
+  },
+  {
+    "id": "learn-45",
+    "name": "Solver / 求解器",
+    "en": "Solver / 求解器",
+    "description": "對指定規則、範圍與下注樹計算近似策略；輸入、收斂與簡化影響答案。",
+    "aliases": [
+      "Solver / 求解器"
+    ]
+  },
+  {
+    "id": "learn-46",
+    "name": "Exploitative Play / 針對性調整",
+    "en": "Exploitative Play / 針對性調整",
+    "description": "利用對手偏差改變策略以求更高收益，也承擔觀察錯誤與被反制的風險。",
+    "aliases": [
+      "Exploitative Play / 針對性調整"
+    ]
+  }
+]
