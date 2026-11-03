@@ -1,0 +1,335 @@
+{
+  "00-01": {
+    "kind": "map",
+    "defaults": {
+      "reveal": false,
+      "focus": "pot"
+    },
+    "labels": {}
+  },
+  "00-02": {
+    "kind": "streets",
+    "defaults": {
+      "streetIndex": 0,
+      "earlyEnd": false
+    }
+  },
+  "00-03": {
+    "kind": "difference",
+    "defaults": {
+      "paid": 1,
+      "target": 3
+    }
+  },
+  "01-01": {
+    "kind": "best5",
+    "defaults": {
+      "caseId": "royal",
+      "selected": [],
+      "reveal": false
+    }
+  },
+  "01-02": {
+    "kind": "kicker",
+    "defaults": {
+      "step": 0
+    }
+  },
+  "01-03": {
+    "kind": "raise-side",
+    "defaults": {
+      "tab": "raise",
+      "previous": 100,
+      "current": 300,
+      "proposed": 400,
+      "a": 50,
+      "b": 100,
+      "c": 100,
+      "foldB": false
+    }
+  },
+  "02-01": {
+    "kind": "order",
+    "defaults": {
+      "size": 6,
+      "street": "FLOP"
+    }
+  },
+  "02-02": {
+    "kind": "effective",
+    "defaults": {
+      "hero": 200,
+      "a": 60,
+      "b": 150
+    }
+  },
+  "02-03": {
+    "kind": "spr",
+    "defaults": {
+      "p": 20,
+      "short": 80,
+      "long": 120,
+      "bet": 10
+    }
+  },
+  "03-01": {
+    "kind": "combos",
+    "defaults": {
+      "type": "AA",
+      "matrix": false
+    }
+  },
+  "03-02": {
+    "kind": "blockers",
+    "defaults": {
+      "ace": true,
+      "king": false,
+      "weight": 100
+    }
+  },
+  "03-03": {
+    "kind": "sample",
+    "defaults": {
+      "n": 100,
+      "model": "base",
+      "valid": true,
+      "seed": 4242
+    }
+  },
+  "04-01": {
+    "kind": "odds",
+    "defaults": {
+      "p": 100,
+      "b": 50,
+      "formula": false
+    }
+  },
+  "04-02": {
+    "kind": "outs",
+    "defaults": {
+      "outs": 9,
+      "unknown": 47,
+      "cards": 1,
+      "paidTurn": false
+    }
+  },
+  "04-03": {
+    "kind": "ev",
+    "defaults": {
+      "p": 100,
+      "b": 50,
+      "q": 30,
+      "sim": false,
+      "seed": 4242
+    }
+  },
+  "05-01": {
+    "kind": "value",
+    "defaults": {
+      "p": 100,
+      "b": 50,
+      "q": 60,
+      "worseCalls": 0
+    }
+  },
+  "05-02": {
+    "kind": "bluff",
+    "defaults": {
+      "p": 100,
+      "b": 50,
+      "f": 40,
+      "street": "RIVER"
+    }
+  },
+  "05-03": {
+    "kind": "sizing",
+    "defaults": {
+      "p": 12,
+      "b": 4,
+      "unit": "amount"
+    }
+  },
+  "06-01": {
+    "kind": "position",
+    "defaults": {
+      "position": "UTG"
+    }
+  },
+  "06-02": {
+    "kind": "info",
+    "defaults": {
+      "checked": []
+    }
+  },
+  "06-03": {
+    "kind": "threebet",
+    "defaults": {
+      "step": 0
+    }
+  },
+  "07-01": {
+    "kind": "texture",
+    "defaults": {
+      "boardCase": "dry",
+      "example": "hero"
+    }
+  },
+  "07-02": {
+    "kind": "distribution",
+    "defaults": {
+      "topA": 6,
+      "airA": 1,
+      "nutsB": 2,
+      "airB": 6,
+      "view": "all"
+    }
+  },
+  "07-03": {
+    "kind": "multiway",
+    "defaults": {
+      "players": 2,
+      "reasons": []
+    }
+  },
+  "08-01": {
+    "kind": "turn",
+    "defaults": {
+      "turn": "2d",
+      "example": "KQ"
+    }
+  },
+  "08-02": {
+    "kind": "semibluff",
+    "defaults": {
+      "action": "check",
+      "reaction": "check"
+    }
+  },
+  "08-03": {
+    "kind": "future",
+    "defaults": {
+      "p": 20,
+      "stack": 80,
+      "b": 20,
+      "reaction": "call"
+    }
+  },
+  "09-01": {
+    "kind": "classification",
+    "defaults": {
+      "reactions": {}
+    }
+  },
+  "09-02": {
+    "kind": "ratios",
+    "defaults": {
+      "p": 100,
+      "b": 100,
+      "role": "bettor"
+    }
+  },
+  "09-03": {
+    "kind": "catch",
+    "defaults": {
+      "p": 100,
+      "b": 100,
+      "value": 9,
+      "bluffs": 6
+    }
+  },
+  "10-01": {
+    "kind": "balance",
+    "defaults": {
+      "p": 100,
+      "b": 50,
+      "value": 12,
+      "bluffs": 0
+    }
+  },
+  "10-02": {
+    "kind": "mdf",
+    "defaults": {
+      "p": 100,
+      "b": 100,
+      "defense": 50,
+      "players": 2
+    }
+  },
+  "10-03": {
+    "kind": "observation",
+    "defaults": {
+      "notes": {}
+    }
+  },
+  "11-01": {
+    "kind": "sunk",
+    "defaults": {
+      "p": 100,
+      "b": 100,
+      "q": 20,
+      "sunk": 30,
+      "reveal": false
+    }
+  },
+  "11-02": {
+    "kind": "insurance",
+    "defaults": {
+      "prob": 10,
+      "payout": 100,
+      "premium": 12
+    }
+  },
+  "11-03": {
+    "kind": "discipline",
+    "defaults": {
+      "response": "",
+      "notes": {}
+    }
+  },
+  "12-01": {
+    "kind": "aq-flop",
+    "defaults": {
+      "step": 1,
+      "choice": "",
+      "route": false,
+      "notes": {}
+    }
+  },
+  "12-02": {
+    "kind": "aq-river",
+    "defaults": {
+      "step": 3,
+      "choice": "",
+      "route": false,
+      "notes": {}
+    }
+  },
+  "12-03": {
+    "kind": "aq-change",
+    "defaults": {
+      "black": false
+    }
+  },
+  "13-01": {
+    "kind": "journal",
+    "defaults": {
+      "notes": {}
+    }
+  },
+  "13-02": {
+    "kind": "diagnosis",
+    "defaults": {
+      "category": "",
+      "remedy": false
+    }
+  },
+  "13-03": {
+    "kind": "exam",
+    "defaults": {
+      "p": 90,
+      "b": 45,
+      "value": 6,
+      "bluffs": 2
+    }
+  }
+}

@@ -1,0 +1,466 @@
+[
+  {
+    "id": "bb",
+    "term": "BB",
+    "description": "大盲位置，或以大盲為基準的籌碼單位；依欄位區分。",
+    "aliases": [
+      "BB"
+    ]
+  },
+  {
+    "id": "sb",
+    "term": "SB",
+    "description": "小盲位置；六人桌在BTN左側，單挑同時為按鈕。",
+    "aliases": [
+      "SB"
+    ]
+  },
+  {
+    "id": "btn",
+    "term": "BTN",
+    "description": "按鈕位；多人桌翻牌後通常最後行動。",
+    "aliases": [
+      "BTN"
+    ]
+  },
+  {
+    "id": "utg",
+    "term": "UTG",
+    "description": "大盲左側位置；六人桌標準翻牌前最先行動。",
+    "aliases": [
+      "UTG"
+    ]
+  },
+  {
+    "id": "hj",
+    "term": "HJ",
+    "description": "六人桌UTG後、CO前的位置。",
+    "aliases": [
+      "HJ"
+    ]
+  },
+  {
+    "id": "co",
+    "term": "CO",
+    "description": "按鈕前一位。",
+    "aliases": [
+      "CO"
+    ]
+  },
+  {
+    "id": "hole-cards",
+    "term": "Hole cards",
+    "description": "玩家自己的兩張底牌。",
+    "aliases": [
+      "Hole cards"
+    ]
+  },
+  {
+    "id": "board",
+    "term": "Board",
+    "description": "已發出的公共牌。",
+    "aliases": [
+      "Board"
+    ]
+  },
+  {
+    "id": "pot",
+    "term": "Pot",
+    "description": "已投入且尚待分配的底池。",
+    "aliases": [
+      "Pot"
+    ]
+  },
+  {
+    "id": "effective-stack",
+    "term": "Effective stack",
+    "description": "指定兩人可相互對應的籌碼上限；分起始與剩餘。",
+    "aliases": [
+      "Effective stack"
+    ]
+  },
+  {
+    "id": "spr",
+    "term": "SPR",
+    "description": "有效剩餘籌碼除以當前底池。",
+    "aliases": [
+      "SPR"
+    ]
+  },
+  {
+    "id": "fold",
+    "term": "Fold",
+    "description": "棄牌退出本手，投入不退回。",
+    "aliases": [
+      "Fold"
+    ]
+  },
+  {
+    "id": "check",
+    "term": "Check",
+    "description": "無待補下注時不新增投入，仍留在牌局。",
+    "aliases": [
+      "Check"
+    ]
+  },
+  {
+    "id": "bet",
+    "term": "Bet",
+    "description": "本輪尚無下注時率先下注。",
+    "aliases": [
+      "Bet"
+    ]
+  },
+  {
+    "id": "call",
+    "term": "Call",
+    "description": "補到目前本輪要求的總額。",
+    "aliases": [
+      "Call"
+    ]
+  },
+  {
+    "id": "raise-to",
+    "term": "Raise to",
+    "description": "加注到本輪總額，不是本次新增量。",
+    "aliases": [
+      "Raise to"
+    ]
+  },
+  {
+    "id": "raise-increment",
+    "term": "Raise increment",
+    "description": "新下注總額減去前一下注總額。",
+    "aliases": [
+      "Raise increment"
+    ]
+  },
+  {
+    "id": "all-in",
+    "term": "All-in",
+    "description": "投入全部剩餘籌碼。",
+    "aliases": [
+      "All-in"
+    ]
+  },
+  {
+    "id": "open-raise",
+    "term": "Open raise",
+    "description": "無人自願進池前的首次加注。",
+    "aliases": [
+      "Open raise"
+    ]
+  },
+  {
+    "id": "limp",
+    "term": "Limp",
+    "description": "翻牌前只跟入大盲額度。",
+    "aliases": [
+      "Limp"
+    ]
+  },
+  {
+    "id": "3-bet",
+    "term": "3-bet",
+    "description": "第三層下注／再加注，不是三倍金額。",
+    "aliases": [
+      "3-bet"
+    ]
+  },
+  {
+    "id": "4-bet",
+    "term": "4-bet",
+    "description": "對3-bet再次加注。",
+    "aliases": [
+      "4-bet"
+    ]
+  },
+  {
+    "id": "squeeze",
+    "term": "Squeeze",
+    "description": "有人開池且有人跟注後的再加注。",
+    "aliases": [
+      "Squeeze"
+    ]
+  },
+  {
+    "id": "c-bet",
+    "term": "C-bet",
+    "description": "前一街主動進攻者的延續下注。",
+    "aliases": [
+      "C-bet"
+    ]
+  },
+  {
+    "id": "donk-bet",
+    "term": "Donk bet",
+    "description": "前一街進攻者尚未行動前率先領打。",
+    "aliases": [
+      "Donk bet"
+    ]
+  },
+  {
+    "id": "block-bet",
+    "term": "Block bet",
+    "description": "常見於不利位置的較小下注；不保證對手不加注。",
+    "aliases": [
+      "Block bet"
+    ]
+  },
+  {
+    "id": "range",
+    "term": "Range",
+    "description": "根據資訊建立的可能手牌集合與權重。",
+    "aliases": [
+      "Range"
+    ]
+  },
+  {
+    "id": "combo",
+    "term": "Combo",
+    "description": "實際兩張牌的組合，不等於手牌類型。",
+    "aliases": [
+      "Combo"
+    ]
+  },
+  {
+    "id": "suited-s",
+    "term": "Suited／s",
+    "description": "兩張底牌同花。",
+    "aliases": [
+      "Suited／s"
+    ]
+  },
+  {
+    "id": "offsuit-o",
+    "term": "Offsuit／o",
+    "description": "兩張底牌不同花。",
+    "aliases": [
+      "Offsuit／o"
+    ]
+  },
+  {
+    "id": "pocket-pair",
+    "term": "Pocket pair",
+    "description": "兩張底牌點數相同。",
+    "aliases": [
+      "Pocket pair"
+    ]
+  },
+  {
+    "id": "kicker",
+    "term": "Kicker",
+    "description": "用來比較相同主要牌型的其他點數牌。",
+    "aliases": [
+      "Kicker"
+    ]
+  },
+  {
+    "id": "nuts",
+    "term": "Nuts",
+    "description": "指定牌面當下可構成的最強手牌。",
+    "aliases": [
+      "Nuts"
+    ]
+  },
+  {
+    "id": "range-advantage",
+    "term": "Range advantage",
+    "description": "整體範圍表現較有利，不必然有更多最強牌。",
+    "aliases": [
+      "Range advantage"
+    ]
+  },
+  {
+    "id": "nut-advantage",
+    "term": "Nut advantage",
+    "description": "最強端手牌分布較有利。",
+    "aliases": [
+      "Nut advantage"
+    ]
+  },
+  {
+    "id": "blocker",
+    "term": "Blocker",
+    "description": "已知牌移除對手某些組合的效果。",
+    "aliases": [
+      "Blocker"
+    ]
+  },
+  {
+    "id": "unblocker",
+    "term": "Unblocker",
+    "description": "未移除希望保留的對手牌群；須說明對象。",
+    "aliases": [
+      "Unblocker"
+    ]
+  },
+  {
+    "id": "equity",
+    "term": "Equity",
+    "description": "對指定範圍與發牌模型可取得的底池份額，含平手。",
+    "aliases": [
+      "Equity"
+    ]
+  },
+  {
+    "id": "pot-odds",
+    "term": "Pot odds",
+    "description": "跟注價格相對可競爭底池；轉為所需權益需明確定義。",
+    "aliases": [
+      "Pot odds"
+    ]
+  },
+  {
+    "id": "outs",
+    "term": "Outs",
+    "description": "可能改善的未知牌；乾淨outs還須能真正有利。",
+    "aliases": [
+      "Outs"
+    ]
+  },
+  {
+    "id": "backdoor-draw",
+    "term": "Backdoor draw",
+    "description": "通常需後續兩張連續配合才能完成的聽牌。",
+    "aliases": [
+      "Backdoor draw"
+    ]
+  },
+  {
+    "id": "flush-draw",
+    "term": "Flush draw",
+    "description": "尚未完成同花、具有補花可能的牌。",
+    "aliases": [
+      "Flush draw"
+    ]
+  },
+  {
+    "id": "open-ended-draw",
+    "term": "Open-ended draw",
+    "description": "兩頭可完成的順子聽牌，仍需檢查實際乾淨outs。",
+    "aliases": [
+      "Open-ended draw"
+    ]
+  },
+  {
+    "id": "gutshot",
+    "term": "Gutshot",
+    "description": "中間缺一個點數的卡順。",
+    "aliases": [
+      "Gutshot"
+    ]
+  },
+  {
+    "id": "ev",
+    "term": "EV",
+    "description": "依機率加權的淨收益；必須說明比較基準。",
+    "aliases": [
+      "EV"
+    ]
+  },
+  {
+    "id": "implied-odds",
+    "term": "Implied odds",
+    "description": "考慮未來可能再贏籌碼的條件。",
+    "aliases": [
+      "Implied odds"
+    ]
+  },
+  {
+    "id": "reverse-implied-risk",
+    "term": "Reverse implied risk",
+    "description": "改善後仍輸更大牌、可能再失更多的風險。",
+    "aliases": [
+      "Reverse implied risk"
+    ]
+  },
+  {
+    "id": "value-bet",
+    "term": "Value bet",
+    "description": "希望較差牌跟注的下注，仍需與過牌比較。",
+    "aliases": [
+      "Value bet"
+    ]
+  },
+  {
+    "id": "bluff",
+    "term": "Bluff",
+    "description": "希望較好牌棄牌的下注或加注。",
+    "aliases": [
+      "Bluff"
+    ]
+  },
+  {
+    "id": "semi-bluff",
+    "term": "Semi-bluff",
+    "description": "被跟仍有改善可能的進攻，不是任何下注都合理。",
+    "aliases": [
+      "Semi-bluff"
+    ]
+  },
+  {
+    "id": "bluff-catcher",
+    "term": "Bluff catcher",
+    "description": "主要贏詐唬、輸價值範圍的抓詐唬手牌。",
+    "aliases": [
+      "Bluff catcher"
+    ]
+  },
+  {
+    "id": "polarized-range",
+    "term": "Polarized range",
+    "description": "偏向強價值與弱詐唬兩端的範圍。",
+    "aliases": [
+      "Polarized range"
+    ]
+  },
+  {
+    "id": "gto",
+    "term": "GTO",
+    "description": "特定模型中的整體均衡策略概念，不是收益保證。",
+    "aliases": [
+      "GTO"
+    ]
+  },
+  {
+    "id": "mdf",
+    "term": "MDF",
+    "description": "簡化零權益詐唬模型下的防守比例參照。",
+    "aliases": [
+      "MDF"
+    ]
+  },
+  {
+    "id": "side-pot",
+    "term": "Side pot",
+    "description": "由不同投入上限形成的邊池；只由合資格者競爭。",
+    "aliases": [
+      "Side pot"
+    ]
+  },
+  {
+    "id": "rake",
+    "term": "Rake",
+    "description": "場地或平台收取的費用，規則需明示。",
+    "aliases": [
+      "Rake"
+    ]
+  },
+  {
+    "id": "icm",
+    "term": "ICM",
+    "description": "估計錦標賽籌碼與獎金價值關係的模型；本課不完整涵蓋。",
+    "aliases": [
+      "ICM"
+    ]
+  },
+  {
+    "id": "tilt",
+    "term": "Tilt",
+    "description": "情緒影響判斷的狀態，不是藉口繼續追損。",
+    "aliases": [
+      "Tilt"
+    ]
+  }
+]

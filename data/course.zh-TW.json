@@ -1,0 +1,3611 @@
+{
+  "id": "spotsense-course-2026",
+  "version": "1.0.1",
+  "locale": "zh-TW",
+  "basis": "使用者提供內容母稿v1.0",
+  "modules": [
+    {
+      "id": "00",
+      "title": "從零認識牌桌",
+      "intro": "本模組不要求你懂任何撲克名詞。先把桌上的圖形與行動連起來，知道自己何時需要做決定；不要急著背起手牌。"
+    },
+    {
+      "id": "01",
+      "title": "最佳五張與完整規則",
+      "intro": "你將親手選出真正用來比牌的五張，並學會合法加注與邊池。規則題有可驗證答案，不用猜對手個性。"
+    },
+    {
+      "id": "02",
+      "title": "位置、有效籌碼與SPR",
+      "intro": "位置改變你做決定時知道的資訊；有效籌碼改變你可能承擔的投入。兩者都不能用牌面大小代替。"
+    },
+    {
+      "id": "03",
+      "title": "範圍、組合與策略語言",
+      "intro": "從猜一手牌，轉成帶權重的可能手牌集合。矩陣是壓縮表示法，不是撲克的答案本身。"
+    },
+    {
+      "id": "04",
+      "title": "勝率、價格與期望值",
+      "intro": "把「多常贏」「價格要求什麼」「平均賺賠」拆開。先看籌碼流向，再學公式與適用條件。"
+    },
+    {
+      "id": "05",
+      "title": "行動目的與下注尺度",
+      "intro": "從「牌好就下注」進步到「比較下注與過牌」。每次投入都要能指出受益的對手反應。"
+    },
+    {
+      "id": "06",
+      "title": "翻牌前的進場品質",
+      "intro": "先固定情境建立思考，再學開池、面對開池與再加注。不提供缺乏條件的萬用牌表。"
+    },
+    {
+      "id": "07",
+      "title": "翻牌：自己的牌與雙方範圍",
+      "intro": "把「我中了什麼」擴展成「雙方整體與最強牌如何分布」。牌面標籤只是分析入口。"
+    },
+    {
+      "id": "08",
+      "title": "轉牌：更新資訊與河牌規劃",
+      "intro": "每張轉牌都是一次模型更新。除了現在是否領先，也要預先看下注後的河牌底池與剩餘籌碼。"
+    },
+    {
+      "id": "09",
+      "title": "河牌：價值、詐唬與抓詐唬",
+      "intro": "沒有下一張牌後，可以更清楚分離價格與對手範圍。大牌不保證能價值下注，小牌也不必然該詐唬。"
+    },
+    {
+      "id": "10",
+      "title": "GTO、平衡與有證據的調整",
+      "intro": "深入理解簡化博弈，而不是把比例背成實戰命令。每個數值都要能說出假設。"
+    },
+    {
+      "id": "11",
+      "title": "紀律、風險與場地規則",
+      "intro": "撲克能力也包含停止不合適的行動。把波動、期望值與能承受的損失分開，不鼓勵借款追損。"
+    },
+    {
+      "id": "12",
+      "title": "完整牌局與分支推理",
+      "intro": "把分開練過的能力放回同一手牌。策略題先評理由與條件，不把教材示例當成唯一最佳路線。"
+    },
+    {
+      "id": "13",
+      "title": "複盤、驗收與持續練習",
+      "intro": "把錯誤轉成可重複執行的修正。完成不等於精熟，真正的能力需要新題與延後檢核。"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "00-01",
+      "version": 1,
+      "moduleId": "00",
+      "title": "一張牌桌的地圖",
+      "goal": "辨認手牌、公共牌、底池、籌碼與莊家標記。",
+      "prediction": {
+        "id": "00-01-p",
+        "prompt": "盲注剛投入，尚未有人額外跟注，底池多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "1.5 BB"
+          },
+          {
+            "id": "b",
+            "text": "100 BB"
+          },
+          {
+            "id": "c",
+            "text": "200 BB"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "type": "choice"
+      },
+      "exploration": "六人桌，SB=0.5 BB、BB=1 BB，每人起始100 BB。盲注投入後底池1.5 BB，SB剩99.5，BB剩99，其餘100。 先點中央底池，顯示「已投入：1.5 BB」；再點BB座位，顯示「剩餘：99 BB」；點手牌翻開A黑桃與Q黑桃；點牌背， 只顯示「尚未發出的公共牌」，不揭露牌。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "德州撲克每人取得兩張只有自己知道的底牌，桌中央最多出現五張公共牌。你的牌力由可使用的牌中最佳五張決定。底 池是本手已投入、等待分配的籌碼；座位旁的剩餘籌碼不是底池。D 標記表示按鈕位置，不代表這個人一定親自發牌。 未發出的牌只能顯示牌背，不能預先透露。",
+      "primary": {
+        "id": "00-01-primary",
+        "prompt": "盲注剛投入，尚未有人額外跟注，底池多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "1.5 BB"
+          },
+          {
+            "id": "b",
+            "text": "100 BB"
+          },
+          {
+            "id": "c",
+            "text": "200 BB"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "explanation": "A．1.5 BB。0.5加1等於1.5。100是個別玩家起始籌碼；不能因示意牌桌看起來很大就使用固定底池100。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "00-01-transfer",
+        "prompt": "盲注改成小盲1、大盲2，仍無其他投入。底池多少？",
+        "referenceAnswer": "3個籌碼單位，等於1.5 BB。",
+        "type": "unit",
+        "acceptedValues": {
+          "chips": 3,
+          "bb": 1.5
+        },
+        "tolerance": 0.01,
+        "version": 1
+      },
+      "boundary": "BB同時可指大盲位置與大盲單位，介面須分開標示。[S1]",
+      "sourceIds": [
+        "S1"
+      ],
+      "sourcePage": 11
+    },
+    {
+      "id": "00-02",
+      "version": 1,
+      "moduleId": "00",
+      "title": "四條街與兩種獲勝方式",
+      "goal": "辨認翻牌前、翻牌、轉牌、河牌，以及不攤牌獲勝。",
+      "prediction": {
+        "id": "00-02-p",
+        "prompt": "BB在翻牌前棄牌後，需要發完河牌才能決定獲勝者嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "需要"
+          },
+          {
+            "id": "b",
+            "text": "不需要"
+          },
+          {
+            "id": "c",
+            "text": "一定要公開BTN底牌"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "只剩BTN與BB，公共牌尚未發出；BTN加注後BB棄牌。 按「播放一手牌」依序標亮四個階段，每幕5秒；切到「中途結束」，當BB棄牌即停止發牌；用上一幕重播，不重複扣 籌碼。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "發底牌後是翻牌前；翻牌一次發三張公共牌，轉牌與河牌各再發一張。每階段有下注行動。若其他人全部棄牌，最後留 下的人直接取得底池，不必補發公共牌；若有多人留到攤牌，才比較最佳五張。動畫中的燒牌屬發牌程序，不是玩家可 使用的牌。",
+      "primary": {
+        "id": "00-02-primary",
+        "prompt": "BB在翻牌前棄牌後，需要發完河牌才能決定獲勝者嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "需要"
+          },
+          {
+            "id": "b",
+            "text": "不需要"
+          },
+          {
+            "id": "c",
+            "text": "一定要公開BTN底牌"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不需要。只有一人留下就已贏得底池。未攤牌不代表系統有權公開其底牌。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "00-02-transfer",
+        "prompt": "兩人都跟到河牌且無人棄牌，如何決定勝負？",
+        "referenceAnswer": "比較雙方最佳五張；相同時平分，實際零頭依場地規則。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "比較最佳五張，相同則平分"
+          },
+          {
+            "id": "b",
+            "text": "比較兩張底牌的總點數"
+          },
+          {
+            "id": "c",
+            "text": "花色決定勝負"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "本課教一般流程，不涵蓋所有現場發牌異常處理。[S1,S2]",
+      "sourceIds": [
+        "S1",
+        "S2"
+      ],
+      "sourcePage": 12
+    },
+    {
+      "id": "00-03",
+      "version": 1,
+      "moduleId": "00",
+      "title": "六個基本動作",
+      "goal": "知道何時能過牌，以及跟注是補差額。",
+      "prediction": {
+        "id": "00-03-p",
+        "prompt": "BB需要再付多少才能跟注？",
+        "options": [
+          {
+            "id": "a",
+            "text": "3 BB"
+          },
+          {
+            "id": "b",
+            "text": "2 BB"
+          },
+          {
+            "id": "c",
+            "text": "1 BB"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "翻牌前BB已投入1 BB，BTN加到3 BB，行動回到BB。 行動列先顯示「棄牌／跟注2 BB／加注到…」；點灰色過牌按鈕顯示不可用原因；按「顯示帳目」，並排BB已付1、目 前需達3、差額2。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "Fold棄牌表示退出本手；Check過牌表示在沒有待補下注時不投入；Bet下注是本輪尚無下注時率先投入；Call跟注是補 到目前應付總額；Raise加注是提高本輪下注總額；All-in全下是投入全部剩餘籌碼。過牌不等於棄牌，全下也不是比其 他牌型更大的牌。",
+      "primary": {
+        "id": "00-03-primary",
+        "prompt": "BB需要再付多少才能跟注？",
+        "options": [
+          {
+            "id": "a",
+            "text": "3 BB"
+          },
+          {
+            "id": "b",
+            "text": "2 BB"
+          },
+          {
+            "id": "c",
+            "text": "1 BB"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．2 BB。已付的1 BB算入本輪投入，因此補2而不是再付3。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "00-03-transfer",
+        "prompt": "翻牌後你本輪已下注4，對手加到12。你跟注還要付多少？",
+        "referenceAnswer": "8；本輪累計投入會從4變12。",
+        "type": "numeric",
+        "acceptedValues": [
+          8
+        ],
+        "fieldLabels": [
+          "新增籌碼"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "difference",
+        "version": 1
+      },
+      "boundary": "不足額全下、加注權與邊池在後續課程處理；按鈕合法性由規則引擎提供。[S1,S3]",
+      "sourceIds": [
+        "S1",
+        "S3"
+      ],
+      "sourcePage": 13
+    },
+    {
+      "id": "01-01",
+      "version": 1,
+      "moduleId": "01",
+      "title": "牌型與最佳五張",
+      "goal": "從七張中選五張，不受底牌張數限制。",
+      "prediction": {
+        "id": "01-01-p",
+        "prompt": "本例誰贏？",
+        "options": [
+          {
+            "id": "a",
+            "text": "你的口袋對2"
+          },
+          {
+            "id": "b",
+            "text": "對手口袋對A"
+          },
+          {
+            "id": "c",
+            "text": "平分"
+          }
+        ],
+        "acceptedIds": [
+          "c"
+        ],
+        "type": "choice"
+      },
+      "exploration": "公共牌A黑桃、K黑桃、Q黑桃、J黑桃、T黑桃；你持2梅花、2方塊，對手持A紅心、A方塊。 先點選你認為最好的五張，選滿前送出停用；送出後描邊真正最佳五張；切換對手視角，保留公共牌；最後按「比較」 顯示平分。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "牌型由強到弱為同花順、四條、葫蘆、同花、順子、三條、兩對、一對、高牌；皇家同花順是最大的同花順。你可以用 兩張、一張或零張底牌。順子A可作A2345的低端，或TJQKA的高端，不能接成QKA23。比較只看最佳五張。",
+      "primary": {
+        "id": "01-01-primary",
+        "prompt": "本例誰贏？",
+        "options": [
+          {
+            "id": "a",
+            "text": "你的口袋對2"
+          },
+          {
+            "id": "b",
+            "text": "對手口袋對A"
+          },
+          {
+            "id": "c",
+            "text": "平分"
+          }
+        ],
+        "acceptedIds": [
+          "c"
+        ],
+        "explanation": "C．平分。公共牌已構成最大的同花順，雙方都以公共牌的五張作最佳手牌。第六張不參與比較。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "01-01-transfer",
+        "prompt": "公共牌A梅花、2方塊、3黑桃、4紅心、9梅花，你持5黑桃、K方塊。最佳牌型？",
+        "referenceAnswer": "A2345順子，不是只有A高牌。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "A2345五高順子"
+          },
+          {
+            "id": "b",
+            "text": "A高牌"
+          },
+          {
+            "id": "c",
+            "text": "QKA23順子"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "牌型列表只是排序；每個候選五張仍要按點數完整比較。[S2]",
+      "sourceIds": [
+        "S2"
+      ],
+      "sourcePage": 14
+    },
+    {
+      "id": "01-02",
+      "version": 1,
+      "moduleId": "01",
+      "title": "踢腳牌與平手",
+      "goal": "逐張比較構成最佳五張的點數。",
+      "prediction": {
+        "id": "01-02-p",
+        "prompt": "誰贏，關鍵是什麼？",
+        "options": [
+          {
+            "id": "a",
+            "text": "你贏，K踢腳高於Q"
+          },
+          {
+            "id": "b",
+            "text": "平分，都是一對A"
+          },
+          {
+            "id": "c",
+            "text": "對手贏，紅心較大"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "type": "choice"
+      },
+      "exploration": "公共牌A梅花、7方塊、6黑桃、4紅心、2梅花；你A黑桃K方塊，對手A方塊Q紅心。 先只亮一對A，顯示「仍相同」；逐次按「下一個比較點」亮K對Q；展開雙方完整五張，非使用牌淡化但不消失。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "相同牌型不一定平手。一對相同時，依其餘三張點數由大到小比較；兩對先比大對，再比小對，最後比踢腳；葫蘆先比 三條；同花依五張點數順序比較，花色本身不決定牌力。沒有第六張踢腳。",
+      "primary": {
+        "id": "01-02-primary",
+        "prompt": "誰贏，關鍵是什麼？",
+        "options": [
+          {
+            "id": "a",
+            "text": "你贏，K踢腳高於Q"
+          },
+          {
+            "id": "b",
+            "text": "平分，都是一對A"
+          },
+          {
+            "id": "c",
+            "text": "對手贏，紅心較大"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "explanation": "A．你贏，K踢腳高於Q。你的最佳五張是AAK76，對手是AAQ76。第三個比較點K高於Q，已足以決定勝負。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "01-02-transfer",
+        "prompt": "公共牌K梅花K方塊Q黑桃Q紅心A梅花，你持2黑桃3黑桃，對手4方塊5方塊。",
+        "referenceAnswer": "平分，雙方最佳五張都是KKQQA。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "平分，最佳五張相同"
+          },
+          {
+            "id": "b",
+            "text": "較大底牌獲勝"
+          },
+          {
+            "id": "c",
+            "text": "不同花色決定勝負"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "平手權益可用分得底池的比例計算；奇數籌碼分配依現場規則。[S2]",
+      "sourceIds": [
+        "S2"
+      ],
+      "sourcePage": 15
+    },
+    {
+      "id": "01-03",
+      "version": 1,
+      "moduleId": "01",
+      "title": "完整加注與邊池",
+      "goal": "區分加注到與增加量，辨認誰有資格贏哪些池。",
+      "prediction": {
+        "id": "01-03-p",
+        "prompt": "B情境短碼玩家最多可競爭多少底池？",
+        "options": [
+          {
+            "id": "a",
+            "text": "250"
+          },
+          {
+            "id": "b",
+            "text": "150"
+          },
+          {
+            "id": "c",
+            "text": "100"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "練習A：下注100→加到300。練習B：三人各投入50、100、100，無棄牌且都不再下注。 切換A，拖動「加注到」至400，顯示低於最低完整加注500；切換B，將籌碼切成三份50形成主池150，另兩份50形成邊 池100，點短碼玩家僅亮主池資格。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "最低完整加注至少增加本輪前一個完整下注或加注的增量。例如下注100、加到300，增量200，下一個最低完整加注是 到500。全下不足一個完整加注可能不重開已行動者的加注權；需要保留逐人行動歷史，不能只看最後金額。邊池則按 各人實際投入分層，棄牌者投入留在池中但無贏池資格。",
+      "primary": {
+        "id": "01-03-primary",
+        "prompt": "B情境短碼玩家最多可競爭多少底池？",
+        "options": [
+          {
+            "id": "a",
+            "text": "250"
+          },
+          {
+            "id": "b",
+            "text": "150"
+          },
+          {
+            "id": "c",
+            "text": "100"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．150。短碼只投入50，每位對手各有50與其對應，因此主池150；另外100只能由兩位投入100者競爭。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "01-03-transfer",
+        "prompt": "下注40，加到110，下一個最低完整再加注到多少？",
+        "referenceAnswer": "180；前一增量110−40=70，因此110+70=180。",
+        "type": "numeric",
+        "acceptedValues": [
+          180
+        ],
+        "fieldLabels": [
+          "最低加注到總額"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "minraise",
+        "version": 1
+      },
+      "boundary": "未足額全下的重開權須逐人計算；TDA是賽事基準，現金桌採場地設定。[S3]",
+      "sourceIds": [
+        "S3"
+      ],
+      "sourcePage": 16
+    },
+    {
+      "id": "02-01",
+      "version": 1,
+      "moduleId": "02",
+      "title": "行動順序與資訊",
+      "goal": "比較翻牌前後順序，理解單挑例外。",
+      "prediction": {
+        "id": "02-01-p",
+        "prompt": "BTN對BB的翻牌，誰先行動？",
+        "options": [
+          {
+            "id": "a",
+            "text": "BTN"
+          },
+          {
+            "id": "b",
+            "text": "BB"
+          },
+          {
+            "id": "c",
+            "text": "隨機"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "六人桌僅BTN與BB進翻牌，公共牌K梅花7方塊2黑桃。 先切「翻牌前」亮UTG；切「翻牌」亮BB與BTN順序箭頭；再切「單挑桌」同步調整按鈕與盲注，不只隱藏四個座位； 切視角不改變真實位置。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "六人桌依序為UTG、HJ、CO、BTN、SB、BB。無額外特殊盲注時，翻牌前UTG先行動；翻牌後由按鈕左側仍在局者先 行動。BTN通常在翻牌後最後行動。單挑時按鈕是小盲，翻牌前先行動，翻牌後由大盲先行動。有位置提供資訊，但不 保證每次贏。",
+      "primary": {
+        "id": "02-01-primary",
+        "prompt": "BTN對BB的翻牌，誰先行動？",
+        "options": [
+          {
+            "id": "a",
+            "text": "BTN"
+          },
+          {
+            "id": "b",
+            "text": "BB"
+          },
+          {
+            "id": "c",
+            "text": "隨機"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．BB。翻牌後BB在BTN之前行動；按鈕保有後行動位置。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "02-01-transfer",
+        "prompt": "單挑桌的SB／BTN翻牌前與翻牌後各是第幾個行動？",
+        "referenceAnswer": "翻牌前第一，翻牌後第二。",
+        "type": "numeric",
+        "acceptedValues": [
+          1,
+          2
+        ],
+        "fieldLabels": [
+          "翻牌前順序",
+          "翻牌後順序"
+        ],
+        "tolerances": [
+          0.01,
+          0.01
+        ],
+        "variantKind": "hu-order",
+        "version": 1
+      },
+      "boundary": "強制straddle等場地例外另設，不混入基本順序題。[S1]",
+      "sourceIds": [
+        "S1"
+      ],
+      "sourcePage": 17
+    },
+    {
+      "id": "02-02",
+      "version": 1,
+      "moduleId": "02",
+      "title": "有效籌碼與多人關係",
+      "goal": "計算雙方可爭奪的投入上限。",
+      "prediction": {
+        "id": "02-02-p",
+        "prompt": "你與B的有效起始籌碼是多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "60 BB"
+          },
+          {
+            "id": "b",
+            "text": "150 BB"
+          },
+          {
+            "id": "c",
+            "text": "200 BB"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "你200 BB，對手A60 BB，對手B150 BB，均為手牌開始前籌碼。 點A連線顯示60；點B連線顯示150；點「全部關係」顯示兩條不同長度的投入線；拖A至30時，只更新涉及A的連線。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "單挑時有效籌碼以雙方較短的一方為限。你有200 BB、對手60 BB，彼此本手可對應的起始投入最多60 BB。多人局不能 只取全桌最短籌碼，因為你與不同對手的有效籌碼不同；短碼全下後，深碼之間仍能產生邊池。有效起始籌碼與目前剩 餘籌碼也要分清楚。",
+      "primary": {
+        "id": "02-02-primary",
+        "prompt": "你與B的有效起始籌碼是多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "60 BB"
+          },
+          {
+            "id": "b",
+            "text": "150 BB"
+          },
+          {
+            "id": "c",
+            "text": "200 BB"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．150 BB。你與B之間以150為限。A的短碼不會把你與B的全部對應投入限制為60。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "02-02-transfer",
+        "prompt": "你80 BB，A120 BB，B25 BB；你與A、與B分別多少？",
+        "referenceAnswer": "80 BB與25 BB。",
+        "type": "numeric",
+        "acceptedValues": [
+          80,
+          25
+        ],
+        "fieldLabels": [
+          "與A有效籌碼（BB）",
+          "與B有效籌碼（BB）"
+        ],
+        "tolerances": [
+          0.01,
+          0.01
+        ],
+        "variantKind": "effective",
+        "version": 1
+      },
+      "boundary": "實際可贏底池還受投入、棄牌與邊池資格影響。[S1,S4]",
+      "sourceIds": [
+        "S1",
+        "S4"
+      ],
+      "sourcePage": 18
+    },
+    {
+      "id": "02-03",
+      "version": 1,
+      "moduleId": "02",
+      "title": "SPR與後續投入空間",
+      "goal": "用剩餘有效籌碼除以當前底池。",
+      "prediction": {
+        "id": "02-03-p",
+        "prompt": "初始SPR多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "6"
+          },
+          {
+            "id": "b",
+            "text": "4"
+          },
+          {
+            "id": "c",
+            "text": "0.25"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "單挑翻牌底池20 BB，兩人剩80與120 BB。 兩個滑桿分別改底池與短方剩餘籌碼；同步顯示分子分母與SPR；按「試算半池被跟」顯示底池40、短方剩70、下一街 SPR1.75。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "SPR是有效剩餘籌碼與底池的比值。底池20 BB、雙方有效剩餘80 BB，SPR為4。SPR描述可以繼續投入多少，不是頂對 自動全下門檻。同樣一對牌，在不同範圍、牌面與籌碼深度下可能採取不同路線；不能把低SPR當作不再思考的理由。",
+      "primary": {
+        "id": "02-03-primary",
+        "prompt": "初始SPR多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "6"
+          },
+          {
+            "id": "b",
+            "text": "4"
+          },
+          {
+            "id": "c",
+            "text": "0.25"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．4。有效剩餘為80，不是120或200；80÷20=4。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "02-03-transfer",
+        "prompt": "底池30、有效剩餘60，下注15且被跟後的SPR？",
+        "referenceAnswer": "底池60、有效剩餘45，SPR=0.75。",
+        "type": "numeric",
+        "acceptedValues": [
+          0.75
+        ],
+        "fieldLabels": [
+          "SPR"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "spr",
+        "version": 1
+      },
+      "boundary": "上述下注者是短方且無加注；多人SPR需明確指出對應玩家。[S4]",
+      "sourceIds": [
+        "S4"
+      ],
+      "sourcePage": 19
+    },
+    {
+      "id": "03-01",
+      "version": 1,
+      "moduleId": "03",
+      "title": "從牌群到範圍矩陣",
+      "goal": "看懂AA、AKs、AKo與範圍。",
+      "prediction": {
+        "id": "03-01-p",
+        "prompt": "AA、AKs、AKo各多少組？",
+        "options": [
+          {
+            "id": "a",
+            "text": "6、4、12"
+          },
+          {
+            "id": "b",
+            "text": "4、6、12"
+          },
+          {
+            "id": "c",
+            "text": "1、1、1"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "type": "choice"
+      },
+      "exploration": "教學範圍只放AA、AKs、AKo，未有已知牌移除。 先顯示22個實際組合；按「分類」收成三疊；再按「矩陣」壓縮到三格；點AKo展開12張牌組小卡並顯示不是12種花色。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "範圍是一組可能手牌，還可以包含各手牌採取行動的相對頻率。AA是口袋對A；s表示同花，o表示不同花，T代表10。 13乘13矩陣把不同組合壓縮成169種起手牌類型；它不是169種等機率的結果。同一格可代表4、6或12組，須按實際組 合加權。",
+      "primary": {
+        "id": "03-01-primary",
+        "prompt": "AA、AKs、AKo各多少組？",
+        "options": [
+          {
+            "id": "a",
+            "text": "6、4、12"
+          },
+          {
+            "id": "b",
+            "text": "4、6、12"
+          },
+          {
+            "id": "c",
+            "text": "1、1、1"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "explanation": "A．6、4、12。口袋對從四張選二得6；同花四種得4；AK共16種配對扣掉4同花得12。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "03-01-transfer",
+        "prompt": "QQ與QJs合計多少未阻擋組合？",
+        "referenceAnswer": "6+4=10。",
+        "type": "numeric",
+        "acceptedValues": [
+          10
+        ],
+        "fieldLabels": [
+          "組合數"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "combos",
+        "version": 1
+      },
+      "boundary": "範圍是目前資訊下的模型，不等於已知對手底牌。[S4]",
+      "sourceIds": [
+        "S4"
+      ],
+      "sourcePage": 20
+    },
+    {
+      "id": "03-02",
+      "version": 1,
+      "moduleId": "03",
+      "title": "阻擋牌與逐街加權",
+      "goal": "計算組合移除，不把行動當成絕對證明。",
+      "prediction": {
+        "id": "03-02-p",
+        "prompt": "移除後AA還有幾組？",
+        "options": [
+          {
+            "id": "a",
+            "text": "0"
+          },
+          {
+            "id": "b",
+            "text": "3"
+          },
+          {
+            "id": "c",
+            "text": "5"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "先不給公共牌，對手候選AA六組；你的手牌中有A黑桃。 點A黑桃置入我方手牌，三個含A黑桃的AA組合變灰；加上示意行動「跟注」後，允許調整其餘組合權重，標記為假設而 不是求解結果。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "你手上的牌與公共牌會移除對手不可能持有的組合。一張A使AA從六組變三組。另一方面，對手只跟注不代表沒有強牌 ，因為強牌可以慢打。更新範圍要同時處理不可能性與相對頻率：重複的牌必須刪除，低頻行動則不一定刪除。",
+      "primary": {
+        "id": "03-02-primary",
+        "prompt": "移除後AA還有幾組？",
+        "options": [
+          {
+            "id": "a",
+            "text": "0"
+          },
+          {
+            "id": "b",
+            "text": "3"
+          },
+          {
+            "id": "c",
+            "text": "5"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．3。剩三張A，從三張選二共有3組。不能因你拿一張A就刪除全部AA。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "03-02-transfer",
+        "prompt": "你拿A黑桃K方塊，對手AKs還有幾組？",
+        "referenceAnswer": "2組：紅心AK與梅花AK；黑桃與方塊同花組合各被移除。",
+        "type": "numeric",
+        "acceptedValues": [
+          2
+        ],
+        "fieldLabels": [
+          "未阻擋AKs組數"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "blockers",
+        "version": 1
+      },
+      "boundary": "權重必須有來源；手動調整只代表使用者假設。[S4,S5]",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ],
+      "sourcePage": 21
+    },
+    {
+      "id": "03-03",
+      "version": 1,
+      "moduleId": "03",
+      "title": "GTO的第一張地圖",
+      "goal": "理解策略、頻率、模型與針對性調整的差別。",
+      "prediction": {
+        "id": "03-03-p",
+        "prompt": "不同抽水與籌碼條件，能直接把兩張牌表頻率拼在一起嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "可以"
+          },
+          {
+            "id": "b",
+            "text": "不應直接拼接"
+          },
+          {
+            "id": "c",
+            "text": "只看顏色就能判斷"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "顯示一張教學卡：某假設模型把某手牌配置為下注50%、過牌50%；不附實戰推薦。 拖動抽樣次數10→100→1000；顯示抽樣比例與設定頻率不必完全相同；切換「模型條件」會清除原策略卡，不沿用舊 答案。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "GTO研究整套策略如何互相支撐，不是某手牌永遠固定動作。求解結果依人數、籌碼、抽水、可用尺度與雙方範圍等模 型條件而定。混合頻率表示相同資訊狀態下可按比例使用不同動作，不是靠直覺任意亂選。針對性調整則根據對手偏差 改變策略，不能只靠一次攤牌下結論。",
+      "primary": {
+        "id": "03-03-primary",
+        "prompt": "不同抽水與籌碼條件，能直接把兩張牌表頻率拼在一起嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "可以"
+          },
+          {
+            "id": "b",
+            "text": "不應直接拼接"
+          },
+          {
+            "id": "c",
+            "text": "只看顏色就能判斷"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不應直接拼接。頻率是在特定模型內相互配合的結果。拼接可能破壞前後街與不同手牌的策略關係。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "03-03-transfer",
+        "prompt": "看到對手一次用弱牌跟注，可否宣稱他永遠是跟注站？",
+        "referenceAnswer": "不可以；只能記為單次觀察，保留樣本與情境限制。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "不能，只能記為一次觀察"
+          },
+          {
+            "id": "b",
+            "text": "可以，他永遠是跟注站"
+          },
+          {
+            "id": "c",
+            "text": "直接假設他跟注率100%"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "本課的50%是教學假設，不是任何指定牌局的Solver結果。[S5]",
+      "sourceIds": [
+        "S5"
+      ],
+      "sourcePage": 22
+    },
+    {
+      "id": "04-01",
+      "version": 1,
+      "moduleId": "04",
+      "title": "底池賠率不是50%才跟",
+      "goal": "計算單挑封閉決策的跟注門檻。",
+      "prediction": {
+        "id": "04-01-p",
+        "prompt": "此例跟注打平門檻？",
+        "options": [
+          {
+            "id": "a",
+            "text": "25%"
+          },
+          {
+            "id": "b",
+            "text": "33.3%"
+          },
+          {
+            "id": "c",
+            "text": "50%"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "type": "choice"
+      },
+      "exploration": "單挑河牌，P100、對手下注50，無抽水、跟注後直接攤牌。 先鎖公式，只顯示原池100、對手50、你50三塊；拖B至100與200；按「我看懂了」才揭示比例公式；輸入框可取代滑 桿。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "P定義為對手下注前底池，B是其下注與你要跟進的金額。跟注後總池為P+2B，打平所需權益為B÷(P+2B)。例如P=100、 B=50，你付50競爭最終200，門檻25%。權益含平手分得的份額。若後面仍有下注、抽水或不能實現全部權益，這個簡 化比較不等於完整決策。",
+      "primary": {
+        "id": "04-01-primary",
+        "prompt": "此例跟注打平門檻？",
+        "options": [
+          {
+            "id": "a",
+            "text": "25%"
+          },
+          {
+            "id": "b",
+            "text": "33.3%"
+          },
+          {
+            "id": "c",
+            "text": "50%"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "explanation": "A．25%。最終200中的50是你的成本，因此25%；50÷150算的是不同問題，不是這裡的跟注權益門檻。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "04-01-transfer",
+        "prompt": "P80，B60，打平門檻？",
+        "referenceAnswer": "60÷200=30%。",
+        "type": "numeric",
+        "acceptedValues": [
+          30
+        ],
+        "fieldLabels": [
+          "權益門檻（%）"
+        ],
+        "tolerances": [
+          0.1
+        ],
+        "variantKind": "odds",
+        "version": 1
+      },
+      "boundary": "三分之四池門檻是30%；若來源表寫28.6%與此定義不符，依公式重新驗算。[S5,S6]",
+      "sourceIds": [
+        "S5",
+        "S6"
+      ],
+      "sourcePage": 23
+    },
+    {
+      "id": "04-02",
+      "version": 1,
+      "moduleId": "04",
+      "title": "Outs與一張、兩張機會",
+      "goal": "辨認乾淨補牌，區分補中與獲勝。",
+      "prediction": {
+        "id": "04-02-p",
+        "prompt": "翻牌跟一次注就一定買到兩張公共牌嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "一定"
+          },
+          {
+            "id": "b",
+            "text": "不一定"
+          },
+          {
+            "id": "c",
+            "text": "有聽牌就免費"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "你A黑桃Q黑桃，翻牌8黑桃3黑桃K方塊。先只辨認補花，不假設對手底牌。 在47張未知牌中點選所有黑桃，系統計9張；切「一張」與「兩張」顯示約19.1%與35.0%；切「轉牌需再付錢」時兩張 視圖加上成本警告。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "四張同花通常有9張補花牌，兩頭順通常8張，卡順通常4張。補成牌型不必然獲勝，也可能對手同時補到更強牌。翻牌 已知自己的兩張與公共三張時有47張未知牌；若9張乾淨outs且可看完兩張，至少補中一次為1−(38÷47)×(37÷46)， 約35%。只看轉牌約19.1%。二四法則是近似，不是勝率保證。",
+      "primary": {
+        "id": "04-02-primary",
+        "prompt": "翻牌跟一次注就一定買到兩張公共牌嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "一定"
+          },
+          {
+            "id": "b",
+            "text": "不一定"
+          },
+          {
+            "id": "c",
+            "text": "有聽牌就免費"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不一定。轉牌可能再面對下注，因此不能直接拿兩張補牌機會替一次翻牌跟注辯護。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "04-02-transfer",
+        "prompt": "轉牌已知6張牌，剩46張未知牌，有9張乾淨outs，看河牌的機率？",
+        "referenceAnswer": "9÷46，約19.6%。",
+        "type": "numeric",
+        "acceptedValues": [
+          19.565217391304348
+        ],
+        "fieldLabels": [
+          "補中機率（%）"
+        ],
+        "tolerances": [
+          0.1
+        ],
+        "variantKind": "outs",
+        "version": 1
+      },
+      "boundary": "未知牌均勻模型只是補牌機率；實際權益還需對手範圍、牌型與平手判定。[S6]",
+      "sourceIds": [
+        "S6"
+      ],
+      "sourcePage": 24
+    },
+    {
+      "id": "04-03",
+      "version": 1,
+      "moduleId": "04",
+      "title": "EV、隱含賠率與反向風險",
+      "goal": "比較行動平均值，而不是單次輸贏。",
+      "prediction": {
+        "id": "04-03-p",
+        "prompt": "理論EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "−10"
+          },
+          {
+            "id": "b",
+            "text": "0"
+          },
+          {
+            "id": "c",
+            "text": "+10"
+          }
+        ],
+        "acceptedIds": [
+          "c"
+        ],
+        "type": "choice"
+      },
+      "exploration": "河牌P100、B50，已指定權益30%；比較本次跟注與棄牌，不含抽水。 調q顯示勝時淨得150、輸時淨失50；切100次示意模擬，先顯示理論期望，再顯示波動結果；切「對手可能不付錢」關 閉未來收益保證。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "在無後續下注的簡化模型，EV跟注=q×(P+B)−(1−q)×B。P100、B50、q30%，EV為10。這裡以當前棄牌為0，之前投 入不再重複列為本次成本。隱含賠率考慮未來贏到的額外投入，反向隱含風險則是改善後仍輸更多。不能把所有未來對 手籌碼當成一定會支付。",
+      "primary": {
+        "id": "04-03-primary",
+        "prompt": "理論EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "−10"
+          },
+          {
+            "id": "b",
+            "text": "0"
+          },
+          {
+            "id": "c",
+            "text": "+10"
+          }
+        ],
+        "acceptedIds": [
+          "c"
+        ],
+        "explanation": "C．+10。0.3×150−0.7×50=10；單次仍有70%機會輸，正期望不等於穩贏。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "04-03-transfer",
+        "prompt": "P60、B20、q30%，本次跟注EV？",
+        "referenceAnswer": "0.3×80−0.7×20=10。",
+        "type": "numeric",
+        "acceptedValues": [
+          10
+        ],
+        "fieldLabels": [
+          "本次跟注EV"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "ev",
+        "version": 1
+      },
+      "boundary": "若平手存在，用底池權益等價表達或逐結果列EV；不把勝率與含平手權益混稱。[S5,S7]",
+      "sourceIds": [
+        "S5",
+        "S7"
+      ],
+      "sourcePage": 25
+    },
+    {
+      "id": "05-01",
+      "version": 1,
+      "moduleId": "05",
+      "title": "價值下注必須有人付錢",
+      "goal": "區分目前領先與被跟後仍有價值。",
+      "prediction": {
+        "id": "05-01-p",
+        "prompt": "此假設下注EV為正，是否代表應優先下注？",
+        "options": [
+          {
+            "id": "a",
+            "text": "是"
+          },
+          {
+            "id": "b",
+            "text": "不是，應與過牌比較"
+          },
+          {
+            "id": "c",
+            "text": "正EV保證贏"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "單挑河牌P100，你以60%機率領先。假設對手較差60%全部棄牌、較好40%全部跟你下注50，且不加注。 先按「過牌」顯示EV60；再按「下注50」展開60%贏100、40%輸50，EV40；拖動較差牌跟注率，觀察差距縮小。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "價值下注希望較差牌跟注，但仍應比較過牌EV。你可能領先對手整體範圍，卻在下注後只被較好牌跟，造成下注不如過 牌。河牌最容易看清：沒有未來補牌，下注不能只說是為了保護。過牌可能保留攤牌價值，也可能給對手詐唬機會。",
+      "primary": {
+        "id": "05-01-primary",
+        "prompt": "此假設下注EV為正，是否代表應優先下注？",
+        "options": [
+          {
+            "id": "a",
+            "text": "是"
+          },
+          {
+            "id": "b",
+            "text": "不是，應與過牌比較"
+          },
+          {
+            "id": "c",
+            "text": "正EV保證贏"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不是，應與過牌比較。下注EV40小於過牌60；正EV不是所有選項中的最大EV。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "05-01-transfer",
+        "prompt": "假設較差60%都跟、較好40%也都跟，下注50的EV？",
+        "referenceAnswer": "0.6×150−0.4×50=70，高於過牌60；結論依指定反應改變。",
+        "type": "numeric",
+        "acceptedValues": [
+          70
+        ],
+        "fieldLabels": [
+          "下注EV"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "value",
+        "version": 1
+      },
+      "boundary": "這是固定反應教學模型，不是實戰對手一定遵循的行為。[S4,S7]",
+      "sourceIds": [
+        "S4",
+        "S7"
+      ],
+      "sourcePage": 26
+    },
+    {
+      "id": "05-02",
+      "version": 1,
+      "moduleId": "05",
+      "title": "詐唬、半詐唬與權益否定",
+      "goal": "說明下注希望哪些更好牌棄掉。",
+      "prediction": {
+        "id": "05-02-p",
+        "prompt": "本例純詐唬EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "+10"
+          },
+          {
+            "id": "b",
+            "text": "−10"
+          },
+          {
+            "id": "c",
+            "text": "+50"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "type": "choice"
+      },
+      "exploration": "河牌P100，你無攤牌獲勝機會，下注50，假設對手棄牌40%。 把對手範圍分成棄牌40與跟注60；動畫顯示棄牌時淨得100、被跟時失50；再切翻牌，顯示「被跟仍可能改善」分支但 不自動沿用河牌公式。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "純詐唬在被跟一定輸的模型依賴棄牌率。前面街次仍有補牌機會的下注可同時依靠棄牌率與被跟後權益，但要考慮被加 注風險。權益否定是迫使可能補贏你的牌放棄機會，不代表「怕被追就打越大」。大注也可能趕走弱牌，留下更強繼續 範圍。",
+      "primary": {
+        "id": "05-02-primary",
+        "prompt": "本例純詐唬EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "+10"
+          },
+          {
+            "id": "b",
+            "text": "−10"
+          },
+          {
+            "id": "c",
+            "text": "+50"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "explanation": "A．+10。0.4×100−0.6×50=10。打平棄牌率是50÷150=33.3%。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "05-02-transfer",
+        "prompt": "P80、下注40、棄牌率25%，純詐唬EV？",
+        "referenceAnswer": "0.25×80−0.75×40=−10。",
+        "type": "numeric",
+        "acceptedValues": [
+          -10
+        ],
+        "fieldLabels": [
+          "純詐唬EV"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "bluff",
+        "version": 1
+      },
+      "boundary": "半詐唬需更完整的後續路徑；不能只套零權益公式。[S5]",
+      "sourceIds": [
+        "S5"
+      ],
+      "sourcePage": 27
+    },
+    {
+      "id": "05-03",
+      "version": 1,
+      "moduleId": "05",
+      "title": "尺度、單位與加注計畫",
+      "goal": "分開BB、底池比例與加注到總額。",
+      "prediction": {
+        "id": "05-03-p",
+        "prompt": "底池12下注4，屬多少池？",
+        "options": [
+          {
+            "id": "a",
+            "text": "1/4"
+          },
+          {
+            "id": "b",
+            "text": "1/3"
+          },
+          {
+            "id": "c",
+            "text": "3倍"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "翻牌底池12 BB，選擇下注4 BB；另有翻牌前BB1、開池到2.5、再加注到9的比較卡。 切換「金額／底池比例」保持4不變，顯示33.3%；點3-bet卡顯示9是總額，不是7.5；展開被加注計畫，要求選擇重新 評估而非預先保證跟到底。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "翻牌前常用BB表達開池尺度，翻牌後常用下注前底池比例。3-bet是行動層級，不是下注三倍。尺度同時改變價格、對 手繼續範圍與後續SPR。大注不等於強牌、小注不等於弱牌。加注輸入應明示本輪總額與本次新增支付，並先驗證是否 合法。",
+      "primary": {
+        "id": "05-03-primary",
+        "prompt": "底池12下注4，屬多少池？",
+        "options": [
+          {
+            "id": "a",
+            "text": "1/4"
+          },
+          {
+            "id": "b",
+            "text": "1/3"
+          },
+          {
+            "id": "c",
+            "text": "3倍"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．1/3。4÷12=1/3。以下注前底池為基準，不能把自己的4先加進分母。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "05-03-transfer",
+        "prompt": "底池18，想下注2/3池，金額多少？",
+        "referenceAnswer": "12 BB；若對手跟注，底池成42 BB。",
+        "type": "numeric",
+        "acceptedValues": [
+          12
+        ],
+        "fieldLabels": [
+          "下注金額（BB）"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "sizing",
+        "version": 1
+      },
+      "boundary": "尺度示意不構成推薦；實戰需範圍與模型條件。[S5,S8]",
+      "sourceIds": [
+        "S5",
+        "S8"
+      ],
+      "sourcePage": 28
+    },
+    {
+      "id": "06-01",
+      "version": 1,
+      "moduleId": "06",
+      "title": "首次開池與位置",
+      "goal": "用位置、後方人數與牌的特性解釋進場。",
+      "prediction": {
+        "id": "06-01-p",
+        "prompt": "哪個描述合理？",
+        "options": [
+          {
+            "id": "a",
+            "text": "同一手牌任何位置都一樣"
+          },
+          {
+            "id": "b",
+            "text": "位置會改變風險與後續條件"
+          },
+          {
+            "id": "c",
+            "text": "BTN所有牌都加注"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "你持A黑桃Q黑桃，分別位於UTG與BTN，前面皆棄牌，無前注。 交換我方座位，固定底牌；計數仍待行動玩家UTG後5位、BTN後2位；點每位顯示可能棄牌、跟注、再加注，不預設其 策略。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "無人自願進池時的首次加注稱open raise。較早位置後面還有較多人，遇到強牌或反擊的機會與翻牌後位置風險不同。 AK、AQ能形成強頂對；小口袋對依賴特定改善；同花連張有連結潛力但不能只因好看就進場。先固定六人100 BB場景 ，再比較位置。",
+      "primary": {
+        "id": "06-01-primary",
+        "prompt": "哪個描述合理？",
+        "options": [
+          {
+            "id": "a",
+            "text": "同一手牌任何位置都一樣"
+          },
+          {
+            "id": "b",
+            "text": "位置會改變風險與後續條件"
+          },
+          {
+            "id": "c",
+            "text": "BTN所有牌都加注"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．位置會改變風險與後續條件。手牌沒變，但後方人數、位置與可能反應改變。不能從這一點推出每一手 牌的精確頻率。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "06-01-transfer",
+        "prompt": "將有效籌碼從100改成25 BB，原本深籌碼的跟注與後續計畫是否應重檢？",
+        "referenceAnswer": "應重檢；投入空間與可實現收益改變，不直接沿用。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "應重檢有效籌碼與後續計畫"
+          },
+          {
+            "id": "b",
+            "text": "完全照用100BB計畫"
+          },
+          {
+            "id": "c",
+            "text": "只換籌碼數字不改判斷"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "精確開池範圍須有抽水、尺度、人數與策略來源；本題評推理不評GTO頻率。[S4,S5]",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ],
+      "sourcePage": 29
+    },
+    {
+      "id": "06-02",
+      "version": 1,
+      "moduleId": "06",
+      "title": "面對開池：跟注不是免費選項",
+      "goal": "比較價格、支配風險與後方反擊。",
+      "prediction": {
+        "id": "06-02-p",
+        "prompt": "只知道KJ是兩張大牌，能判定必須跟嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "能"
+          },
+          {
+            "id": "b",
+            "text": "不能"
+          },
+          {
+            "id": "c",
+            "text": "不同花不影響任何事情"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "CO開到2.5 BB，BTN持K方塊J梅花，SB與BB尚未行動；有效100 BB。 打開五個資訊卡：對手範圍、位置、價格、後方、抽水；先不提供精確策略；讓學生選出仍缺哪些資料，再比較不同假 設下的風險。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "跟注除價格之外，還要看翻牌後位置、可能被更強同類手牌支配、後面是否會擠壓加注，以及抽水。小口袋對不能只因 有機會中暗三條就任何價格都跟；同花牌也不保證能實現全部權益。棄牌可能是合理選項，不是承認技術差。",
+      "primary": {
+        "id": "06-02-primary",
+        "prompt": "只知道KJ是兩張大牌，能判定必須跟嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "能"
+          },
+          {
+            "id": "b",
+            "text": "不能"
+          },
+          {
+            "id": "c",
+            "text": "不同花不影響任何事情"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不能。還缺對手開池範圍、場地抽水與後方策略。題目目的不是假裝有唯一答案。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "06-02-transfer",
+        "prompt": "若後方玩家經常擠壓加注，原本跟注計畫要增加哪個考慮？",
+        "referenceAnswer": "跟注後可能再被加注，以及屆時是否繼續；不能只看當下2.5 BB。",
+        "type": "reason",
+        "rubric": [
+          {
+            "id": "information",
+            "title": "已知與未知資訊"
+          },
+          {
+            "id": "range",
+            "title": "可能範圍"
+          },
+          {
+            "id": "price",
+            "title": "價格與成本"
+          },
+          {
+            "id": "purpose",
+            "title": "動作目的"
+          },
+          {
+            "id": "plan",
+            "title": "後續計畫"
+          },
+          {
+            "id": "limits",
+            "title": "限制與不確定性"
+          }
+        ],
+        "version": 1
+      },
+      "boundary": "缺模型時允許「資訊不足」；若將來提供策略題，必須另附經審核答案。[S4]",
+      "sourceIds": [
+        "S4"
+      ],
+      "sourcePage": 30
+    },
+    {
+      "id": "06-03",
+      "version": 1,
+      "moduleId": "06",
+      "title": "3-bet、4-bet與承諾風險",
+      "goal": "把再加注當作範圍與後續計畫。",
+      "prediction": {
+        "id": "06-03-p",
+        "prompt": "BB若跟注需要新增多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "24"
+          },
+          {
+            "id": "b",
+            "text": "14"
+          },
+          {
+            "id": "c",
+            "text": "34"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "BTN開2.5，SB棄，BB再加到10，BTN加到24；起始100 BB。 逐步點動作，標記2-bet、3-bet、4-bet；每步顯示本次新增投入；停在BB面對24時顯示已付10、需補14。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "大盲是第一層下注，首次加注通常稱2-bet，再加注是3-bet，下一次是4-bet。再加注可能為價值或利用棄牌，但不代表 一定能贏。面對4-bet需重新評估範圍、有效籌碼、價格與位置，不因先前3-bet而自動投入全部籌碼。",
+      "primary": {
+        "id": "06-03-primary",
+        "prompt": "BB若跟注需要新增多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "24"
+          },
+          {
+            "id": "b",
+            "text": "14"
+          },
+          {
+            "id": "c",
+            "text": "34"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．14。本輪已投入10，補到24只需14；但需要付得起不表示策略上必須跟。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "06-03-transfer",
+        "prompt": "若BB選最低完整再加注，依24相對10的增量，總額至少多少？",
+        "referenceAnswer": "38；前一完整增量14，所以24+14。",
+        "type": "numeric",
+        "acceptedValues": [
+          38
+        ],
+        "fieldLabels": [
+          "最低加注到總額（BB）"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "minraise",
+        "version": 1
+      },
+      "boundary": "不在此指定BB應用哪些牌全下；需要完整模型。[S3,S4]",
+      "sourceIds": [
+        "S3",
+        "S4"
+      ],
+      "sourcePage": 31
+    },
+    {
+      "id": "07-01",
+      "version": 1,
+      "moduleId": "07",
+      "title": "牌面與相對牌力",
+      "goal": "辨認同一頂對在不同牌面的差異。",
+      "prediction": {
+        "id": "07-01-p",
+        "prompt": "兩個情境都頂對，是否就應相同下注？",
+        "options": [
+          {
+            "id": "a",
+            "text": "是"
+          },
+          {
+            "id": "b",
+            "text": "不能直接推論"
+          },
+          {
+            "id": "c",
+            "text": "只看踢腳就夠"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "我方K黑桃Q方塊；牌面A為K梅花7方塊2黑桃，牌面B為K梅花J梅花T方塊。 切換A/B只改公共牌；在B點AQ示範已成順、點Q9示範已成K高順子；系統先檢查卡牌不重複；要求列出兩種會讓你擔心的 牌群。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "頂對不是固定強度。KQ在K72彩虹面，與KJT雙同花面所面對的兩對、順子、聽牌與後續壓力不同。先辨認自己成牌與 改善，再列對手合理繼續牌。不只看目前牌型名稱，也看對手範圍與行動路線。",
+      "primary": {
+        "id": "07-01-primary",
+        "prompt": "兩個情境都頂對，是否就應相同下注？",
+        "options": [
+          {
+            "id": "a",
+            "text": "是"
+          },
+          {
+            "id": "b",
+            "text": "不能直接推論"
+          },
+          {
+            "id": "c",
+            "text": "只看踢腳就夠"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不能直接推論。牌面改變了對手強牌與聽牌分布，因此要重新比較行動。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "07-01-transfer",
+        "prompt": "同樣KQ，牌面改成A梅花K方塊8黑桃，自己是頂對嗎？",
+        "referenceAnswer": "不是，是第二對；A是最高公共牌。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "不是頂對，是第二對"
+          },
+          {
+            "id": "b",
+            "text": "仍是頂對"
+          },
+          {
+            "id": "c",
+            "text": "是三條"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "沒有給雙方範圍時，不為兩個牌面指定唯一最佳尺度。[S4]",
+      "sourceIds": [
+        "S4"
+      ],
+      "sourcePage": 32
+    },
+    {
+      "id": "07-02",
+      "version": 1,
+      "moduleId": "07",
+      "title": "範圍優勢與最強牌端",
+      "goal": "區分平均表現與堅果分布。",
+      "prediction": {
+        "id": "07-02-p",
+        "prompt": "甲平均較強，能推論甲一定有更多最強牌嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "能"
+          },
+          {
+            "id": "b",
+            "text": "不能"
+          },
+          {
+            "id": "c",
+            "text": "兩個概念完全相同"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "給兩組教學牌群：甲多數為頂對但無順子，乙有較多空牌但含少量最大順子；不是實戰求解範圍。 切「全範圍」看分布柱狀；切「最強端」只亮指定牌群；要求先觀察再標記誰平均較強、誰含最強牌，權益若未計算則 不顯示精確百分比。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "範圍優勢描述整體範圍較有利，堅果優勢描述最強端手牌較有利。平均較強不保證最強牌較多，兩者對下注頻率與尺度 的影響也不能只靠一個標籤決定。範圍必須明示，不能看到A高牌面就斷言所有進攻者都佔優。",
+      "primary": {
+        "id": "07-02-primary",
+        "prompt": "甲平均較強，能推論甲一定有更多最強牌嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "能"
+          },
+          {
+            "id": "b",
+            "text": "不能"
+          },
+          {
+            "id": "c",
+            "text": "兩個概念完全相同"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不能。整體與尾端是不同分布特徵，需要分開檢視。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "07-02-transfer",
+        "prompt": "要比較A-K-2與8-7-6誰較有利，除了牌面還缺什麼？",
+        "referenceAnswer": "雙方起始範圍、前序行動、位置與模型條件。",
+        "type": "multi",
+        "options": [
+          {
+            "id": "ranges",
+            "text": "雙方範圍"
+          },
+          {
+            "id": "actions",
+            "text": "前序行動"
+          },
+          {
+            "id": "position",
+            "text": "位置"
+          },
+          {
+            "id": "model",
+            "text": "模型條件"
+          },
+          {
+            "id": "appearance",
+            "text": "對手外貌"
+          }
+        ],
+        "acceptedIds": [
+          "ranges",
+          "actions",
+          "position",
+          "model"
+        ],
+        "version": 1
+      },
+      "boundary": "示意柱狀圖不得標為Solver權益；未計算時標「類型分布」。[S4,S5]",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ],
+      "sourcePage": 33
+    },
+    {
+      "id": "07-03",
+      "version": 1,
+      "moduleId": "07",
+      "title": "C-bet與多人池",
+      "goal": "在下注前比較弱牌跟注、強牌棄牌與過牌價值。",
+      "prediction": {
+        "id": "07-03-p",
+        "prompt": "單挑常用的小注策略，可以無條件搬到三人池嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "可以"
+          },
+          {
+            "id": "b",
+            "text": "不可以"
+          },
+          {
+            "id": "c",
+            "text": "只要牌面相同就可"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "BTN開池，BB跟；再切成BTN開、SB跟、BB跟。公共牌Q梅花8方塊3黑桃。 保持底牌不變，從單挑切多人；多顯示一位玩家資訊卡；要求列出新增風險，不用提高系統預設下注作答案；對過牌提 供主動理由選項。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "C-bet是延續前一街主動進攻的下注，不是翻牌後一定要做的義務。下注前先問較差牌跟嗎、較好牌棄嗎、能否否定權益、 過牌是否更好、被加注怎麼辦。多人池的繼續與防守由多位玩家共同形成，不能機械照搬單挑全範圍小注或MDF。",
+      "primary": {
+        "id": "07-03-primary",
+        "prompt": "單挑常用的小注策略，可以無條件搬到三人池嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "可以"
+          },
+          {
+            "id": "b",
+            "text": "不可以"
+          },
+          {
+            "id": "c",
+            "text": "只要牌面相同就可"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不可以。多一位對手會改變範圍碰撞、強牌可能性與防守分工。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "07-03-transfer",
+        "prompt": "前一街進攻者尚未行動，你率先領打叫什麼？是否名稱本身代表錯誤？",
+        "referenceAnswer": "常稱donk bet；名稱只是分類，不等於錯誤。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "常稱donk bet；名稱不等於錯誤"
+          },
+          {
+            "id": "b",
+            "text": "名稱本身證明犯規"
+          },
+          {
+            "id": "c",
+            "text": "必須是C-bet"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "多人課先教邊界，不提供未經計算的均衡頻率。[S4,S5]",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ],
+      "sourcePage": 34
+    },
+    {
+      "id": "08-01",
+      "version": 1,
+      "moduleId": "08",
+      "title": "四類轉牌的影響",
+      "goal": "比較空白、大牌、第三張同花與成對。",
+      "prediction": {
+        "id": "08-01-p",
+        "prompt": "第三張黑桃出現，所有持一張黑桃的人都已同花嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "是"
+          },
+          {
+            "id": "b",
+            "text": "不是"
+          },
+          {
+            "id": "c",
+            "text": "只有A黑桃算"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "翻牌K梅花8黑桃3黑桃；轉牌候選2方塊、A方塊、2黑桃、8紅心。 四個分頁各替換一張；先選哪些聽牌完成，再顯示影響圖層；點2黑桃列出同花可能，但提醒單張黑桃不是已成同花。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "轉牌可能完成聽牌、改善高張、改變最強牌或讓原強牌貶值。同一張A對KK與KQ的意義不同，不能只說「好牌」就所有 手牌繼續。更新要從翻牌行動後剩下的範圍出發，不重用翻牌前完整範圍。",
+      "primary": {
+        "id": "08-01-primary",
+        "prompt": "第三張黑桃出現，所有持一張黑桃的人都已同花嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "是"
+          },
+          {
+            "id": "b",
+            "text": "不是"
+          },
+          {
+            "id": "c",
+            "text": "只有A黑桃算"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不是。德州撲克需最佳五張；三張公共黑桃加一張手中黑桃只有四張，還不成花。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "08-01-transfer",
+        "prompt": "翻牌K83，轉牌A，KQ與KK是否受到完全相同影響？",
+        "referenceAnswer": "不是；KK仍為三條，KQ的一對相對牌力可能下降。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "不同；KK仍是三條，KQ相對牌力可能下降"
+          },
+          {
+            "id": "b",
+            "text": "完全相同"
+          },
+          {
+            "id": "c",
+            "text": "KQ自動變成最大牌"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "花色與具體範圍不可省略；本課不憑轉牌類型自動給下注答案。[S4]",
+      "sourceIds": [
+        "S4"
+      ],
+      "sourcePage": 35
+    },
+    {
+      "id": "08-02",
+      "version": 1,
+      "moduleId": "08",
+      "title": "半詐唬與被加注風險",
+      "goal": "不要因有聽牌就忽略價格與路線。",
+      "prediction": {
+        "id": "08-02-p",
+        "prompt": "下注10後被加到40，跟注額還是原先10嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "是"
+          },
+          {
+            "id": "b",
+            "text": "不是，需要再補30"
+          },
+          {
+            "id": "c",
+            "text": "直接補40"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "你A黑桃Q黑桃，牌面K方塊8黑桃3梅花2黑桃，底池20、有效剩餘80。 先選「下注／過牌」並說理由；若下注10，分支顯示棄牌、跟注、加注到40；點加注分支顯示需再付30與當前新價格， 原先10不當作可退回成本。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "有聽牌的下注可能在對手棄牌時直接獲利，也可能被跟後補中；但被加注時，你可能不能以原價繼續。把聽牌視為所有 下注的免責理由，會忽略對手強範圍、有效籌碼與未來投入。過牌也可能保留權益，但是否能免費看牌依位置與對手行 動而定。",
+      "primary": {
+        "id": "08-02-primary",
+        "prompt": "下注10後被加到40，跟注額還是原先10嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "是"
+          },
+          {
+            "id": "b",
+            "text": "不是，需要再補30"
+          },
+          {
+            "id": "c",
+            "text": "直接補40"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不是，需要再補30。加注改變價格，應重新評估。不能只因已投入或持同花聽牌就自動跟。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "08-02-transfer",
+        "prompt": "若我方先過牌且對手也過牌，是否必須為河牌再付籌碼？",
+        "referenceAnswer": "不必；但這是雙方行動造成，不是過牌一定保證免費。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "不必，但只有雙方都過牌才成立"
+          },
+          {
+            "id": "b",
+            "text": "只要我方過牌就保證免費"
+          },
+          {
+            "id": "c",
+            "text": "仍須付原下注額"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "不提供完整策略EV；僅驗證帳目與思考條件。[S4,S5]",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ],
+      "sourcePage": 36
+    },
+    {
+      "id": "08-03",
+      "version": 1,
+      "moduleId": "08",
+      "title": "從河牌倒推尺度",
+      "goal": "預覽當前下注如何改變下一街。",
+      "prediction": {
+        "id": "08-03-p",
+        "prompt": "下注20被跟，河牌SPR多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "1"
+          },
+          {
+            "id": "b",
+            "text": "2"
+          },
+          {
+            "id": "c",
+            "text": "4"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "type": "choice"
+      },
+      "exploration": "轉牌底池20、雙方剩80；分別試下注10與20，對手皆跟。 並排兩條路徑：下注10後河牌池40剩70；下注20後池60剩60；使用者先填再揭示；切「對手加注」停止原先被跟預覽 ，避免沿用舊帳。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "下注被跟後，底池增加雙方本次投入，雙方籌碼各自減少投入。大注使河牌底池變大、SPR降低，但不代表所有手牌都 適合建立大底池。幾何尺度只是特定多街配置工具，必須有適合範圍與策略理由，不是通用自動全下公式。",
+      "primary": {
+        "id": "08-03-primary",
+        "prompt": "下注20被跟，河牌SPR多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "1"
+          },
+          {
+            "id": "b",
+            "text": "2"
+          },
+          {
+            "id": "c",
+            "text": "4"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "explanation": "A．1。河牌池20+20+20=60，雙方剩60，SPR=1。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "08-03-transfer",
+        "prompt": "底池30、雙方剩90，下注15被跟後池與剩餘？",
+        "referenceAnswer": "池60，雙方各75，SPR1.25。",
+        "type": "numeric",
+        "acceptedValues": [
+          60,
+          75
+        ],
+        "fieldLabels": [
+          "下一街底池",
+          "雙方各自剩餘"
+        ],
+        "tolerances": [
+          0.01,
+          0.01
+        ],
+        "variantKind": "future",
+        "version": 1
+      },
+      "boundary": "只計算指定行動，不表示哪個尺度策略最佳。[S4]",
+      "sourceIds": [
+        "S4"
+      ],
+      "sourcePage": 37
+    },
+    {
+      "id": "09-01",
+      "version": 1,
+      "moduleId": "09",
+      "title": "薄價值與過牌基準",
+      "goal": "建立被更差牌跟注的具體清單。",
+      "prediction": {
+        "id": "09-01-p",
+        "prompt": "只說「我有一對Q",
+        "options": [
+          {
+            "id": "a",
+            "text": "能"
+          },
+          {
+            "id": "b",
+            "text": "不能"
+          },
+          {
+            "id": "c",
+            "text": "河牌都應過牌"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "你Q黑桃J方塊，公共牌Q梅花8方塊3黑桃2梅花K紅心；對手過牌，未提供完整範圍。 拖曳Q9、QT、KQ、88、未中聽牌卡到可能反應欄；每張可標未知，系統不強迫固定跟棄；送出時檢查你是否列出較差 付錢來源。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "薄價值下注往往依賴對手用接近你的較差牌跟注，因此更需要反應模型。先列較差跟注、較好跟注、會棄牌及加注類型 ，再與過牌相比。若只知道自己「常常領先」仍不夠。河牌沒有未來補牌，單純害怕被追上不是下注理由。",
+      "primary": {
+        "id": "09-01-primary",
+        "prompt": "只說「我有一對Q",
+        "options": [
+          {
+            "id": "a",
+            "text": "能"
+          },
+          {
+            "id": "b",
+            "text": "不能"
+          },
+          {
+            "id": "c",
+            "text": "河牌都應過牌"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不能。需知道更差牌是否會跟、較好牌如何反應，以及過牌價值。資訊不足不能硬給唯一最佳動作。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "09-01-transfer",
+        "prompt": "若對手所有較差Q都棄、較好牌都跟，下注的主要問題？",
+        "referenceAnswer": "可能把原可攤牌獲勝的範圍趕走，留下更強跟注範圍。",
+        "type": "reason",
+        "rubric": [
+          {
+            "id": "information",
+            "title": "已知與未知資訊"
+          },
+          {
+            "id": "range",
+            "title": "可能範圍"
+          },
+          {
+            "id": "price",
+            "title": "價格與成本"
+          },
+          {
+            "id": "purpose",
+            "title": "動作目的"
+          },
+          {
+            "id": "plan",
+            "title": "後續計畫"
+          },
+          {
+            "id": "limits",
+            "title": "限制與不確定性"
+          }
+        ],
+        "version": 1
+      },
+      "boundary": "拖曳分類是使用者假設；除非另有數據，不當成對手真實頻率。[S4]",
+      "sourceIds": [
+        "S4"
+      ],
+      "sourcePage": 38
+    },
+    {
+      "id": "09-02",
+      "version": 1,
+      "moduleId": "09",
+      "title": "純詐唬的價格",
+      "goal": "區分下注者棄牌門檻與跟注者權益門檻。",
+      "prediction": {
+        "id": "09-02-p",
+        "prompt": "下注滿池純詐唬需要多少棄牌率打平？",
+        "options": [
+          {
+            "id": "a",
+            "text": "33.3%"
+          },
+          {
+            "id": "b",
+            "text": "50%"
+          },
+          {
+            "id": "c",
+            "text": "100%"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "P100、B100，純詐唬被跟必輸。 切換「我是下注者／我是跟注者」保留同一金額，分別亮淨贏100風險100與跟注成本100最終300；兩個百分比不共用 標籤。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "被跟必輸的純詐唬，EV=fP−(1−f)B，打平棄牌率B÷(P+B)。半池需要33.3%，滿池50%，兩倍池66.7%。這不是對手跟 注所需權益；同樣半池，跟注門檻是25%。兩個公式問題不同：一個問我的詐唬要多常成功，一個問我的跟注要取得多 少底池份額。",
+      "primary": {
+        "id": "09-02-primary",
+        "prompt": "下注滿池純詐唬需要多少棄牌率打平？",
+        "options": [
+          {
+            "id": "a",
+            "text": "33.3%"
+          },
+          {
+            "id": "b",
+            "text": "50%"
+          },
+          {
+            "id": "c",
+            "text": "100%"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．50%。風險100、成功獲得原池100，兩者同大，因此需要50%。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "09-02-transfer",
+        "prompt": "P120、B60，純詐唬與跟注各自門檻？",
+        "referenceAnswer": "詐唬33.3%，跟注25%。",
+        "type": "numeric",
+        "acceptedValues": [
+          33.333333333333336,
+          25
+        ],
+        "fieldLabels": [
+          "純詐唬門檻（%）",
+          "跟注門檻（%）"
+        ],
+        "tolerances": [
+          0.1,
+          0.1
+        ],
+        "variantKind": "ratios",
+        "version": 1
+      },
+      "boundary": "這是封閉單挑零權益模型；有攤牌價值時需比較過牌。[S5]",
+      "sourceIds": [
+        "S5"
+      ],
+      "sourcePage": 39
+    },
+    {
+      "id": "09-03",
+      "version": 1,
+      "moduleId": "09",
+      "title": "抓詐唬、組合與阻擋方向",
+      "goal": "把對手價值與詐唬按組合和頻率加權。",
+      "prediction": {
+        "id": "09-03-p",
+        "prompt": "原始指定範圍下跟注EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "−20"
+          },
+          {
+            "id": "b",
+            "text": "+20"
+          },
+          {
+            "id": "c",
+            "text": "0"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "河牌P100對手下注100。指定其下注範圍9組價值、6組詐唬，等權重；我方輸所有價值、贏所有詐唬，無平手。 每組以卡片顯示；先估勝率，再按「加權」得6/15=40%；與門檻1/3比較；拖去兩組詐唬，立即重算而不沿用原勝率。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "只能贏詐唬、輸給所有價值牌的牌是典型抓詐唬牌。先列價值來源，再列合理未中聽牌與其他詐唬，確認前街路線，再 套價格。阻擋強價值可能有利，但阻擋對手詐唬也可能不利。組合數仍需乘上對手實際使用該行動的頻率，不是列出就 算存在。",
+      "primary": {
+        "id": "09-03-primary",
+        "prompt": "原始指定範圍下跟注EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "−20"
+          },
+          {
+            "id": "b",
+            "text": "+20"
+          },
+          {
+            "id": "c",
+            "text": "0"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．+20。40%贏對方下注後的200，60%輸100，因此80−60=20。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "09-03-transfer",
+        "prompt": "若剩9價值、3詐唬，滿池下注下跟注EV？",
+        "referenceAnswer": "勝率25%，EV=0.25×200−0.75×100=−25。",
+        "type": "numeric",
+        "acceptedValues": [
+          -25
+        ],
+        "fieldLabels": [
+          "跟注EV"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "catch",
+        "version": 1
+      },
+      "boundary": "指定範圍只是教學輸入；不是從對手大注就能可靠推知這些組合。[S4,S5]",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ],
+      "sourcePage": 40
+    },
+    {
+      "id": "10-01",
+      "version": 1,
+      "moduleId": "10",
+      "title": "無差異與詐唬占比",
+      "goal": "推導下注範圍中詐唬的打平比例。",
+      "prediction": {
+        "id": "10-01-p",
+        "prompt": "12組價值、半池下注，簡化平衡需幾組詐唬？",
+        "options": [
+          {
+            "id": "a",
+            "text": "3"
+          },
+          {
+            "id": "b",
+            "text": "4"
+          },
+          {
+            "id": "c",
+            "text": "12"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "P100，下注50，固定12組價值；新增詐唬至防守者跟注打平。 以一組為步長新增詐唬；選4組時顯示總16組、詐唬25%、跟注EV0；切滿池時重新計算需6組詐唬，禁止把25%保留。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "單挑河牌完全極化模型中，防守者的抓詐唬牌贏全部詐唬、輸全部價值。若下注範圍詐唬占比為x，跟注打平時 x(P+B)−(1−x)B=0，因此x=B÷(P+2B)。半池時詐唬占25%，價值75%，價值對詐唬為3:1。這是下注範圍內比例，不是 全部起手牌都詐唬25%。",
+      "primary": {
+        "id": "10-01-primary",
+        "prompt": "12組價值、半池下注，簡化平衡需幾組詐唬？",
+        "options": [
+          {
+            "id": "a",
+            "text": "3"
+          },
+          {
+            "id": "b",
+            "text": "4"
+          },
+          {
+            "id": "c",
+            "text": "12"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．4。價值對詐唬3:1，因此12對4。詐唬占4/16而不是4/12。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "10-01-transfer",
+        "prompt": "12組價值、滿池下注，同模型需幾組詐唬？",
+        "referenceAnswer": "6；詐唬占6/18=1/3，價值對詐唬2:1。",
+        "type": "numeric",
+        "acceptedValues": [
+          6
+        ],
+        "fieldLabels": [
+          "詐唬組數"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "balance",
+        "version": 1
+      },
+      "boundary": "完全極化、無平手、無加注、無抽水的河牌教學模型。[S5]",
+      "sourceIds": [
+        "S5"
+      ],
+      "sourcePage": 41
+    },
+    {
+      "id": "10-02",
+      "version": 1,
+      "moduleId": "10",
+      "title": "MDF不是跟注義務",
+      "goal": "理解防守比例與公式邊界。",
+      "prediction": {
+        "id": "10-02-p",
+        "prompt": "滿池下注的簡化MDF？",
+        "options": [
+          {
+            "id": "a",
+            "text": "33.3%"
+          },
+          {
+            "id": "b",
+            "text": "50%"
+          },
+          {
+            "id": "c",
+            "text": "100%"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "P100、B100，先設定防守50%、再調至20%；下注者零權益。 防守滑桿旁固定「跟注＋加注」；顯示對手純詐唬EV：防50%時0，防20%時60；切多人池後公式卡收合並顯示不適用 原因。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "零權益詐唬的打平防守比例為P÷(P+B)。P100、B50時約66.7%；防守包含跟注與加注，不等於每手牌跟注66.7%。它 是簡化參照，不保證特定範圍有足夠可防守牌，也不能直接搬到多人池、多街與面對再加注。對手若明顯少詐唬，仍可 能合理地比MDF棄更多。",
+      "primary": {
+        "id": "10-02-primary",
+        "prompt": "滿池下注的簡化MDF？",
+        "options": [
+          {
+            "id": "a",
+            "text": "33.3%"
+          },
+          {
+            "id": "b",
+            "text": "50%"
+          },
+          {
+            "id": "c",
+            "text": "100%"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．50%。100÷200=50%；這是整個範圍的防守參照，不是每張抓詐唬牌的跟注命令。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "10-02-transfer",
+        "prompt": "P100、B200，MDF與純詐唬所需棄牌率各多少？",
+        "referenceAnswer": "MDF33.3%，棄牌率66.7%。",
+        "type": "numeric",
+        "acceptedValues": [
+          33.333333333333336,
+          66.66666666666667
+        ],
+        "fieldLabels": [
+          "MDF（%）",
+          "純詐唬棄牌門檻（%）"
+        ],
+        "tolerances": [
+          0.1,
+          0.1
+        ],
+        "variantKind": "mdf",
+        "version": 1
+      },
+      "boundary": "面對再加注的風險收益定義不同，不能照搬同一分母。[S5]",
+      "sourceIds": [
+        "S5"
+      ],
+      "sourcePage": 42
+    },
+    {
+      "id": "10-03",
+      "version": 1,
+      "moduleId": "10",
+      "title": "從觀察到調整",
+      "goal": "建立證據、假設、調整與重測的紀錄。",
+      "prediction": {
+        "id": "10-03-p",
+        "prompt": "能用三次跟注算出其真實跟注率嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "能，100%"
+          },
+          {
+            "id": "b",
+            "text": "不能，缺完整機會分母與樣本"
+          },
+          {
+            "id": "c",
+            "text": "一定是50%"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "記錄對手最近三次河牌跟注，其中只有兩次攤牌；未提供其全部機會數。 填「看見什麼／不知道什麼／暫時假設／可逆調整」四欄；點「所有河牌機會」顯示分母缺失；系統不輸出虛構百分比。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "若對手過度跟注，可研究減少純詐唬與增加合理價值；若面對特定尺度過度棄牌，可研究增加有結構的詐唬。觀察應限 定位置、街次、尺度與樣本。一次英雄跟注不能證明所有情境都跟，未攤牌也看不到全部資料。調整後仍要回看是否有 新證據，不把標籤永久化。",
+      "primary": {
+        "id": "10-03-primary",
+        "prompt": "能用三次跟注算出其真實跟注率嗎？",
+        "options": [
+          {
+            "id": "a",
+            "text": "能，100%"
+          },
+          {
+            "id": "b",
+            "text": "不能，缺完整機會分母與樣本"
+          },
+          {
+            "id": "c",
+            "text": "一定是50%"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不能，缺完整機會分母與樣本。你只看到事件，不知道全部面對下注次數，且情境與選樣可能不同。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "10-03-transfer",
+        "prompt": "對手某路線很少詐唬，是否因MDF仍必須用邊緣牌跟？",
+        "referenceAnswer": "不是；應根據可信範圍與價格評估，並保留估計不確定性。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "不必強迫達到MDF，應依範圍、價格與證據評估"
+          },
+          {
+            "id": "b",
+            "text": "必須不看對手硬跟"
+          },
+          {
+            "id": "c",
+            "text": "所有牌都棄牌"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "不提供「觀察N次即可確定」的通用樣本門檻。[S4,S5]",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ],
+      "sourcePage": 43
+    },
+    {
+      "id": "11-01",
+      "version": 1,
+      "moduleId": "11",
+      "title": "沉沒成本與結果偏誤",
+      "goal": "只比較當前可選行動，不被先前投入綁架。",
+      "prediction": {
+        "id": "11-01-p",
+        "prompt": "以當前棄牌為0，跟注EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "+30"
+          },
+          {
+            "id": "b",
+            "text": "−40"
+          },
+          {
+            "id": "c",
+            "text": "−70"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "河牌P100對手下注100；你對其下注範圍權益20%，本手先前已投入30。 先隱藏攤牌，只列EV；送出後才揭露這次對手剛好詐唬；再問是否要推翻原計算，保留使用者前後理由。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "先前已投入的籌碼不能退回，因此本次繼續決策應比較新增成本與可能收益。以當前棄牌為0只是比較基準，不表示整手 牌沒有損失。正EV決策可能輸，負EV決策也可能暫時贏；複盤先遮住結果，才能避免用攤牌倒推當時應知道的一切。",
+      "primary": {
+        "id": "11-01-primary",
+        "prompt": "以當前棄牌為0，跟注EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "+30"
+          },
+          {
+            "id": "b",
+            "text": "−40"
+          },
+          {
+            "id": "c",
+            "text": "−70"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．−40。0.2×200−0.8×100=−40。先前30是沉沒成本，不再次放進本次跟注公式。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "11-01-transfer",
+        "prompt": "若一次負EV跟注剛好贏，是否能證明原決策正確？",
+        "referenceAnswer": "不能；應檢查原範圍與推理是否合理，而不是只看結果。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "不能，只看結果不等於決策正確"
+          },
+          {
+            "id": "b",
+            "text": "贏了就證明正確"
+          },
+          {
+            "id": "c",
+            "text": "負EV跟注不可能贏"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "20%是題目指定，不是系統無資料猜測。[S7]",
+      "sourceIds": [
+        "S7"
+      ],
+      "sourcePage": 44
+    },
+    {
+      "id": "11-02",
+      "version": 1,
+      "moduleId": "11",
+      "title": "波動、跑多次與保險",
+      "goal": "分開期望、波動與費用。",
+      "prediction": {
+        "id": "11-02-p",
+        "prompt": "這份獨立合約EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "+2"
+          },
+          {
+            "id": "b",
+            "text": "−2"
+          },
+          {
+            "id": "c",
+            "text": "+10"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "簡化保險：支付固定保費12；某指定損失事件機率10%，發生時額外給付100，其他給付0。 先分開顯示原牌局與保險合約；拖保費，不改原牌局權益；用EV欄顯示0.1×100−12；不得把原本底池再算一次保險收 益。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "在公平、同分布且無額外費用的模型中，把已全下底池分成多次公共牌結果，可改變結果波動但不憑空提升權益期望。 實際跑牌規則與牌庫處理需場地確認。保險則另有保費、給付條件與費率，不能因為降低害怕就宣稱正EV。個人能承受 的損失也不等於數學期望。",
+      "primary": {
+        "id": "11-02-primary",
+        "prompt": "這份獨立合約EV多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "+2"
+          },
+          {
+            "id": "b",
+            "text": "−2"
+          },
+          {
+            "id": "c",
+            "text": "+10"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．−2。預期給付10，固定付12，合約EV−2；是否購買還涉及個人效用，但不能說它提高籌碼EV。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "11-02-transfer",
+        "prompt": "同一合約保費改8，EV？",
+        "referenceAnswer": "+2；前提仍是事件機率與給付條款都正確。",
+        "type": "numeric",
+        "acceptedValues": [
+          2
+        ],
+        "fieldLabels": [
+          "保險合約EV"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "insurance",
+        "version": 1
+      },
+      "boundary": "不提供真實保險商推薦或通用買入數保證；本課不是法律或財務建議。[S0]",
+      "sourceIds": [
+        "S0"
+      ],
+      "sourcePage": 45
+    },
+    {
+      "id": "11-03",
+      "version": 1,
+      "moduleId": "11",
+      "title": "禮儀、界線與停止條件",
+      "goal": "辨認應找荷官與應停止遊戲的情況。",
+      "prediction": {
+        "id": "11-03-p",
+        "prompt": "規則爭議最適合怎麼處理？",
+        "options": [
+          {
+            "id": "a",
+            "text": "自行收回籌碼"
+          },
+          {
+            "id": "b",
+            "text": "請荷官／裁判確認"
+          },
+          {
+            "id": "c",
+            "text": "加注報復"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "你認為對手未足額全下重開加注權，桌上其他人有不同意見。 以對話選項選「暫停並請荷官依現場規則確認」；另開停止計畫卡，填時間界線與不可使用資金，資料可不儲存。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "先確認盲注、買入、抽水、前注與場地規則，輪到自己才行動，清楚宣告。爭議交給荷官或裁判，不自行替別人判決。 現金桌籌碼EV不直接等於錦標賽獎金EV；ICM涉及獎金與生存價值，不能把本課當完整賽事策略。若出現借款追損、隱 瞞損失或無法停止，應停止遊戲並尋求可信任的人或專業協助。",
+      "primary": {
+        "id": "11-03-primary",
+        "prompt": "規則爭議最適合怎麼處理？",
+        "options": [
+          {
+            "id": "a",
+            "text": "自行收回籌碼"
+          },
+          {
+            "id": "b",
+            "text": "請荷官／裁判確認"
+          },
+          {
+            "id": "c",
+            "text": "加注報復"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．請荷官／裁判確認。先讓負責人依當前場地規則判定，避免自行改變牌局狀態。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "11-03-transfer",
+        "prompt": "今天已超過預設可承受損失，是否應提高級別快速追回？",
+        "referenceAnswer": "不應；停止並檢視，不借款追損。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "不應升級追損，應停止並檢視"
+          },
+          {
+            "id": "b",
+            "text": "提高級別追回即可"
+          },
+          {
+            "id": "c",
+            "text": "借款繼續直到回本"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "無現金投注、無入金、無收益保證；各地法規需另查。[S0,S3]",
+      "sourceIds": [
+        "S0",
+        "S3"
+      ],
+      "sourcePage": 46
+    },
+    {
+      "id": "12-01",
+      "version": 1,
+      "moduleId": "12",
+      "title": "AQ案例：翻牌前到翻牌",
+      "goal": "正確記帳並說明下注與過牌理由。",
+      "prediction": {
+        "id": "12-01-p",
+        "prompt": "教材分支中，翻牌下注1.8BB並被BB跟注後，底池多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "7.3"
+          },
+          {
+            "id": "b",
+            "text": "9.1"
+          },
+          {
+            "id": "c",
+            "text": "10.3"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "六人100BB、盲注0.5/1，BTN持黑桃A黑桃Q，開2.5BB、SB棄、BB跟。翻牌方塊Q黑桃8梅花3，池5.5BB，BB過牌。教材分支下注1.8BB且被跟。先重播帳目，再比較自己的理由；只有明確套用教材路線才前進到指定下注分支。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "六人100 BB，SB0.5、BB1，BTN持A黑桃Q黑桃。前面棄牌，BTN開2.5、SB棄、BB跟，底池5.5。翻牌Q方塊8黑桃3梅 花，BB過牌。你有頂對A踢腳與後門同花，但仍要列出弱Q、8與口袋對如何反應，以及被加注後計畫。教材示意下注 1.8不代表唯一解。",
+      "primary": {
+        "id": "12-01-primary",
+        "prompt": "教材分支中，翻牌下注1.8BB並被BB跟注後，底池多少？",
+        "options": [
+          {
+            "id": "a",
+            "text": "7.3"
+          },
+          {
+            "id": "b",
+            "text": "9.1"
+          },
+          {
+            "id": "c",
+            "text": "10.3"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．9.1。5.5+1.8+1.8=9.1；SB的0.5仍在底池，即使已棄牌。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "12-01-transfer",
+        "prompt": "到此我方總投入與剩餘籌碼？",
+        "referenceAnswer": "投入4.3、剩95.7 BB。",
+        "type": "numeric",
+        "acceptedValues": [
+          4.3,
+          95.7
+        ],
+        "fieldLabels": [
+          "我方累計投入（BB）",
+          "我方剩餘（BB）"
+        ],
+        "tolerances": [
+          0.01,
+          0.01
+        ],
+        "variantKind": "aq",
+        "version": 1
+      },
+      "boundary": "此為附檔設計牌例，不是影片實錄或Solver最佳解。[S0]",
+      "sourceIds": [
+        "S0"
+      ],
+      "sourcePage": 47
+    },
+    {
+      "id": "12-02",
+      "version": 1,
+      "moduleId": "12",
+      "title": "AQ案例：轉牌到河牌",
+      "goal": "依新牌更新價值來源與底池。",
+      "prediction": {
+        "id": "12-02-p",
+        "prompt": "河牌前底池與我方剩餘？",
+        "options": [
+          {
+            "id": "a",
+            "text": "21.1與89.7"
+          },
+          {
+            "id": "b",
+            "text": "21.1與79.7"
+          },
+          {
+            "id": "c",
+            "text": "15.1與89.7"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "type": "choice"
+      },
+      "exploration": "延續100BB起始的AQ牌例：翻牌前各投入2.5BB，翻牌各投入1.8BB，轉牌初池9.1BB、雙方各剩95.7BB。轉牌黑桃2，教材分支下注6BB被跟；河牌紅心K且BB過牌。自行選路線只評理由，不生成唯一最佳動作。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "轉牌2黑桃，你新增同花聽牌。BB過牌，教材示意下注6、BB跟，池21.1、雙方各剩89.7。河牌K紅心，你未補花且有高 於Q的公共牌。需檢查Kx如何走到河牌、弱Q是否願意付第三槍，以及過牌價值，不因AQ起手漂亮就自動下注。",
+      "primary": {
+        "id": "12-02-primary",
+        "prompt": "河牌前底池與我方剩餘？",
+        "options": [
+          {
+            "id": "a",
+            "text": "21.1與89.7"
+          },
+          {
+            "id": "b",
+            "text": "21.1與79.7"
+          },
+          {
+            "id": "c",
+            "text": "15.1與89.7"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "explanation": "A．21.1與89.7。先前池9.1再加雙方各6成21.1；我方累計10.3，剩89.7。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "12-02-transfer",
+        "prompt": "若河牌BB改領打滿池21.1，跟注權益門檻？",
+        "referenceAnswer": "21.1÷63.3=1/3；仍需估計對其下注範圍權益，不能只算價格就跟。",
+        "type": "numeric",
+        "acceptedValues": [
+          33.333333333333336
+        ],
+        "fieldLabels": [
+          "跟注門檻（%）"
+        ],
+        "tolerances": [
+          0.1
+        ],
+        "variantKind": "odds",
+        "version": 1
+      },
+      "boundary": "河牌是否下注無唯一答案；禁止把理由完整誤標成策略最優。[S0,S5]",
+      "sourceIds": [
+        "S0",
+        "S5"
+      ],
+      "sourcePage": 48
+    },
+    {
+      "id": "12-03",
+      "version": 1,
+      "moduleId": "12",
+      "title": "反事實實驗與盲測",
+      "goal": "只改一個變因，檢查理由是否仍成立。",
+      "prediction": {
+        "id": "12-03-p",
+        "prompt": "K黑桃河牌時我方最佳牌型？",
+        "options": [
+          {
+            "id": "a",
+            "text": "一對Q"
+          },
+          {
+            "id": "b",
+            "text": "A高同花"
+          },
+          {
+            "id": "c",
+            "text": "同花順"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "AQ牌例：我方黑桃A黑桃Q，公共牌方塊Q黑桃8梅花3黑桃2紅心K，池21.1BB、雙方各剩89.7BB。只把河牌紅心K改黑桃K，保持前序動作不變，先觀察牌型再討論付錢來源。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "複盤最有用的不是背下原牌局結論，而是知道哪些條件支撐結論。先固定其他資訊，只改河牌花色、有效籌碼或對手反 應假設，再比較原理由。若同時改很多條件，無法辨認差異來源。未見過情境的驗證應隱藏教學標註，不沿用同一數字 讓學生憑記憶作答。",
+      "primary": {
+        "id": "12-03-primary",
+        "prompt": "K黑桃河牌時我方最佳牌型？",
+        "options": [
+          {
+            "id": "a",
+            "text": "一對Q"
+          },
+          {
+            "id": "b",
+            "text": "A高同花"
+          },
+          {
+            "id": "c",
+            "text": "同花順"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．A高同花。手中A黑桃Q黑桃，加8黑桃2黑桃K黑桃構成A高同花，但不是連續五張黑桃。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "12-03-transfer",
+        "prompt": "若只把對手改成較少河牌詐唬，面對大注的邊緣抓詐唬通常應研究哪個方向？",
+        "referenceAnswer": "減少邊緣跟注；仍要檢查範圍、價格與證據，不是所有牌都棄。",
+        "type": "reason",
+        "rubric": [
+          {
+            "id": "information",
+            "title": "已知與未知資訊"
+          },
+          {
+            "id": "range",
+            "title": "可能範圍"
+          },
+          {
+            "id": "price",
+            "title": "價格與成本"
+          },
+          {
+            "id": "purpose",
+            "title": "動作目的"
+          },
+          {
+            "id": "plan",
+            "title": "後續計畫"
+          },
+          {
+            "id": "limits",
+            "title": "限制與不確定性"
+          }
+        ],
+        "version": 1
+      },
+      "boundary": "變因實驗用來理解依賴關係；未指定反應模型不輸出精確EV差。[S0,S4]",
+      "sourceIds": [
+        "S0",
+        "S4"
+      ],
+      "sourcePage": 49
+    },
+    {
+      "id": "13-01",
+      "version": 1,
+      "moduleId": "13",
+      "title": "一份能重現的手牌紀錄",
+      "goal": "分開客觀事實、當時想法與事後推論。",
+      "prediction": {
+        "id": "13-01-p",
+        "prompt": "此紀錄是否足以精確重現牌局與計算EV？",
+        "options": [
+          {
+            "id": "a",
+            "text": "足夠"
+          },
+          {
+            "id": "b",
+            "text": "不足"
+          },
+          {
+            "id": "c",
+            "text": "只要知道輸就夠"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "匯入草稿：BTN AQ，翻牌Q83，下注後輸了。缺少花色、金額、對手與後續行動。 表單逐欄標示缺失；允許儲存不完整紀錄，但狀態為「待補資訊」；重建底池失敗時不生成精確EV，顯示缺少哪一筆。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "有效複盤至少記桌型、位置、盲注、有效籌碼、抽水、底牌與花色、公共牌、逐街行動與加注到總額。再分開記當時範 圍、行動目的、未知資訊、替代選項與下一次修正。不要把「他看起來很強」放進客觀金額欄，也不要用事後看到的底 牌假裝當時已知。",
+      "primary": {
+        "id": "13-01-primary",
+        "prompt": "此紀錄是否足以精確重現牌局與計算EV？",
+        "options": [
+          {
+            "id": "a",
+            "text": "足夠"
+          },
+          {
+            "id": "b",
+            "text": "不足"
+          },
+          {
+            "id": "c",
+            "text": "只要知道輸就夠"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．不足。缺少關鍵條件，連合法性與底池都無法可靠重建。保留未知比編造資料好。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "13-01-transfer",
+        "prompt": "請把「下次小心",
+        "referenceAnswer": "例如：河牌跟注前先列兩類合理詐唬來源，再計算價格；若無法列出，標記資訊不足。",
+        "type": "reason",
+        "rubric": [
+          {
+            "id": "information",
+            "title": "已知與未知資訊"
+          },
+          {
+            "id": "range",
+            "title": "可能範圍"
+          },
+          {
+            "id": "price",
+            "title": "價格與成本"
+          },
+          {
+            "id": "purpose",
+            "title": "動作目的"
+          },
+          {
+            "id": "plan",
+            "title": "後續計畫"
+          },
+          {
+            "id": "limits",
+            "title": "限制與不確定性"
+          }
+        ],
+        "version": 1
+      },
+      "boundary": "匯入不完整時允許學習討論，不允許假精準評分。[S0]",
+      "sourceIds": [
+        "S0"
+      ],
+      "sourcePage": 50
+    },
+    {
+      "id": "13-02",
+      "version": 1,
+      "moduleId": "13",
+      "title": "錯誤分類與補救路徑",
+      "goal": "辨認規則、計算、範圍、尺度、資訊與情緒錯誤。",
+      "prediction": {
+        "id": "13-02-p",
+        "prompt": "這個錯誤最適合優先補哪一課？",
+        "options": [
+          {
+            "id": "a",
+            "text": "牌型"
+          },
+          {
+            "id": "b",
+            "text": "跟注與詐唬分母差異"
+          },
+          {
+            "id": "c",
+            "text": "現場讀人"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "使用者回答半池門檻33.3%，理由寫「50除以150」，信心90%。 並排展示其分子分母，標「計算定義混淆」；指向04第一課三塊籌碼視圖；補救題換數字，不立即重複原題。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "同樣選錯跟注，原因可能完全不同：算錯門檻、誤估對手詐唬、忽略抽水，或因已投入而不願棄牌。系統應先診斷再推 薦課程，不把所有錯誤送回同一刷題頁。高信心錯誤需要優先檢查；低信心答對也還需要確認是否猜中。",
+      "primary": {
+        "id": "13-02-primary",
+        "prompt": "這個錯誤最適合優先補哪一課？",
+        "options": [
+          {
+            "id": "a",
+            "text": "牌型"
+          },
+          {
+            "id": "b",
+            "text": "跟注與詐唬分母差異"
+          },
+          {
+            "id": "c",
+            "text": "現場讀人"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．跟注與詐唬分母差異。他用了純詐唬打平形式解跟注價格；應修正問題定義，不只記住25%。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "13-02-transfer",
+        "prompt": "若算對價格但把對手全部跟注牌刪掉強牌，主要是哪類？",
+        "referenceAnswer": "範圍錯誤；應回到逐街加權與慢打可能性。",
+        "type": "choice",
+        "options": [
+          {
+            "id": "a",
+            "text": "範圍錯誤，需考慮慢打與逐街加權"
+          },
+          {
+            "id": "b",
+            "text": "一定是算術錯誤"
+          },
+          {
+            "id": "c",
+            "text": "一定是牌型排序錯誤"
+          }
+        ],
+        "acceptedIds": [
+          "a"
+        ],
+        "version": 1
+      },
+      "boundary": "AI分類可提出候選，使用者可修正；不得自動貼人格標籤。[S0,S5]",
+      "sourceIds": [
+        "S0",
+        "S5"
+      ],
+      "sourcePage": 51
+    },
+    {
+      "id": "13-03",
+      "version": 1,
+      "moduleId": "13",
+      "title": "畢業檢定與持續學習",
+      "goal": "在無提示新題中解釋資訊、範圍、價格與目的。",
+      "prediction": {
+        "id": "13-03-p",
+        "prompt": "此模型跟注相對棄牌的EV？",
+        "options": [
+          {
+            "id": "a",
+            "text": "+15"
+          },
+          {
+            "id": "b",
+            "text": "0"
+          },
+          {
+            "id": "c",
+            "text": "−15"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "type": "choice"
+      },
+      "exploration": "檢定題：河牌P90對手下注45；指定對手6組價值、2組詐唬且等權；你只贏詐唬，無平手、無抽水。 先輸入跟注門檻，再估指定範圍權益，再選行動與理由；提交前可修改，提交後鎖定；若打開提示則標記「提示下完成」 ，仍可繼續學。",
+      "comparison": "顯示「初始情境」與「目前情境」，以描邊標出本課操作改變的欄位；保留其餘條件。請回答：「我改了什麼？這使哪 些判斷需要更新？」按鈕「回到初始」「看差異」「整理原理」。",
+      "teaching": "畢業不是保證獲利，而是能在沒看過的情境說出知道什麼、不知道什麼、對手可能有哪些牌、價格要求什麼、為何選擇 行動。規則與數學可客觀判分，策略理由則按條件完整度與一致性評核，沒有模型時不宣稱唯一最佳。隔幾天再測才能 檢查保留，不把完成課程當精熟。",
+      "primary": {
+        "id": "13-03-primary",
+        "prompt": "此模型跟注相對棄牌的EV？",
+        "options": [
+          {
+            "id": "a",
+            "text": "+15"
+          },
+          {
+            "id": "b",
+            "text": "0"
+          },
+          {
+            "id": "c",
+            "text": "−15"
+          }
+        ],
+        "acceptedIds": [
+          "b"
+        ],
+        "explanation": "B．0。門檻45÷180=25%，權益2/8=25%，EV0.25×135−0.75×45=0；無差異不代表每次都贏。",
+        "evidenceType": "exposed-practice",
+        "type": "choice",
+        "version": 1
+      },
+      "transfer": {
+        "id": "13-03-transfer",
+        "prompt": "延後新題：P120、B60，對手8價值、4詐唬，跟注EV？",
+        "referenceAnswer": "權益1/3；EV=(1/3)×180−(2/3)×60=20。",
+        "type": "numeric",
+        "acceptedValues": [
+          20
+        ],
+        "fieldLabels": [
+          "跟注EV"
+        ],
+        "tolerances": [
+          0.01
+        ],
+        "variantKind": "exam",
+        "version": 1
+      },
+      "boundary": "通過表示本課定義的能力證據，不是職業資格、收益保證或完整ICM能力。[S0,S5]",
+      "sourceIds": [
+        "S0",
+        "S5"
+      ],
+      "sourcePage": 52
+    }
+  ],
+  "corrections": [
+    {
+      "lesson": "07-01",
+      "issue": "K-J-T牌面持Q9已構成9-T-J-Q-K順子，不是順子聽牌。",
+      "resolution": "修正探索文案並以手牌引擎驗證。"
+    }
+  ]
+}

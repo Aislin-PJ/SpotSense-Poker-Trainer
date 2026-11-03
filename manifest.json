@@ -1,1 +1,1 @@
-{"name": "SpotSense", "short_name": "SpotSense", "start_url": "./index.html", "scope": "./", "display": "standalone", "theme_color": "#f3f0eb", "background_color": "#f3f0eb", "icons": [{"src": "app-icon.png", "sizes": "512x512", "type": "image/png"}]}
+{"name": "SpotSense", "short_name": "SpotSense", "start_url": "./index.html", "scope": "./", "display": "standalone", "background_color": "#f3f0eb", "theme_color": "#f3f0eb", "icons": [{"src": "app-icon.png", "sizes": "512x512", "type": "image/png"}]}
