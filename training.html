@@ -1,10 +1,31 @@
-<!doctype html><html lang="zh-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f3f0eb"><meta name="color-scheme" content="light"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="icon" href="app-mark.svg"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="assets/train.css"><link rel="stylesheet" href="assets/app.css"><script src="assets/core.js"></script><script src="assets/store.js"></script><script src="assets/ui.js"></script><script src="assets/sources.js"></script><title>SpotSense｜參考範圍與決策練習</title></head><body><header class="site-header" role="banner"><a class="site-brand" href="index.html"><img src="app-mark.svg" width="34" height="34" alt="">SpotSense</a><nav class="site-nav" aria-label="主要導覽"><a href="index.html">總覽</a><a href="learn.html">學習</a><a href="training.html" aria-current="page">練習</a><a href="workbench.html?view=lab">實驗室</a><a href="workbench.html?view=journal">複盤</a><button data-resource="resources">資源</button><button data-resource="settings">設定</button></nav><button class="secondary course-menu" data-resource="resources">更多</button></header>
-<!-- ===================== SPLASH SCREEN ===================== -->
+<!DOCTYPE html>
 
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<meta content="#f3f0eb" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="SpotSense" name="apple-mobile-web-app-title"/>
+<link href="app-icon.png" rel="apple-touch-icon"/>
+<link href="app-icon.png" rel="icon"/>
+<link href="manifest.json" rel="manifest"/>
+<title>SpotSense｜訓練</title>
+<meta content="SpotSense互動教學與決策訓練，提供參考範圍、自訂情境與本機學習紀錄。" name="description"/>
+<meta content="spotsense, poker trainer, preflop, RFI, push fold, GTO, range chart, preflop strategy, poker study app" name="keywords"/>
+<meta content="website" property="og:type"/>
+<meta content="SpotSense - Free Forever, Full-Featured Poker Trainer" property="og:title"/>
+<meta content="SpotSense互動教學與決策訓練，提供參考範圍、自訂情境與本機學習紀錄。" property="og:description"/>
+<meta content="app-icon.png" property="og:image"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="SpotSense - Free Forever, Full-Featured Poker Trainer" name="twitter:title"/>
+<meta content="SpotSense互動教學與決策訓練，提供參考範圍、自訂情境與本機學習紀錄。" name="twitter:description"/>
+<link href="assets/app.887cf16b4030.css" rel="stylesheet"/><link href="assets/train.0c079946aebc.css" rel="stylesheet"/><link href="assets/hero-table.4f4b2b3aa328.css" rel="stylesheet"/><script src="assets/storage.0049f1f8cc7c.js"></script><script src="assets/cards.8ef9efa2c150.js"></script><meta content="light" name="color-scheme"/></head>
+<body><header class="site-header" role="banner"><a aria-label="SpotSense首頁" class="site-brand" href="index.html"><img alt="" src="app-mark.svg"/>SpotSense</a><nav aria-label="主要導覽" class="site-nav"><a href="index.html">總覽</a><a href="learn.html">教學</a><a aria-current="page" href="training.html">訓練</a></nav><div class="site-tools"><button data-common="glossary">術語</button><button data-common="resources">資源</button></div></header>
 <div class="train-app">
-<!-- Header / Stats -->
 <section class="header glassmorphism" id="app-header">
-
 <div class="header-row-bottom">
 <div class="header-mode-control" id="header-mode-control">
 <select aria-label="Practice mode" class="mode-select" id="mode-selector" onchange="changeMode(this.value)">
@@ -43,7 +64,6 @@
 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
 </svg>
 </button>
-
 </div>
 <div class="stats hud-stats">
 <div class="stat-box pill">
@@ -78,7 +98,6 @@
 </div>
 </section>
 <section aria-labelledby="first-run-title" aria-live="polite" aria-modal="true" class="first-run-flow hidden" id="first-run-flow" role="dialog">
-<!-- First-run onboarding is injected by JS. -->
 </section>
 <section class="tab-panel plan-panel hidden" data-tab-panel="plan" id="plan-panel">
 <section aria-live="polite" class="personalized-dashboard glassmorphism hidden" id="personalized-dashboard">
@@ -102,7 +121,6 @@
 </section>
 </section>
 <section class="tab-panel practice-panel hidden" data-tab-panel="practice" id="practice-panel">
-<!-- Stack Size Selector (Push/Fold only) -->
 <div class="stack-selector glassmorphism hidden" id="stack-selector">
 <span class="stack-label" data-i18n="stackLabel">Stack:</span>
 <div class="stack-btns">
@@ -113,7 +131,6 @@
 <button class="stack-btn" data-stack="15" onclick="setStack(15)">15bb</button>
 </div>
 </div>
-<!-- Custom Mode Range Selector -->
 <div class="stack-selector glassmorphism hidden" id="custom-mode-controls">
 <div class="custom-practice-panel">
 <div class="custom-practice-header">
@@ -121,30 +138,23 @@
 <button class="btn-range-action" data-i18n="customDrillManagerOpen" onclick="openDrillManager()">Manage Drills</button>
 </div>
 <div class="stack-btns" id="custom-range-picker-list">
-<!-- Dynamically populated -->
 </div>
 <div class="custom-drill-strip">
 <span class="stack-label" data-i18n="customDrillsLabel">Drills:</span>
 <div class="stack-btns" id="custom-drill-picker-list">
-<!-- Dynamically populated -->
 </div>
 </div>
 </div>
 </div>
-<!-- Main Layout with Coach Sidepanel -->
 <main class="main-layout">
-<!-- Left Side: Interactive Game Area -->
 <div class="game-area">
-<!-- Scenario Information -->
 <div class="scenario-panel glassmorphism">
 <h2 data-i18n="scenarioTitle">Scenario</h2>
 <p data-i18n="waitingHand" id="scenario-text">Waiting for next hand...</p>
 <div class="position-badge" id="hero-position">UTG</div>
 </div>
 <div aria-live="polite" class="postflop-control-panel glassmorphism hidden" id="postflop-control-panel">
-<!-- Postflop decision context is injected by JS. -->
 </div>
-<!-- Poker Table Visualization -->
 <div class="table">
 <div class="table-surface">
 <div aria-label="Table context" class="table-context-overlay" id="table-context-overlay"></div>
@@ -155,14 +165,12 @@
 </div>
 </div>
 </div>
-<!-- Action Controls -->
 <div class="controls glassmorphism">
 <button class="btn btn-fold" data-i18n="btnFold" id="btn-fold" onclick="handleAction('Fold')">Fold</button>
 <button class="btn btn-call" data-i18n="btnCall" id="btn-call" onclick="handleAction('Call')">Call</button>
 <button class="btn btn-raise" data-i18n="btnRaise" id="btn-raise" onclick="handleAction('Raise')">Raise</button>
 <button class="btn btn-raise hidden" data-i18n="btnAllIn" id="btn-allin" onclick="handleAction('All-In')">All-In</button>
 </div>
-<!-- Feedback Overlay -->
 <div class="feedback hidden" id="feedback">
 <span class="feedback-icon" id="feedback-icon"></span>
 <h3 id="feedback-title">Correct!</h3>
@@ -170,7 +178,6 @@
 <button class="btn btn-next" data-i18n="nextHand" onclick="nextHand()">Next Hand ·Enter·</button>
 </div>
 </div>
-<!-- Right Side: Strategy Coach -->
 <aside class="strategy-coach glassmorphism" id="strategy-coach">
 <h2><span data-i18n="coachTitle">Strategy Coach</span> <span class="badge" id="coach-badge">RFI</span>
 </h2>
@@ -178,7 +185,6 @@
 <p data-i18n="coachSelect">Select a mode to begin.</p>
 </div>
 <div class="kbd-hint" data-i18n="kbdHint" id="kbd-hint">C Check · Space Fold · M Call · Enter Raise</div>
-<!-- Hand History -->
 <div class="hand-history-section">
 <div class="hand-history-header" onclick="this.parentElement.classList.toggle('expanded')">
 <span data-i18n="handHistoryTitle">Hand History</span>
@@ -193,18 +199,12 @@
 </section>
 <section class="tab-panel progress-panel hidden" data-tab-panel="progress" id="progress-panel">
 <section aria-live="polite" class="progress-dashboard glassmorphism" id="progress-dashboard">
-<!-- Progress profile is injected by JS. -->
 </section>
 </section>
-<!-- ===================== CHART MODAL ===================== -->
 <div aria-label="Range chart" aria-modal="true" class="modal hidden" id="chart-modal" role="dialog">
 <div class="modal-content glassmorphism">
-<!-- Injected by JS: header + pos tabs + grid + legend -->
 </div>
 </div>
-<!-- ===================== INFO / RULES MODAL ===================== -->
-
-<!-- ===================== STATS MODAL ===================== -->
 <div aria-labelledby="stats-modal-title" aria-modal="true" class="modal hidden" id="stats-modal" role="dialog">
 <div class="modal-content glassmorphism modal-large">
 <div class="modal-header">
@@ -212,11 +212,9 @@
 <button aria-label="Close stats modal" class="btn-close" onclick="closeStatsModal()">×</button>
 </div>
 <div class="modal-body stats-body" id="stats-content">
-<!-- Injected by JS -->
 </div>
 </div>
 </div>
-<!-- ===================== CUSTOM DRILL MANAGER MODAL ===================== -->
 <div aria-labelledby="drill-manager-title" aria-modal="true" class="modal hidden" id="drill-manager-modal" role="dialog">
 <div class="modal-content glassmorphism modal-large">
 <div class="modal-header">
@@ -423,7 +421,6 @@
 </div>
 </div>
 </div>
-<!-- ===================== ASSESSMENT MODAL ===================== -->
 <div aria-labelledby="assessment-title" aria-modal="true" class="modal hidden" id="assessment-modal" role="dialog">
 <div class="modal-content glassmorphism modal-large">
 <div class="modal-header">
@@ -479,7 +476,6 @@
 </div>
 </div>
 </div>
-<!-- ===================== SESSION SUMMARY MODAL ===================== -->
 <div aria-labelledby="session-summary-title" aria-modal="true" class="modal hidden" id="session-summary-modal" role="dialog">
 <div class="modal-content glassmorphism modal-large">
 <div class="modal-header">
@@ -487,7 +483,6 @@
 <button aria-label="Close session summary" class="btn-close" onclick="closeSessionSummary()">×</button>
 </div>
 <div class="modal-body session-summary-body" id="session-summary-content">
-<!-- Injected by JS -->
 </div>
 <div class="drill-form-actions">
 <button class="btn-range-action" data-i18n="sessionNextDrill" onclick="startTodayDrill()" type="button">Start Next Drill</button>
@@ -495,7 +490,6 @@
 </div>
 </div>
 </div>
-<!-- ===================== VIEWPORT AD MODAL ===================== -->
 <div aria-labelledby="ad-modal-title" aria-modal="true" class="modal ad-modal hidden" id="ad-modal" role="dialog">
 <div class="modal-content glassmorphism ad-modal-content">
 <div class="modal-header ad-modal-header">
@@ -511,13 +505,6 @@
 </div>
 </div>
 </div>
-<!-- ===================== SUPPORT / DONATE MODAL ===================== -->
-
-<!-- ===================== ABOUT & SETTINGS MODAL ===================== -->
-
-<!-- ===================== FEEDBACK MODAL ===================== -->
-
-<!-- ===================== GLASS CONFIRMATION MODAL ===================== -->
 <div aria-describedby="confirm-message" aria-labelledby="confirm-title" aria-modal="true" class="modal hidden" id="confirm-modal" role="dialog">
 <div class="modal-content glassmorphism confirm-modal-content">
 <div class="modal-header">
@@ -532,7 +519,6 @@
 </div>
 </div>
 </div>
-<!-- ===================== RANGE EDITOR MODAL ===================== -->
 <div aria-labelledby="range-editor-title" aria-modal="true" class="modal hidden" id="range-editor-modal" role="dialog">
 <div class="modal-content glassmorphism range-editor-modal-content">
 <div class="modal-header">
@@ -589,7 +575,7 @@
 </div>
 </div>
 </div>
-</div><!-- /app-container -->
+</div>
 <nav aria-label="Primary sections" class="app-bottom-nav" id="app-bottom-nav">
 <button class="app-nav-item active" data-app-tab="plan" onclick="setActiveTab('plan')" type="button">
 <svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="22">
@@ -633,9 +619,9 @@
 </button>
 </nav>
 <div id="toast-container"></div>
-<script src="assets/ad-config.js"></script>
-<script src="assets/trainer-i18n.js"></script>
-<script src="assets/trainer.js"></script>
+<script src="ad-config.js"></script>
+<script src="assets/i18n.2eb37b6ddd21.js"></script>
+<script src="assets/script.516291d4f97b.js"></script>
 <script>
         (function () {
             var splash = document.getElementById('splash-screen');
@@ -648,4 +634,5 @@
             }
         })();
     </script>
-<nav class="mobile-nav" aria-label="網站導覽"><a href="index.html">總覽</a><a href="learn.html">學習</a><a href="training.html" aria-current="page">練習</a><button data-resource="resources">更多</button></nav><script src="assets/app.js"></script><script src="assets/train-integrity.js"></script><script src="assets/register-sw.js"></script></body></html>
+<script src="assets/integrity.ea3633efb818.js"></script><script src="assets/common.5903cf70404b.js"></script><script src="assets/train-ui.7a777ee38bd6.js"></script><script src="assets/hero-table.7acec8cae0da.js"></script><script src="assets/register-sw.23cbf409a22a.js"></script></body>
+</html>
